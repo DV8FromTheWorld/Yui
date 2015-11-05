@@ -1,11 +1,13 @@
 package net.dv8tion.discord;
 
-import net.dv8tion.discord.commands.TestCommand;
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
+import me.itsghost.jdiscord.event.EventManager;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import net.dv8tion.discord.commands.SearchCommand;
+import net.dv8tion.discord.commands.TestCommand;
 
 public class Bot
 {
@@ -16,7 +18,10 @@ public class Bot
         {
             Settings settings = SettingsManager.getInstance().getSettings();
             DiscordAPI api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
-            api.getEventManager().registerListener(new TestCommand());
+
+            EventManager manager = api.getEventManager();
+            manager.registerListener(new TestCommand());
+            manager.registerListener(new SearchCommand());
         }
         catch (NoLoginDetailsException e)
         {
