@@ -6,6 +6,7 @@ import me.itsghost.jdiscord.event.EventManager;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import net.dv8tion.discord.commands.NyaaCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 
@@ -22,6 +23,7 @@ public class Bot
             EventManager manager = api.getEventManager();
             manager.registerListener(new TestCommand());
             manager.registerListener(new SearchCommand());
+            manager.registerListener(new NyaaCommand());
         }
         catch (NoLoginDetailsException e)
         {
