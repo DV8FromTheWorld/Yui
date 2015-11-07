@@ -28,9 +28,6 @@ public class SearchCommand extends Command
 			case ".ann":
 				filter = "site:animenewsnetwork.com";
 				break;
-			case ".mal":
-			    filter = "site:myanimelist.net";
-			    break;
 			default:
 				return;
 		}
@@ -49,7 +46,7 @@ public class SearchCommand extends Command
     @Override
     public List<String> aliases()
     {
-        return Arrays.asList(".g", ".google", ".yt", ".youtube", ".wiki", ".urban", ".ann");
+        return Arrays.asList(".g", ".google", ".wiki", ".urban");
     }
 
     @Override
