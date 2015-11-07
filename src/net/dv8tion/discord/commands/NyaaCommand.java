@@ -33,6 +33,12 @@ public class NyaaCommand extends Command
     }
 
     @Override
+    public String commandDescription()
+    {
+        return "Searches the http://Nyaa.se torrent tracker for torrents.";
+    }
+
+    @Override
     public String helpMessage()
     {
         // TODO Auto-generated method stub

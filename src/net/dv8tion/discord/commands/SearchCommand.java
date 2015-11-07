@@ -53,6 +53,12 @@ public class SearchCommand extends Command
     }
 
     @Override
+    public String commandDescription()
+    {
+        return null;
+    }
+
+    @Override
     public String helpMessage()
     {
         // TODO Auto-generated method stub

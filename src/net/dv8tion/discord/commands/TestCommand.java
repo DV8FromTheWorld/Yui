@@ -29,9 +29,14 @@ public class TestCommand extends Command
     }
 
     @Override
+    public String commandDescription()
+    {
+        return "Just a test method, haven't removed yet for some reason";
+    }
+
+    @Override
     public String helpMessage()
     {
         return "This B Only a Test!";
     }
-
 }
