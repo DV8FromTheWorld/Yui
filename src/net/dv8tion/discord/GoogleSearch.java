@@ -7,6 +7,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
 import java.net.URLDecoder;
+import java.util.Random;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 
@@ -68,7 +69,7 @@ public class GoogleSearch
 
             URL searchURL = new URL(searchURLString.toString());
             URLConnection conn = searchURL.openConnection();
-            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:39.0) Gecko/20100101 RavenBot/2.0");
+            conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:39.0) Gecko/20100101 " + randomName(10));
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder json = new StringBuilder();
             String line;
@@ -93,5 +94,22 @@ public class GoogleSearch
                             .replaceAll("\\s+", " ")
                             .replaceAll("\\<.*?>", "")
                             .replaceAll("\"", "")));
+    }
+
+    private String randomName(int randomLength)
+    {
+        char[] characters = new char[]
+                {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
+                'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
+                '1','2','3','4','5','6','7','8','9','0'};
+
+        Random rand = new Random();
+        StringBuilder builder = new StringBuilder();
+        builder.append("DiscordBot/");
+        for (int i = 0; i < randomLength; i++)
+        {
+            builder.append(characters[rand.nextInt(characters.length)]);
+        }
+        return builder.toString();
     }
 }
