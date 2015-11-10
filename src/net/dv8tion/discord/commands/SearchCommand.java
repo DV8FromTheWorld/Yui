@@ -25,9 +25,6 @@ public class SearchCommand extends Command
 			case ".urban":
 				filter = "site:urbandictionary.com";
 				break;
-			case ".ann":
-				filter = "site:animenewsnetwork.com";
-				break;
 			default:
 				return;
 		}

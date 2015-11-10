@@ -6,6 +6,7 @@ import me.itsghost.jdiscord.event.EventManager;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
 import net.dv8tion.discord.commands.NyaaCommand;
 import net.dv8tion.discord.commands.SearchCommand;
@@ -26,6 +27,7 @@ public class Bot
             manager.registerListener(new SearchCommand());
             manager.registerListener(new NyaaCommand());
             manager.registerListener(new MyAnimeListCommand());
+            manager.registerListener(new AnimeNewsNetworkCommand());
         }
         catch (NoLoginDetailsException e)
         {
