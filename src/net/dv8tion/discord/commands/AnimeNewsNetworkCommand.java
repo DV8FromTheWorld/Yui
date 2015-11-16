@@ -33,7 +33,6 @@ public class AnimeNewsNetworkCommand extends Command
                     String.format("%s+%s",
                             StringUtils.join(args, "+", 1, args.length),
                             "site:animenewsnetwork.com"));
-            handleSearch(search);
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
                 .addString(": " + handleSearch(search))
