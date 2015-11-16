@@ -43,5 +43,6 @@ public class Bot
             System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
             System.out.println("Also double-check your Config.json for possible mistakes.");
         }
+        System.out.println("Launcher: Leaving Main");
     }
 }

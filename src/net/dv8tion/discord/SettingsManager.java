@@ -30,14 +30,14 @@ public class SettingsManager {
 
     public SettingsManager() {
         if (!configFile.toFile().exists()) {
-            System.out.println("Creating default settings");
-            System.out.println("You will need to edit the Config.json with your login information.");
+            System.out.println("SettingsManager: Creating default settings");
+            System.out.println("SettingsManager: You will need to edit the Config.json with your login information.");
             this.settings = getDefaultSettings();
             saveSettings();
             return;
         }
         loadSettings();
-        System.out.println("Settings loaded");
+        System.out.println("SettingsManager: Settings loaded");
     }
 
     public void loadSettings() {
