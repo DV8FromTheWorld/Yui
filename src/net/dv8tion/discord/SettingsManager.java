@@ -37,7 +37,6 @@ public class SettingsManager {
             return;
         }
         loadSettings();
-        System.out.println("SettingsManager: Settings loaded");
     }
 
     public void loadSettings() {
@@ -45,7 +44,9 @@ public class SettingsManager {
             BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8);
             this.settings = gson.fromJson(reader, Settings.class);
             reader.close();
+            System.out.println("SettingsManager: Settings loaded");
         } catch (IOException e) {
+            System.out.println("SettingsManager: Error Loading Settings");
             e.printStackTrace();
         }
     }
@@ -69,6 +70,7 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
+        newSettings.setGithubRepoUrl("https://github.com/DV8FromTheWorld/Discord-Bot");
         return newSettings;
     }
 }
