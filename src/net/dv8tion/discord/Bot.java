@@ -2,7 +2,10 @@ package net.dv8tion.discord;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+
+import org.apache.commons.lang3.StringUtils;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
@@ -20,7 +23,7 @@ import net.dv8tion.discord.commands.TestCommand;
 public class Bot
 {
 
-    public static void main(String[] args) throws IOException, InterruptedException
+    public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
         if (System.getProperty("file.encoding").equals("UTF-8"))
         {
@@ -28,20 +31,7 @@ public class Bot
         }
         else
         {
-            System.out.println("BotLauncher: We are not running in UTF-8 mode! This is a problem!");
-            System.out.println("BotLauncher: Relaunching in UTF-8 mode using -Dfile.encoding=UTF-8");
-
-            //Gets the path of the currently running Jar file
-            String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-            String decodedPath = URLDecoder.decode(path, "UTF-8");
-            File f = new File(decodedPath); //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
-
-            //Relaunches the bot using UTF-8 mode.
-            ProcessBuilder processBuilder =
-                    new ProcessBuilder("java", "-Dfile.encoding=UTF-8", "-jar", f.getAbsolutePath());
-            processBuilder.inheritIO(); //Tells the new process to use the same command line as this one.
-            Process process = processBuilder.start();
-            process.waitFor();  //We wait here until the actual bot stops. We do this so that we can keep using the same command line.
+            relaunchInUTF8();
         }
     }
 
@@ -73,6 +63,43 @@ public class Bot
         {
             System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
             System.out.println("Also double-check your Config.json for possible mistakes.");
+        }
+    }
+
+    private static void relaunchInUTF8() throws InterruptedException, UnsupportedEncodingException
+    {
+        System.out.println("BotLauncher: We are not running in UTF-8 mode! This is a problem!");
+        System.out.println("BotLauncher: Relaunching in UTF-8 mode using -Dfile.encoding=UTF-8");
+
+        //Gets the path of the currently running Jar file
+        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = URLDecoder.decode(path, "UTF-8");
+        File f = new File(decodedPath); //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
+
+        String[] command = new String[] {"java", "-Dfile.encoding=UTF-8", "-jar", f.getAbsolutePath()};
+
+        //Relaunches the bot using UTF-8 mode.
+        ProcessBuilder processBuilder =  new ProcessBuilder(command);
+        processBuilder.inheritIO(); //Tells the new process to use the same command line as this one.
+        try
+        {
+            Process process = processBuilder.start();
+            process.waitFor();  //We wait here until the actual bot stops. We do this so that we can keep using the same command line.
+            System.out.println("Exit Code: " + process.exitValue());
+        }
+        catch (IOException e)
+        {
+            if (e.getMessage().contains("\"java\""))
+            {
+                System.out.println("BotLauncher: There was an error relaunching the bot. We couldn't find Java to launch with.");
+                System.out.println("BotLauncher: Attempted to relaunch using the command:\n   " + StringUtils.join(command, " ", 0, command.length));
+                System.out.println("BotLauncher: Make sure that you have Java properly set in your Operating System's PATH variable.");
+                System.out.println("BotLauncher: Stopping here.");
+            }
+            else
+            {
+                e.printStackTrace();
+            }
         }
     }
 }
