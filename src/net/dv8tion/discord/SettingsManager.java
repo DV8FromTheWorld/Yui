@@ -45,6 +45,7 @@ public class SettingsManager {
             this.settings = gson.fromJson(reader, Settings.class);
             reader.close();
             System.out.println("SettingsManager: Settings loaded");
+            checkOldSettingsFile();
         } catch (IOException e) {
             System.out.println("SettingsManager: Error Loading Settings");
             e.printStackTrace();
@@ -71,6 +72,17 @@ public class SettingsManager {
         newSettings.setEmail("email");
         newSettings.setPassword("password");
         newSettings.setGithubRepoUrl("https://github.com/DV8FromTheWorld/Discord-Bot");
+        newSettings.setJavaJDKPath("");
         return newSettings;
+    }
+
+    private void checkOldSettingsFile()
+    {
+        Settings defaults = getDefaultSettings();
+        if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
+        if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
+        if (settings.getGithubRepoUrl() == null) settings.setGithubRepoUrl(defaults.getGithubRepoUrl());
+        if (settings.getJavaJDKPath() == null) settings.setJavaJDKPath(defaults.getJavaJDKPath());
+        saveSettings();
     }
 }
