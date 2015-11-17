@@ -15,9 +15,6 @@ import javax.imageio.ImageIO;
 
 public class Downloader
 {
-    public static final String SWF_URL = "http://muhnig.ga/versions/0x40%20Hues%20v5.11.swf";
-    public static final String REMOTE_RES_PACKS_URL = "http://cdn.0x40hu.es/getRespacks.php";
-
     public static String webpage(String urlText)
     {
         String webpageText = "";
