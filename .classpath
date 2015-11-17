@@ -8,5 +8,6 @@
 			<attribute name="javadoc_location" value="jar:platform:/resource/Discord%20Bot/library/Gson/JavaDocs/gson-2.4-javadoc.jar!/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="library/Zip/bin/zip4j_1.3.2.jar" sourcepath="library/Zip/src"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
