@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 
-import org.apache.commons.lang3.StringUtils;
-
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
 import me.itsghost.jdiscord.event.EventManager;
@@ -16,9 +14,12 @@ import me.itsghost.jdiscord.exception.NoLoginDetailsException;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
 import net.dv8tion.discord.commands.NyaaCommand;
+import net.dv8tion.discord.commands.PullCommand;
 import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class Bot
 {
@@ -49,6 +50,7 @@ public class Bot
             manager.registerListener(new MyAnimeListCommand());
             manager.registerListener(new AnimeNewsNetworkCommand());
             manager.registerListener(new ReloadCommand(api));
+            manager.registerListener(new PullCommand(settings.getGithubRepoUrl(), settings.getJavaJDKPath()));
         }
         catch (NoLoginDetailsException e)
         {
