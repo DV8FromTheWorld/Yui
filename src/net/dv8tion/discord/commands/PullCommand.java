@@ -1,8 +1,14 @@
 package net.dv8tion.discord.commands;
 
+import java.io.File;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
@@ -56,6 +62,15 @@ public class PullCommand extends Command
         {
             ZipFile zip = new ZipFile(Downloader.file(gitRepoUrl, "./source/Master.zip"));
             zip.extractAll("./source/");
+
+            String rootDir = "./source/Discord-Bot-master/";
+            File source = new File(rootDir + "src/");
+            File sourcePathsFile = new File("./source/SourcePaths.txt");
+
+            PrintWriter filesWriter = new PrintWriter(sourcePathsFile, "UTF-8");
+            getSourcePaths(source, filesWriter);
+            filesWriter.flush();
+            filesWriter.close();
         }
         catch (IOException | ZipException e1)
         {
@@ -85,6 +100,36 @@ public class PullCommand extends Command
     public String helpMessage()
     {
         return null;
+    }
+
+    private static void getSourcePaths(File root, PrintWriter writer)
+    {
+        if (root.getPath().endsWith(".java"))
+            writer.println(root.getPath());
+        if (root.isDirectory())
+        {
+            for (File f : root.listFiles())
+            {
+                getSourcePaths(f, writer);
+            }
+        }
+    }
+
+    private static String getLibraryPaths(File classPathFile, String rootDir) throws IOException
+    {
+        String classpaths = "";
+        List<String> contents = Files.readAllLines(classPathFile.toPath(), Charset.defaultCharset());
+        for (String line : contents)
+        {
+            if (line.contains("kind=\"lib\""))
+            {
+                Pattern p = Pattern.compile("(?<=path=\").*?(?=\")");
+                Matcher m = p.matcher(line);
+                if (m.find())
+                    classpaths += rootDir + m.group() + ";";
+            }
+        }
+        return classpaths;
     }
 
 }
