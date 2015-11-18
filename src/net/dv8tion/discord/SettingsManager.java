@@ -11,9 +11,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-
-import org.apache.commons.lang3.ArrayUtils;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -93,37 +90,23 @@ public class SettingsManager {
 
     private void checkBadEscapes(Path filePath) throws IOException
     {
+        final byte FORWARD_SOLIDUS = 47;    //  /
+        final byte BACKWARDS_SOLIDUS = 92;  //  \
+
         boolean modified = false;
         byte[] bytes = Files.readAllBytes(filePath);
-        ArrayList<Byte> checkedBytes = new ArrayList<Byte>();
-
-        boolean expectingBackwardsSolidus = false;
-        for (byte b : bytes)
+        for (int i = 0; i < bytes.length; i++)
         {
-            if (b == 92) //If it is a \
-            {
-                if (expectingBackwardsSolidus) //If there was already a \, then we don't need to find another
-                {
-                    expectingBackwardsSolidus = false;
-                }
-                else //If there wasn't a preceding \, then we need another one.
-                {
-                    expectingBackwardsSolidus = true;
-                }
-            }
-            else if (expectingBackwardsSolidus) //If is isn't a \, but we were expecting one
+            if (bytes[i] == BACKWARDS_SOLIDUS)
             {
                 modified = true;
-                expectingBackwardsSolidus = false;
-                checkedBytes.add((byte) 92);
+                bytes[i] = FORWARD_SOLIDUS;
             }
-            checkedBytes.add(b);
         }
 
         if (modified)
         {
-            Byte[] output = checkedBytes.toArray(new Byte[checkedBytes.size()]);
-            Files.write(filePath, ArrayUtils.toPrimitive(output));
+            Files.write(filePath, bytes);
         }
     }
 }
