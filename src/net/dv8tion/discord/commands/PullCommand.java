@@ -22,10 +22,12 @@ public class PullCommand extends Command
 {
     private String gitRepoUrl;
     private String javacPath;
+    private Boolean javacExists;
 
     public PullCommand(String gitRepoUrl, String javaJDKPath)
     {
         this.gitRepoUrl = gitRepoUrl;
+        javacExists = null;
 
         if (!gitRepoUrl.endsWith("/"))
         {
@@ -40,12 +42,18 @@ public class PullCommand extends Command
         {
             if (!javaJDKPath.equals("javac"))
             {
-                this.javacPath = javaJDKPath + (javaJDKPath.endsWith("/") ? "javac" : "/javac");
+                this.javacPath = "\"" + javaJDKPath + (javaJDKPath.endsWith("/") ? "javac" : "/javac") + "\"";
             }
+            else
+            {
+                this.javacPath = javaJDKPath;
+            }
+            this.javacExists = testJDKPath();
         }
         else
         {
-            this.javacPath = javaJDKPath;   //Transfers the null or empty string for checking.
+            this.javacPath = javaJDKPath;   //Transfers the empty string for checking.
+            this.javacExists = false;
         }
     }
 
@@ -68,6 +76,20 @@ public class PullCommand extends Command
                 .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
                 .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
                 .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
+                .build());
+            return;
+        }
+
+        //If the JDK Path has errors.
+        if (!javacExists)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": This command is disabled because the path to the Java v1.8 JDK is incorrect.\n")
+                .addString(" The following command will not properly execute the Java compiler (javac):\n")
+                .addString("**Command:** " + javacPath + "\n")
+                .addString(javacPath.equals("javac") ? "Perhaps you didn't properly set the PATH variable for the JDK?\n" : "")
+                .addString("Please fix this in the Config. If the command does work in your command line, contact the Developer.'")
                 .build());
             return;
         }
@@ -162,5 +184,25 @@ public class PullCommand extends Command
             }
         }
         return classpaths;
+    }
+
+    private boolean testJDKPath()
+    {
+        if (javacExists != null)
+            return javacExists;
+        try
+        {
+            ProcessBuilder builder = new ProcessBuilder();
+            builder.command(javacPath);
+            Process process = builder.start();
+            process.waitFor();
+
+            this.javacExists = process.exitValue() == 2;    //2 is the exit code of Javac when no file is provided.
+        }
+        catch (IOException | InterruptedException e)
+        {
+            this.javacExists = false;
+        }
+        return javacExists;
     }
 }
