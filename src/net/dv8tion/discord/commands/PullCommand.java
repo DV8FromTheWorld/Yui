@@ -125,8 +125,29 @@ public class PullCommand extends Command
                     "-sourcepath", "@" + sourcePathsFile.getPath()
             };
             System.out.println(StringUtils.join(compileCommand, " ", 0, compileCommand.length));
+
+            ProcessBuilder pb = new ProcessBuilder();
+            pb.command(compileCommand);
+            pb.inheritIO();
+            Process compileProcess = pb.start();
+            compileProcess.waitFor();
+            if (compileProcess.exitValue() == 0)
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Successfully Compiled.")
+                    .build());
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": Compile failed, exit value: " + compileProcess.exitValue() + "\n")
+                .addString("**Command: **" + StringUtils.join(compileCommand, " ", 0, compileCommand.length))
+                .build());
+            }
         }
-        catch (IOException | ZipException e1)
+        catch (IOException | ZipException | InterruptedException e1)
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
@@ -197,7 +218,7 @@ public class PullCommand extends Command
             Process process = builder.start();
             process.waitFor();
 
-            this.javacExists = process.exitValue() == 2;    //2 is the exit code of Javac when no file is provided.
+            this.javacExists = process.exitValue() == 2;    //2 is the exit code of Javac when no file is provided. This is what we expect.
         }
         catch (IOException | InterruptedException e)
         {
