@@ -4,9 +4,6 @@
  */
 package net.dv8tion.discord;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,6 +11,12 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+
+import org.apache.commons.lang3.ArrayUtils;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 public class SettingsManager {
     private static SettingsManager instance;
@@ -41,6 +44,8 @@ public class SettingsManager {
 
     public void loadSettings() {
         try {
+            checkBadEscapes(configFile);
+
             BufferedReader reader = Files.newBufferedReader(configFile, StandardCharsets.UTF_8);
             this.settings = gson.fromJson(reader, Settings.class);
             reader.close();
@@ -84,5 +89,41 @@ public class SettingsManager {
         if (settings.getGithubRepoUrl() == null) settings.setGithubRepoUrl(defaults.getGithubRepoUrl());
         if (settings.getJavaJDKPath() == null) settings.setJavaJDKPath(defaults.getJavaJDKPath());
         saveSettings();
+    }
+
+    private void checkBadEscapes(Path filePath) throws IOException
+    {
+        boolean modified = false;
+        byte[] bytes = Files.readAllBytes(filePath);
+        ArrayList<Byte> checkedBytes = new ArrayList<Byte>();
+
+        boolean expectingBackwardsSolidus = false;
+        for (byte b : bytes)
+        {
+            if (b == 92) //If it is a \
+            {
+                if (expectingBackwardsSolidus) //If there was already a \, then we don't need to find another
+                {
+                    expectingBackwardsSolidus = false;
+                }
+                else //If there wasn't a preceding \, then we need another one.
+                {
+                    expectingBackwardsSolidus = true;
+                }
+            }
+            else if (expectingBackwardsSolidus) //If is isn't a \, but we were expecting one
+            {
+                modified = true;
+                expectingBackwardsSolidus = false;
+                checkedBytes.add((byte) 92);
+            }
+            checkedBytes.add(b);
+        }
+
+        if (modified)
+        {
+            Byte[] output = checkedBytes.toArray(new Byte[checkedBytes.size()]);
+            Files.write(filePath, ArrayUtils.toPrimitive(output));
+        }
     }
 }
