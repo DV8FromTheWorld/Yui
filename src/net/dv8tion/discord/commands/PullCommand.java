@@ -16,6 +16,8 @@ import net.dv8tion.discord.Downloader;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import org.apache.commons.lang3.StringUtils;
+
 public class PullCommand extends Command
 {
     private String gitRepoUrl;
@@ -82,11 +84,13 @@ public class PullCommand extends Command
 
             //Looks inside the Repo's .classpath file and gets the paths of all required libs.
             String classpath = getLibraryPaths(classPathFile, rootDir);
-            String compileCommand = String.format(
-                    "javac -cp %s -d %s -sourcepath @%s",
-                    classpath,
-                    binFolder.getPath(),
-                    sourcePathsFile.getPath());
+            String[] compileCommand = new String[] {
+                    "javac",
+                    "-cp", classpath,
+                    "-d", binFolder.getPath(),
+                    "-sourcepath", "@" + sourcePathsFile.getPath()
+            };
+            System.out.println(StringUtils.join(compileCommand, " ", 0, compileCommand.length));
         }
         catch (IOException | ZipException e1)
         {
