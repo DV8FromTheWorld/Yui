@@ -63,12 +63,12 @@ public class PullCommand extends Command
         if (javacPath.isEmpty())
         {
             e.getGroup().sendMessage(new MessageBuilder()
-            .addUserTag(e.getUser(), e.getGroup())
-            .addString(": This command is disabled because no Java v1.8+ JDK was provided. Provide one in the Config to enable.")
-            .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
-            .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
-            .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
-            .build());
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": This command is disabled because no Java v1.8+ JDK was provided. Provide one in the Config to enable.")
+                .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
+                .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
+                .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
+                .build());
             return;
         }
 
@@ -134,7 +134,7 @@ public class PullCommand extends Command
         return null;
     }
 
-    private static void getSourcePaths(File root, PrintWriter writer)
+    private void getSourcePaths(File root, PrintWriter writer)
     {
         if (root.getPath().endsWith(".java"))
             writer.println(root.getPath());
@@ -147,7 +147,7 @@ public class PullCommand extends Command
         }
     }
 
-    private static String getLibraryPaths(File classPathFile, String rootDir) throws IOException
+    private String getLibraryPaths(File classPathFile, String rootDir) throws IOException
     {
         String classpaths = "";
         List<String> contents = Files.readAllLines(classPathFile.toPath(), Charset.defaultCharset());
