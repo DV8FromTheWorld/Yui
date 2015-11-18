@@ -66,11 +66,27 @@ public class PullCommand extends Command
             String rootDir = "./source/Discord-Bot-master/";
             File source = new File(rootDir + "src/");
             File sourcePathsFile = new File("./source/SourcePaths.txt");
+            File classPathFile = new File(rootDir + ".classpath");
+            File binFolder = new File("./source/bin/");
 
+            //If we've pulled before, clean up the /bin/ files from last compile.
+            if (binFolder.exists())
+                binFolder.delete();
+            binFolder.mkdir();
+
+            //Recursively gets all .java file paths from the Repo's /src/ folder, prints them to the SourcePaths.txt file.
             PrintWriter filesWriter = new PrintWriter(sourcePathsFile, "UTF-8");
             getSourcePaths(source, filesWriter);
             filesWriter.flush();
             filesWriter.close();
+
+            //Looks inside the Repo's .classpath file and gets the paths of all required libs.
+            String classpath = getLibraryPaths(classPathFile, rootDir);
+            String compileCommand = String.format(
+                    "javac -cp %s -d %s -sourcepath @%s",
+                    classpath,
+                    binFolder.getPath(),
+                    sourcePathsFile.getPath());
         }
         catch (IOException | ZipException e1)
         {
