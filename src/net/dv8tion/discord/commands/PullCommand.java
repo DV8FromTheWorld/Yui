@@ -7,11 +7,14 @@ import java.util.List;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Downloader;
+import net.lingala.zip4j.core.ZipFile;
+import net.lingala.zip4j.exception.ZipException;
 
 public class PullCommand extends Command
 {
     private String gitRepoUrl;
     private String javaJDKPath;
+    private String repoName;
 
     public PullCommand(String gitRepoUrl, String javaJDKPath)
     {
@@ -19,7 +22,9 @@ public class PullCommand extends Command
         this.javaJDKPath = javaJDKPath;
 
         if (!gitRepoUrl.endsWith("/"))
+        {
             this.gitRepoUrl += "/archive/master.zip";
+        }
         else
             this.gitRepoUrl +="archive/master.zip";
     }
@@ -34,11 +39,25 @@ public class PullCommand extends Command
         }
 
         //TODO: Check permission - admin
+
+        if (javaJDKPath.isEmpty())
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+            .addUserTag(e.getUser(), e.getGroup())
+            .addString(": This command is disabled because no Java v1.8 JDK was provided. Provide one in the Config to enable.")
+            .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
+            .addString("**Example:** C:\\Program Files\\Java\\jdk1.8.0_65\\bin\n")
+            .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
+            .build());
+            return;
+        }
+
         try
         {
-            Downloader.file(gitRepoUrl, "./source/Master.zip");
+            ZipFile zip = new ZipFile(Downloader.file(gitRepoUrl, "./source/Master.zip"));
+            zip.extractAll("./source/");
         }
-        catch (IOException e1)
+        catch (IOException | ZipException e1)
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
