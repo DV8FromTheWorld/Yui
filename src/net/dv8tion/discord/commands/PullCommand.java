@@ -21,20 +21,32 @@ import org.apache.commons.lang3.StringUtils;
 public class PullCommand extends Command
 {
     private String gitRepoUrl;
-    private String javaJDKPath;
-    private String repoName;
+    private String javacPath;
 
     public PullCommand(String gitRepoUrl, String javaJDKPath)
     {
         this.gitRepoUrl = gitRepoUrl;
-        this.javaJDKPath = javaJDKPath;
 
         if (!gitRepoUrl.endsWith("/"))
         {
             this.gitRepoUrl += "/archive/master.zip";
         }
         else
+        {
             this.gitRepoUrl +="archive/master.zip";
+        }
+
+        if (javaJDKPath != null && !javaJDKPath.isEmpty())
+        {
+            if (!javaJDKPath.equals("javac"))
+            {
+                this.javacPath = javaJDKPath + (javaJDKPath.endsWith("/") ? "javac" : "/javac");
+            }
+        }
+        else
+        {
+            this.javacPath = javaJDKPath;   //Transfers the null or empty string for checking.
+        }
     }
 
     @Override
@@ -48,13 +60,13 @@ public class PullCommand extends Command
 
         //TODO: Check permission - admin
 
-        if (javaJDKPath.isEmpty())
+        if (javacPath.isEmpty())
         {
             e.getGroup().sendMessage(new MessageBuilder()
             .addUserTag(e.getUser(), e.getGroup())
-            .addString(": This command is disabled because no Java v1.8 JDK was provided. Provide one in the Config to enable.")
+            .addString(": This command is disabled because no Java v1.8+ JDK was provided. Provide one in the Config to enable.")
             .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
-            .addString("**Example:** C:\\Program Files\\Java\\jdk1.8.0_65\\bin\n")
+            .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
             .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
             .build());
             return;
@@ -85,7 +97,7 @@ public class PullCommand extends Command
             //Looks inside the Repo's .classpath file and gets the paths of all required libs.
             String classpath = getLibraryPaths(classPathFile, rootDir);
             String[] compileCommand = new String[] {
-                    "javac",
+                    javacPath,
                     "-cp", classpath,
                     "-d", binFolder.getPath(),
                     "-sourcepath", "@" + sourcePathsFile.getPath()
@@ -151,5 +163,4 @@ public class PullCommand extends Command
         }
         return classpaths;
     }
-
 }
