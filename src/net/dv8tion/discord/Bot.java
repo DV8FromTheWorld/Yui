@@ -36,6 +36,14 @@ public class Bot
         }
     }
 
+    public static File getThisJarFile() throws UnsupportedEncodingException
+    {
+      //Gets the path of the currently running Jar file
+        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String decodedPath = URLDecoder.decode(path, "UTF-8");
+        return new File(decodedPath);   //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
+    }
+
     private static void setupBot()
     {
         try
@@ -73,12 +81,7 @@ public class Bot
         System.out.println("BotLauncher: We are not running in UTF-8 mode! This is a problem!");
         System.out.println("BotLauncher: Relaunching in UTF-8 mode using -Dfile.encoding=UTF-8");
 
-        //Gets the path of the currently running Jar file
-        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
-        String decodedPath = URLDecoder.decode(path, "UTF-8");
-        File f = new File(decodedPath); //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
-
-        String[] command = new String[] {"java", "-Dfile.encoding=UTF-8", "-jar", f.getAbsolutePath()};
+        String[] command = new String[] {"java", "-Dfile.encoding=UTF-8", "-jar", Bot.getThisJarFile().getAbsolutePath()};
 
         //Relaunches the bot using UTF-8 mode.
         ProcessBuilder processBuilder =  new ProcessBuilder(command);
