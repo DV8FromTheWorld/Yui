@@ -112,6 +112,7 @@ public class PullCommand extends Command
 
             //Recursively gets all .java file paths from the Repo's /src/ folder, prints them to the SourcePaths.txt file.
             PrintWriter filesWriter = new PrintWriter(sourcePathsFile, "UTF-8");
+            filesWriter.println(".");   //Needed or javac will skip the first path defined in SourcePaths.txt
             getSourcePaths(source, filesWriter);
             filesWriter.flush();
             filesWriter.close();
