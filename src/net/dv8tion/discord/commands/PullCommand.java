@@ -99,11 +99,11 @@ public class PullCommand extends Command
             ZipFile zip = new ZipFile(Downloader.file(gitRepoUrl, "./source/Master.zip"));
             zip.extractAll("./source/");
 
-            String rootDir = "./source/Discord-Bot-master/";
-            File source = new File(rootDir + "src/");
-            File sourcePathsFile = new File("./source/SourcePaths.txt");
-            File classPathFile = new File(rootDir + ".classpath");
-            File binFolder = new File("./source/bin/");
+            final String rootDir = "./source/Discord-Bot-master/";
+            final File source = new File(rootDir + "src/");
+            final File sourcePathsFile = new File("./source/SourcePaths.txt");
+            final File classPathFile = new File(rootDir + ".classpath");
+            final File binFolder = new File("./source/bin/");
 
             //If we've pulled before, clean up the /bin/ files from last compile.
             if (binFolder.exists())
