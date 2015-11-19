@@ -104,11 +104,17 @@ public class PullCommand extends Command
             final File sourcePathsFile = new File("./source/SourcePaths.txt");
             final File classPathFile = new File(rootDir + ".classpath");
             final File binFolder = new File("./source/bin/");
+            final File extractedFolder = new File("./source/extracted/");
 
             //If we've pulled before, clean up the /bin/ files from last compile.
             if (binFolder.exists())
                 binFolder.delete();
             binFolder.mkdir();
+
+            //If we've pulled the libs before, clean up the /extracted/ files from last compile.
+            if (extractedFolder.exists())
+                extractedFolder.delete();
+            extractedFolder.mkdir();
 
             //Recursively gets all .java file paths from the Repo's /src/ folder, prints them to the SourcePaths.txt file.
             PrintWriter filesWriter = new PrintWriter(sourcePathsFile, "UTF-8");
@@ -146,6 +152,12 @@ public class PullCommand extends Command
                 .addString(": Compile failed, exit value: " + compileProcess.exitValue() + "\n")
                 .addString("**Command: **" + StringUtils.join(compileCommand, " ", 0, compileCommand.length))
                 .build());
+            }
+
+            for (String libPath : classpath.split(";"))
+            {
+                ZipFile libFile = new ZipFile(libPath);
+                libFile.extractAll(extractedFolder.getPath());
             }
         }
         catch (IOException | ZipException | InterruptedException e1)
