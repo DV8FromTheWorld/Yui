@@ -23,13 +23,18 @@ import org.apache.commons.lang3.StringUtils;
 public class PullCommand extends Command
 {
     private String gitRepoUrl;
-    private String javacPath;
-    private Boolean javacExists;
+    private String javaJDKPath;
+    private Boolean javaJDKExists;
+
+    private final String JDK_JAVAC_COMMAND = "javac";
+    private final String JDK_JAR_COMMAND = "jar";
+    private final int EXITCODE_SUCCESS = 0;         //Exit code when a proccess finishes with no problems.
+    private final int EXITCODE_FILE_NOT_FOUND = 2;  //This is the exit code the JavaJDK uses to specify that it was run with no arguments / files provided.
 
     public PullCommand(String gitRepoUrl, String javaJDKPath)
     {
         this.gitRepoUrl = gitRepoUrl;
-        javacExists = null;
+        javaJDKExists = null;
 
         if (!gitRepoUrl.endsWith("/"))
         {
@@ -39,24 +44,11 @@ public class PullCommand extends Command
         {
             this.gitRepoUrl +="archive/master.zip";
         }
-
-        if (javaJDKPath != null && !javaJDKPath.isEmpty())
-        {
-            if (!javaJDKPath.equals("javac"))
-            {
-                this.javacPath = "\"" + javaJDKPath + (javaJDKPath.endsWith("/") ? "javac" : "/javac") + "\"";
-            }
-            else
-            {
-                this.javacPath = javaJDKPath;
-            }
-            this.javacExists = testJDKPath();
-        }
+        if (!javaJDKPath.isEmpty() && !javaJDKPath.endsWith("/"))
+            this.javaJDKPath = javaJDKPath + "/";
         else
-        {
-            this.javacPath = javaJDKPath;   //Transfers the empty string for checking.
-            this.javacExists = false;
-        }
+            this.javaJDKPath = javaJDKPath;
+        this.javaJDKExists = testJDKExists();
     }
 
     @Override
@@ -70,28 +62,19 @@ public class PullCommand extends Command
 
         //TODO: Check permission - admin
 
-        if (javacPath.isEmpty())
-        {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": This command is disabled because no Java v1.8+ JDK was provided. Provide one in the Config to enable.")
-                .addString(" JDK path can either be the File path to the JDK's bin folder,\n")
-                .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
-                .addString("or if you installed the JDK to your OS's PATH, just 'javac'")
-                .build());
-            return;
-        }
-
         //If the JDK Path has errors.
-        if (!javacExists)
+        if (!javaJDKExists)
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
-                .addString(": This command is disabled because the path to the Java v1.8+ JDK is incorrect.\n")
-                .addString(" The following command will not properly execute the Java compiler (javac):\n")
-                .addString("**Command:** " + javacPath + "\n")
-                .addString(javacPath.equals("javac") ? "Perhaps you didn't properly set the PATH variable for the JDK?\n" : "")
-                .addString("Please fix this in the Config. If the command does work in your command line, contact the Developer.'")
+                .addString(": __This command is disabled because no Java JDK install could be found.__\n")
+                .addString("One following commands will not properly execute the Java compiler:\n")
+                .addString("**Command:** " + javaJDKPath + JDK_JAVAC_COMMAND + "\n")
+                .addString("**Command:** " + javaJDKPath + JDK_JAR_COMMAND + "\n")
+                .addString("You will need to download and install the Java JDK to use this command.\n")
+                .addString("After installing the JDK, either add the JDK to your Operating System's PATH variable or")
+                .addString(" provide the path to the JDK's /bin/ folder in the Config file.\n")
+                .addString("**Example:** C:/Program Files/Java/jdk1.8.0_65/bin\n")
                 .build());
             return;
         }
@@ -127,12 +110,11 @@ public class PullCommand extends Command
             //Looks inside the Repo's .classpath file and gets the paths of all required libs.
             String classpath = getLibraryPaths(classPathFile, rootDir);
             String[] compileCommand = new String[] {
-                    javacPath,
+                    javaJDKPath + JDK_JAVAC_COMMAND,
                     "-cp", classpath,
                     "-d", binFolder.getPath(),
                     "-sourcepath", "@" + sourcePathsFile.getPath()
             };
-            System.out.println(StringUtils.join(compileCommand, " ", 0, compileCommand.length));
 
             //Create a process to compile the Repo's /src/ *.java files, monitor the process.
             ProcessBuilder pb = new ProcessBuilder();
@@ -140,7 +122,7 @@ public class PullCommand extends Command
             pb.inheritIO();
             Process compileProcess = pb.start();
             compileProcess.waitFor();
-            if (compileProcess.exitValue() == 0)
+            if (compileProcess.exitValue() == EXITCODE_SUCCESS)
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
@@ -166,7 +148,7 @@ public class PullCommand extends Command
 
             //Create the command to package the libraries into the new Jar.
             String[] jarLibsCommand = new String[] {
-                    "jar",
+                    javaJDKPath + JDK_JAR_COMMAND,
                     "cf", newJarFile.getPath(),         //c : create new jar, f: filename.
                     "-C", extractedFolder.getPath(),    //-C: switch to provided directory.
                     "."                                 //. : Get all files in this directory, recursively.
@@ -177,7 +159,7 @@ public class PullCommand extends Command
             pb.command(jarLibsCommand);
             Process jarLibsProcess = pb.start();
             jarLibsProcess.waitFor();
-            if (jarLibsProcess.exitValue() == 0)
+            if (jarLibsProcess.exitValue() == EXITCODE_SUCCESS)
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
@@ -207,7 +189,7 @@ public class PullCommand extends Command
             pb.command(jarSrcCommand);
             Process jarSrcProcess = pb.start();
             jarSrcProcess.waitFor();
-            if (jarSrcProcess.exitValue() == 0)
+            if (jarSrcProcess.exitValue() == EXITCODE_SUCCESS)
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
@@ -284,23 +266,40 @@ public class PullCommand extends Command
         return classpaths;
     }
 
-    private boolean testJDKPath()
+    private boolean testJDKExists()
     {
-        if (javacExists != null)
-            return javacExists;
+        if (javaJDKExists != null)
+            return javaJDKExists;
         try
         {
+            //Checks if running the 'javac' command works with the path provided (or PATH variable).
             ProcessBuilder builder = new ProcessBuilder();
-            builder.command(javacPath);
-            Process process = builder.start();
-            process.waitFor();
+            builder.command(javaJDKPath + JDK_JAVAC_COMMAND);
+            Process javacTestProcess = builder.start();
+            javacTestProcess.waitFor();
+            if (javacTestProcess.exitValue() != EXITCODE_FILE_NOT_FOUND)
+            {
+                this.javaJDKExists = false;
+                return false;
+            }
 
-            this.javacExists = process.exitValue() == 2;    //2 is the exit code of Javac when no file is provided. This is what we expect.
+            //Checks if running the 'jar' command works with the path provided (or PATH variable).
+            builder = new ProcessBuilder();
+            builder.command(javaJDKPath + JDK_JAVAC_COMMAND);
+            Process jarTestProcess = builder.start();
+            jarTestProcess.waitFor();
+            if (jarTestProcess.exitValue() != EXITCODE_FILE_NOT_FOUND)
+            {
+                this.javaJDKExists = false;
+                return false;
+            }
+            this.javaJDKExists = true;
+            return true;
         }
         catch (IOException | InterruptedException e)
         {
-            this.javacExists = false;
+            this.javaJDKExists = false;
+            return false;
         }
-        return javacExists;
     }
 }
