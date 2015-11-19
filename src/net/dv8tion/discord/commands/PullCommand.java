@@ -12,6 +12,7 @@ import java.util.regex.Pattern;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
+import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Downloader;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
@@ -86,7 +87,7 @@ public class PullCommand extends Command
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
-                .addString(": This command is disabled because the path to the Java v1.8 JDK is incorrect.\n")
+                .addString(": This command is disabled because the path to the Java v1.8+ JDK is incorrect.\n")
                 .addString(" The following command will not properly execute the Java compiler (javac):\n")
                 .addString("**Command:** " + javacPath + "\n")
                 .addString(javacPath.equals("javac") ? "Perhaps you didn't properly set the PATH variable for the JDK?\n" : "")
@@ -100,6 +101,7 @@ public class PullCommand extends Command
             ZipFile zip = new ZipFile(Downloader.file(gitRepoUrl, "./source/Master.zip"));
             zip.extractAll("./source/");
 
+            final File newJarFile = new File("./source/" + Bot.getThisJarFile().getName());
             final String rootDir = "./source/Discord-Bot-master/";
             final File source = new File(rootDir + "src/");
             final File sourcePathsFile = new File("./source/SourcePaths.txt");
@@ -142,16 +144,17 @@ public class PullCommand extends Command
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": Successfully Compiled.")
+                    .addString(": Successfully Compiled. Packaging libraries into jar...")
                     .build());
             }
             else
             {
                 e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": Compile failed, exit value: " + compileProcess.exitValue() + "\n")
-                .addString("**Command: **" + StringUtils.join(compileCommand, " ", 0, compileCommand.length))
-                .build());
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Compile failed, exit value: " + compileProcess.exitValue() + "\n")
+                    .addString("**Command: **" + StringUtils.join(compileCommand, " ", 0, compileCommand.length))
+                    .build());
+                return;
             }
 
             //Extract the files from inside each provided lib and place them in ./sources/extracted/
@@ -159,6 +162,66 @@ public class PullCommand extends Command
             {
                 ZipFile libFile = new ZipFile(libPath);
                 libFile.extractAll(extractedFolder.getPath());
+            }
+
+            //Create the command to package the libraries into the new Jar.
+            String[] jarLibsCommand = new String[] {
+                    "jar",
+                    "cf", newJarFile.getPath(),         //c : create new jar, f: filename.
+                    "-C", extractedFolder.getPath(),    //-C: switch to provided directory.
+                    "."                                 //. : Get all files in this directory, recursively.
+            };
+
+            //Create command to package the extracted libraries files in ./source/extracted/ into the jar file.
+            pb = new ProcessBuilder();
+            pb.command(jarLibsCommand);
+            Process jarLibsProcess = pb.start();
+            jarLibsProcess.waitFor();
+            if (jarLibsProcess.exitValue() == 0)
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Successfully packaged libraries. Packaging compiled src into jar...")
+                    .build());
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Unable to package the Repo's extracted libraries, exit value: " + compileProcess.exitValue() + "\n")
+                    .addString("**Command: **" + StringUtils.join(jarLibsCommand, " ", 0, compileCommand.length))
+                    .build());
+                return;
+            }
+
+            //Create command to package the compiled code in ./source/bin/ into the jar file.
+            String[] jarSrcCommand = new String[] {
+                    "jar",
+                    "uef", "net.dv8tion.discord.Bot", newJarFile.getPath(), //c : create new jar, e: classpath of main, f: filename.
+                    "-C", binFolder.getPath(),  //-C: switch to provided directory.
+                    "."                         //. : Get all files in this directory, recursively.
+            };
+
+            //Takes the code compiled into ./source/bin/ and packages it into the Jar.
+            pb = new ProcessBuilder();
+            pb.command(jarSrcCommand);
+            Process jarSrcProcess = pb.start();
+            jarSrcProcess.waitFor();
+            if (jarSrcProcess.exitValue() == 0)
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Successfully packaged all files. Jar creation was successful!")
+                    .build());
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": Unable to package the Repo's compiled src, exit value: " + compileProcess.exitValue() + "\n")
+                    .addString("**Command: **" + StringUtils.join(jarSrcCommand, " ", 0, compileCommand.length))
+                    .build());
+                return;
             }
         }
         catch (IOException | ZipException | InterruptedException e1)
