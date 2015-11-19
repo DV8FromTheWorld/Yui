@@ -16,6 +16,7 @@ import net.dv8tion.discord.Downloader;
 import net.lingala.zip4j.core.ZipFile;
 import net.lingala.zip4j.exception.ZipException;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class PullCommand extends Command
@@ -107,13 +108,11 @@ public class PullCommand extends Command
             final File extractedFolder = new File("./source/extracted/");
 
             //If we've pulled before, clean up the /bin/ files from last compile.
-            if (binFolder.exists())
-                binFolder.delete();
+            FileUtils.deleteDirectory(binFolder);
             binFolder.mkdir();
 
             //If we've pulled the libs before, clean up the /extracted/ files from last compile.
-            if (extractedFolder.exists())
-                extractedFolder.delete();
+            FileUtils.deleteDirectory(extractedFolder);
             extractedFolder.mkdir();
 
             //Recursively gets all .java file paths from the Repo's /src/ folder, prints them to the SourcePaths.txt file.
@@ -133,6 +132,7 @@ public class PullCommand extends Command
             };
             System.out.println(StringUtils.join(compileCommand, " ", 0, compileCommand.length));
 
+            //Create a process to compile the Repo's /src/ *.java files, monitor the process.
             ProcessBuilder pb = new ProcessBuilder();
             pb.command(compileCommand);
             pb.inheritIO();
@@ -154,6 +154,7 @@ public class PullCommand extends Command
                 .build());
             }
 
+            //Extract the files from inside each provided lib and place them in ./sources/extracted/
             for (String libPath : classpath.split(";"))
             {
                 ZipFile libFile = new ZipFile(libPath);
