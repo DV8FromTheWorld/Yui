@@ -41,6 +41,12 @@ public class Bot
       //Gets the path of the currently running Jar file
         String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String decodedPath = URLDecoder.decode(path, "UTF-8");
+
+        //This is code especially written for running and testing this program in an IDE that doesn't compile to .jar when running.
+        if (!decodedPath.endsWith(".jar"))
+        {
+            return new File("Yui.jar");
+        }
         return new File(decodedPath);   //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
     }
 
