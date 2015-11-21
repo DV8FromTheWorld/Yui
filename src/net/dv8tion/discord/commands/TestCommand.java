@@ -19,7 +19,8 @@ public class TestCommand extends Command
                     .addString("?")
                     .build());
         }
-        System.out.println((e.getMsg().isEdited() ? "# " : "") + "[" + e.getGroup().getName() + "] " + e.getUser() + " > " + e.getMsg().getMessage());
+        if (e.getServer().getId().equals("107563502712954880")) //The Gaming Bunch's ServerId
+            System.out.println((e.getMsg().isEdited() ? "# " : "") + "[" + e.getGroup().getName() + "] " + e.getUser() + " > " + e.getMsg().getMessage());
     }
 
     @Override
