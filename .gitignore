@@ -1,4 +1,5 @@
 /bin/
 /source/
 /target/
+dependency-reduced-pom.xml
 Config.json
