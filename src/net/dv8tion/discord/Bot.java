@@ -23,6 +23,11 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Bot
 {
+    public static final int UPDATE_EXITCODE = 20;
+    public static final int NEWLY_CREATED_CONFIG = 21;
+    public static final int UNABLE_TO_CONNECT_TO_DISCORD = 22;
+    public static final int BAD_USERNAME_PASS_COMBO = 23;
+    public static final int NO_USERNAME_PASS_COMBO = 24;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -69,16 +74,20 @@ public class Bot
         catch (NoLoginDetailsException e)
         {
             System.out.println("No login details provided! Please give an email and password in the config file.");
+            System.exit(NO_USERNAME_PASS_COMBO);
         }
         catch (BadUsernamePasswordException e)
         {
             System.out.println("The Email and Password combination provided in the Config.json was incorrect.");
             System.out.println("Did you modify the Config.json after it was created?");
+            System.exit(BAD_USERNAME_PASS_COMBO);
         }
         catch (DiscordFailedToConnectException e)
         {
             System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
             System.out.println("Also double-check your Config.json for possible mistakes.");
+            e.printStackTrace();
+            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
     }
 
