@@ -70,7 +70,7 @@ public class Bot
             manager.registerListener(new MyAnimeListCommand());
             manager.registerListener(new AnimeNewsNetworkCommand());
             manager.registerListener(new ReloadCommand(api));
-            manager.registerListener(new PullCommand(settings.getGithubRepoUrl(), settings.getJavaJDKPath()));
+            manager.registerListener(new PullCommand());
         }
         catch (NoLoginDetailsException e)
         {
@@ -105,7 +105,7 @@ public class Bot
         {
             Process process = processBuilder.start();
             process.waitFor();  //We wait here until the actual bot stops. We do this so that we can keep using the same command line.
-            System.out.println("Exit Code: " + process.exitValue());
+            System.exit(process.exitValue());
         }
         catch (IOException e)
         {

@@ -73,8 +73,6 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
-        newSettings.setGithubRepoUrl("https://github.com/DV8FromTheWorld/Discord-Bot");
-        newSettings.setJavaJDKPath("");
         return newSettings;
     }
 
@@ -83,8 +81,6 @@ public class SettingsManager {
         Settings defaults = getDefaultSettings();
         if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
         if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
-        if (settings.getGithubRepoUrl() == null) settings.setGithubRepoUrl(defaults.getGithubRepoUrl());
-        if (settings.getJavaJDKPath() == null) settings.setJavaJDKPath(defaults.getJavaJDKPath());
         saveSettings();
     }
 
