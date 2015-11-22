@@ -4,6 +4,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
@@ -19,6 +24,7 @@ import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class Bot
@@ -29,6 +35,11 @@ public class Bot
     public static final int UNABLE_TO_CONNECT_TO_DISCORD = 22;
     public static final int BAD_USERNAME_PASS_COMBO = 23;
     public static final int NO_USERNAME_PASS_COMBO = 24;
+
+    public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+    public static Date BUILD_DATE;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -61,6 +72,30 @@ public class Bot
         try
         {
             Settings settings = SettingsManager.getInstance().getSettings();
+            try
+            {
+                //Used when in IDE
+                File buildDateFile = new File(BUILD_DATE_FILE_NAME);
+                if (buildDateFile.exists())
+                {
+                    String date = new String(Files.readAllBytes(Paths.get(BUILD_DATE_FILE_NAME)), "UTF-8");
+                    BUILD_DATE = DATE_FORMATTER.parse(date);
+                }
+                else    //Used when in JAR.
+                {
+                    String date = new String(
+                            IOUtils.toByteArray(
+                                    Thread.currentThread().getContextClassLoader().getResourceAsStream(BUILD_DATE_FILE_NAME)),
+                            "UTF-8");
+                    BUILD_DATE = DATE_FORMATTER.parse(date);
+                }
+            }
+            catch (IOException | ParseException e)
+            {
+                BUILD_DATE = null;
+                System.out.println("Could not determine build date.");
+                e.printStackTrace();
+            }
             DiscordAPI api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
 
             EventManager manager = api.getEventManager();

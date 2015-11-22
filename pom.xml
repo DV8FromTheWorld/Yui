@@ -34,6 +34,12 @@
           </executions>
       </plugin>
     </plugins>
+    <resources>
+      <resource>
+        <directory>resources</directory>
+        <filtering>true</filtering>
+      </resource>
+    </resources>
   </build>
   <artifactId>Yui</artifactId>
   <name>Yui Discord Bot</name>
@@ -71,5 +77,7 @@
   </repositories>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <timestamp>${maven.build.timestamp}</timestamp>
+    <maven.build.timestamp.format>yyyy-MM-dd HH:mm:ss</maven.build.timestamp.format>
   </properties>
 </project>
