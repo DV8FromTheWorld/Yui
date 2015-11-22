@@ -28,7 +28,6 @@ public class MyAnimeListCommand extends Command
                             StringUtils.join(args, "+", 1, args.length),
                             "site:myanimelist.net"));
 
-            String s = handleSearch(search);
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
                 .addString(": " + search.getSuggestedReturn())
