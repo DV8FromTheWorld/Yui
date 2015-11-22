@@ -36,6 +36,7 @@ public class Bot
     public static final int BAD_USERNAME_PASS_COMBO = 23;
     public static final int NO_USERNAME_PASS_COMBO = 24;
 
+    public static final String LATEST_BUILD_DATE_URL = "https://drone.io/github.com/DV8FromTheWorld/Discord-Bot/files/target/classes/build-date.txt";
     public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
@@ -65,6 +66,11 @@ public class Bot
             return new File("Yui.jar");
         }
         return new File(decodedPath);   //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
+    }
+
+    public static Date getBuildDate()
+    {
+        return (Date) BUILD_DATE.clone();
     }
 
     private static void setupBot()
