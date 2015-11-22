@@ -6,7 +6,7 @@ import java.util.List;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.Bot;
 
-public class PullCommand extends Command
+public class UpdateCommand extends Command
 {
     @Override
     public void onChat(UserChatEvent e)
@@ -25,13 +25,13 @@ public class PullCommand extends Command
     @Override
     public List<String> aliases()
     {
-        return Arrays.asList(new String[] {".pull", ".pull-reload"});
+        return Arrays.asList(new String[] {".update"});
     }
 
     @Override
     public String commandDescription()
     {
-        return "Used to pull source code from the Bot's git repo and compile it";
+        return "Used to update the Bot to the latest available version.";
     }
 
     @Override

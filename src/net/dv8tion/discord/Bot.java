@@ -19,10 +19,10 @@ import me.itsghost.jdiscord.exception.NoLoginDetailsException;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
 import net.dv8tion.discord.commands.NyaaCommand;
-import net.dv8tion.discord.commands.PullCommand;
 import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
+import net.dv8tion.discord.commands.UpdateCommand;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -39,7 +39,7 @@ public class Bot
     public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-    public static Date BUILD_DATE;
+    private static Date BUILD_DATE;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -105,7 +105,7 @@ public class Bot
             manager.registerListener(new MyAnimeListCommand());
             manager.registerListener(new AnimeNewsNetworkCommand());
             manager.registerListener(new ReloadCommand(api));
-            manager.registerListener(new PullCommand());
+            manager.registerListener(new UpdateCommand());
         }
         catch (NoLoginDetailsException e)
         {
