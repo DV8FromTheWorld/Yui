@@ -38,7 +38,7 @@ public class Bot
 
     public static final String LATEST_BUILD_DATE_URL = "https://drone.io/github.com/DV8FromTheWorld/Discord-Bot/files/target/classes/build-date.txt";
     public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
     private static Date BUILD_DATE;
 

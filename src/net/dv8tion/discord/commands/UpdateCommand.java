@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -25,13 +26,14 @@ public class UpdateCommand extends Command
 
         try
         {
+            SimpleDateFormat dateOutput = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a zzz");
             Date latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.LATEST_BUILD_DATE_URL));
             Date botBuildDate = Bot.getBuildDate();
             if (botBuildDate == null || botBuildDate.before(latestBuildDate))
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "Updating to new version with build date of: " + latestBuildDate.toString())
+                    .addString(": " + "Updating to latest version.\n**Latest version's build date:** " + dateOutput.format(latestBuildDate))
                     .build());
                 System.exit(Bot.UPDATE_EXITCODE);
             }
@@ -39,7 +41,7 @@ public class UpdateCommand extends Command
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "The Bot is currently up-to-date.\nCurrent version's build date: " + botBuildDate.toString())
+                    .addString(": " + "The Bot is currently up-to-date.\n**Current version's build date:** " + dateOutput.format(botBuildDate))
                     .build());
             }
         }
