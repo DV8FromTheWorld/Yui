@@ -23,6 +23,7 @@ import org.apache.commons.lang3.StringUtils;
 
 public class Bot
 {
+    public static final int NORMAL_SHUTDOWN = 10;
     public static final int UPDATE_EXITCODE = 20;
     public static final int NEWLY_CREATED_CONFIG = 21;
     public static final int UNABLE_TO_CONNECT_TO_DISCORD = 22;
