@@ -29,6 +29,7 @@ public class UpdateCommand extends Command
                 .addUserTag(e.getUser(), e.getGroup())
                 .addString(": " + "You do not have permission to run this command! (OP required).")
                 .build());
+            return;
         }
 
         try
