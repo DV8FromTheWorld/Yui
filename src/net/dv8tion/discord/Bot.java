@@ -103,6 +103,7 @@ public class Bot
                 e.printStackTrace();
             }
             DiscordAPI api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
+            Database.getInstance();
 
             EventManager manager = api.getEventManager();
             manager.registerListener(new TestCommand());

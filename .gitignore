@@ -1,5 +1,6 @@
 /bin/
 /source/
 /target/
+*.db
 dependency-reduced-pom.xml
 Config.json
