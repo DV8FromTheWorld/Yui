@@ -41,6 +41,7 @@ public class Bot
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
     private static Date BUILD_DATE;
+    private static DiscordAPI api;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -71,6 +72,11 @@ public class Bot
     public static Date getBuildDate()
     {
         return (Date) BUILD_DATE.clone();
+    }
+
+    public static DiscordAPI getAPI()
+    {
+        return api;
     }
 
     private static void setupBot()
@@ -104,6 +110,7 @@ public class Bot
             }
             DiscordAPI api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
             Database.getInstance();
+            Permissions.setupPermissions();
 
             EventManager manager = api.getEventManager();
             manager.registerListener(new TestCommand());

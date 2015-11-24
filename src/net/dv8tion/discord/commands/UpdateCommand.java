@@ -10,6 +10,7 @@ import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Downloader;
+import net.dv8tion.discord.Permissions;
 
 public class UpdateCommand extends Command
 {
@@ -22,7 +23,13 @@ public class UpdateCommand extends Command
             return;
         }
 
-        //TODO: Check permission - admin
+        if (!Permissions.getPermissions().isOp(e.getUser().getUser().getId()))
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "You do not have permission to run this command! (OP required).")
+                .build());
+        }
 
         try
         {
