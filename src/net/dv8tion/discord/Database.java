@@ -32,8 +32,8 @@ public class Database
             statement.setQueryTimeout(30);
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS Ops(id)");
             preparedStatements.put("addOp", conn.prepareStatement("REPLACE INTO Ops (id) VALUES (?)"));
-            preparedStatements.put("deleteOp", conn.prepareStatement("DELETE FROM Ops WHERE id = ?"));
-            preparedStatements.put("getAllOps", conn.prepareStatement("SELECT id FROM Ops"));
+            preparedStatements.put("removeOp", conn.prepareStatement("DELETE FROM Ops WHERE id = ?"));
+            preparedStatements.put("getOps", conn.prepareStatement("SELECT id FROM Ops"));
         }
         catch (SQLException e)
         {
