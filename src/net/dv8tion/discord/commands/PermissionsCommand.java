@@ -34,75 +34,7 @@ public class PermissionsCommand extends Command
             case ".permissions":
                 if (args[1].equals("op"))
                 {
-                    if (args.length == 4)
-                    {
-                        if (args[2].equals("add"))
-                        {
-                            Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
-                            Matcher idMatch = idPattern.matcher(args[3]);
-                            if (!idMatch.find())
-                            {
-                                e.getGroup().sendMessage(new MessageBuilder()
-                                    .addUserTag(e.getUser(), e.getGroup())
-                                    .addString(": " + "Sorry, I don't recognize the user provided: " + args[3])
-                                    .build());
-                                return;
-                            }
-                            try
-                            {
-                                if (Permissions.getPermissions().addOp(idMatch.group()))
-                                {
-                                    e.getGroup().sendMessage(new MessageBuilder()
-                                        .addUserTag(e.getUser(), e.getGroup())
-                                        .addString(": " + "Successfully added ")
-                                        .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                                        .addString(" to the OPs list!")
-                                        .build());
-                                    return;
-                                }
-                                else
-                                {
-                                    e.getGroup().sendMessage(new MessageBuilder()
-                                        .addUserTag(e.getUser(), e.getGroup())
-                                        .addString(": ")
-                                        .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                                        .addString(" is already an OP!")
-                                        .build());
-                                    return;
-                                }
-                            }
-                            catch (Exception e1)
-                            {
-                                e1.printStackTrace();
-                            }
-                        }
-                        else if (args[2].equals("remove"))
-                        {
-
-                        }
-                        else
-                        {
-                            e.getGroup().sendMessage(new MessageBuilder()
-                                .addUserTag(e.getUser(), e.getGroup())
-                                .addString(": " + "**Improper syntax, unrecognized argument:** " + args[2])
-                                .addString("\n**Provided Command:** " + e.getMsg().toString())
-                                .build());
-                            return;
-                        }
-                    }
-                    else if (args.length == 3 && args[2].equals("list"))
-                    {
-                        String ops = "";
-                        for (String op : Permissions.getPermissions().getOps())
-                        {
-                            ops += "<@" + op + "> ";
-                        }
-                        e.getGroup().sendMessage(new MessageBuilder()
-                            .addUserTag(e.getUser(), e.getGroup())
-                            .addString(": My OPs are: [" + ops.trim() + "]")
-                            .build());
-                        return;
-                    }
+                    processOp(args, e);
                 }
                 else
                 {
@@ -145,5 +77,83 @@ public class PermissionsCommand extends Command
     public String helpMessage()
     {
         return null;
+    }
+
+    private void processOp(String[] args, UserChatEvent e)
+    {
+        if (args.length == 4)
+        {
+            if (args[2].equals("add"))
+            {
+                processAddOp(args, e);
+            }
+            else if (args[2].equals("remove"))
+            {
+
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[2])
+                    .addString("\n**Provided Command:** " + e.getMsg().toString())
+                    .build());
+                return;
+            }
+        }
+        else if (args.length == 3 && args[2].equals("list"))
+        {
+            String ops = "";
+            for (String op : Permissions.getPermissions().getOps())
+            {
+                ops += "<@" + op + "> ";
+            }
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": My OPs are: [" + ops.trim() + "]")
+                .build());
+            return;
+        }
+    }
+
+    private void processAddOp(String[] args, UserChatEvent e)
+    {
+        Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
+        Matcher idMatch = idPattern.matcher(args[3]);
+        if (!idMatch.find())
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "Sorry, I don't recognize the user provided: " + args[3])
+                .build());
+            return;
+        }
+        try
+        {
+            if (Permissions.getPermissions().addOp(idMatch.group()))
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": " + "Successfully added ")
+                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                    .addString(" to the OPs list!")
+                    .build());
+                return;
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": ")
+                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                    .addString(" is already an OP!")
+                    .build());
+                return;
+            }
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
     }
 }
