@@ -15,13 +15,11 @@ public class NyaaCommand extends Command
     @Override
     public void onChat(UserChatEvent e)
     {
-        String[] args = e.getMsg().toString().split(" ");
-        if (!aliases().contains(args[0]))
-        {
+        if (!containsCommand(e.getMsg()))
             return;
-        }
+
         e.getGroup().sendMessage(new MessageBuilder()
-        .addString(createUrl(args))
+        .addString(createUrl(commandArgs(e.getMsg())))
         .build());
 //        Downloader.webpage("");
     }

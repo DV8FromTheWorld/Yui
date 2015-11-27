@@ -17,11 +17,8 @@ public class UpdateCommand extends Command
     @Override
     public void onChat(UserChatEvent e)
     {
-        String[] args = e.getMsg().toString().split(" ");
-        if (!aliases().contains(args[0]))
-        {
+        if (!containsCommand(e.getMsg()))
             return;
-        }
 
         if (!Permissions.getPermissions().isOp(e.getUser().getUser().getId()))
         {

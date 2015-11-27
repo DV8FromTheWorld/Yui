@@ -26,18 +26,18 @@ public class AnimeNewsNetworkCommand extends Command
     @Override
     public void onChat(UserChatEvent e)
     {
-        String[] args = e.getMsg().toString().split(" ");
-        if (aliases().contains(args[0]))
-        {
-            GoogleSearch search = new GoogleSearch(
-                    String.format("%s+%s",
-                            StringUtils.join(args, "+", 1, args.length),
-                            "site:animenewsnetwork.com"));
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + handleSearch(search))
-                .build());
-        }
+        if (!containsCommand(e.getMsg()))
+            return;
+
+        String[] args = commandArgs(e.getMsg());
+        GoogleSearch search = new GoogleSearch(
+                String.format("%s+%s",
+                        StringUtils.join(args, "+", 1, args.length),
+                        "site:animenewsnetwork.com"));
+        e.getGroup().sendMessage(new MessageBuilder()
+            .addUserTag(e.getUser(), e.getGroup())
+            .addString(": " + handleSearch(search))
+            .build());
     }
 
     @Override

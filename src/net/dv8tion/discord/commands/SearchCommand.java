@@ -14,7 +14,7 @@ public class SearchCommand extends Command
 	@Override
 	public void onChat(UserChatEvent e) {
 		String filter = null;
-		String[] splitMessage = e.getMsg().toString().split(" ");
+		String[] splitMessage = commandArgs(e.getMsg());
 		switch (splitMessage[0]) {
 			case ".google":
 			case ".g":

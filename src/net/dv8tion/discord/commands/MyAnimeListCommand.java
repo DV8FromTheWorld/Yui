@@ -20,19 +20,19 @@ public class MyAnimeListCommand extends Command
     @Override
     public void onChat(UserChatEvent e)
     {
-        String[] args = e.getMsg().toString().split(" ");
-        if (aliases().contains(args[0]))
-        {
-            GoogleSearch search = new GoogleSearch(
-                    String.format("%s+%s",
-                            StringUtils.join(args, "+", 1, args.length),
-                            "site:myanimelist.net"));
+        if (!containsCommand(e.getMsg()))
+            return;
 
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + search.getSuggestedReturn())
-                .build());
-        }
+        String[] args = commandArgs(e.getMsg());
+        GoogleSearch search = new GoogleSearch(
+                String.format("%s+%s",
+                        StringUtils.join(args, "+", 1, args.length),
+                        "site:myanimelist.net"));
+
+        e.getGroup().sendMessage(new MessageBuilder()
+            .addUserTag(e.getUser(), e.getGroup())
+            .addString(": " + search.getSuggestedReturn())
+            .build());
     }
 
     @Override
