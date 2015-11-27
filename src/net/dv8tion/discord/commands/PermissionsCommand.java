@@ -2,10 +2,12 @@ package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import net.dv8tion.discord.Permissions;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
+import net.dv8tion.discord.Permissions;
 
 public class PermissionsCommand extends Command
 {
@@ -16,40 +18,79 @@ public class PermissionsCommand extends Command
         if (!containsCommand(e.getMsg()))
             return;
 
-        if (!Permissions.getPermissions().isOp(e.getUser()))
-        {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "You do not have permission to run this command! (OP required).")
-                .build());
-            return;
-        }
+//        if (!Permissions.getPermissions().isOp(e.getUser()))
+//        {
+//            e.getGroup().sendMessage(new MessageBuilder()
+//                .addUserTag(e.getUser(), e.getGroup())
+//                .addString(": " + "You do not have permission to run this command! (OP required).")
+//                .build());
+//            return;
+//        }
 
         String[] args = commandArgs(e.getMsg());
         switch (args[0])
         {
             case ".perms":
             case ".permissions":
-                System.out.println(args.length < 4 || (args.length == 3 && args[2].equals("list")));
-                if (!(args.length < 4 || (args.length == 3 && args[2].equals("list"))))
-                {
-                    e.getGroup().sendMessage(new MessageBuilder()
-                        .addUserTag(e.getUser(), e.getGroup())
-                        .addString(": " + "Improper syntax, requires 3 arguments")
-                        .build());
-                    return;
-                }
                 if (args[1].equals("op"))
                 {
-                    if (args[2].equals("add"))
+                    if (args.length == 4)
                     {
+                        if (args[2].equals("add"))
+                        {
+                            Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
+                            Matcher idMatch = idPattern.matcher(args[3]);
+                            if (!idMatch.find())
+                            {
+                                e.getGroup().sendMessage(new MessageBuilder()
+                                    .addUserTag(e.getUser(), e.getGroup())
+                                    .addString(": " + "Sorry, I don't recognize the user provided: " + args[3])
+                                    .build());
+                                return;
+                            }
+                            try
+                            {
+                                if (Permissions.getPermissions().addOp(idMatch.group()))
+                                {
+                                    e.getGroup().sendMessage(new MessageBuilder()
+                                        .addUserTag(e.getUser(), e.getGroup())
+                                        .addString(": " + "Successfully added ")
+                                        .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                                        .addString(" to the OPs list!")
+                                        .build());
+                                    return;
+                                }
+                                else
+                                {
+                                    e.getGroup().sendMessage(new MessageBuilder()
+                                        .addUserTag(e.getUser(), e.getGroup())
+                                        .addString(": ")
+                                        .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                                        .addString(" is already an OP!")
+                                        .build());
+                                    return;
+                                }
+                            }
+                            catch (Exception e1)
+                            {
+                                e1.printStackTrace();
+                            }
+                        }
+                        else if (args[2].equals("remove"))
+                        {
 
+                        }
+                        else
+                        {
+                            e.getGroup().sendMessage(new MessageBuilder()
+                                .addUserTag(e.getUser(), e.getGroup())
+                                .addString(": " + "**Improper syntax, unrecognized argument:** " + args[2])
+                                .addString("\n**Provided Command:** " + e.getMsg().toString())
+                                .build());
+                            return;
+                        }
                     }
-                    else if (args[2].equals("remove"))
-                    {
-
-                    }
-                    else if (args[2].equals("list"))
+                    else if (args.length == 3 && args[2].equals("list"))
                     {
                         String ops = "";
                         for (String op : Permissions.getPermissions().getOps())
@@ -59,15 +100,6 @@ public class PermissionsCommand extends Command
                         e.getGroup().sendMessage(new MessageBuilder()
                             .addUserTag(e.getUser(), e.getGroup())
                             .addString(": My OPs are: [" + ops.trim() + "]")
-                            .build());
-                        return;
-                    }
-                    else
-                    {
-                        e.getGroup().sendMessage(new MessageBuilder()
-                            .addUserTag(e.getUser(), e.getGroup())
-                            .addString(": " + "**Improper syntax, unrecognized argument:** " + args[2])
-                            .addString("\n**Provided Command:** " + e.getMsg().toString())
                             .build());
                         return;
                     }
@@ -114,5 +146,4 @@ public class PermissionsCommand extends Command
     {
         return null;
     }
-
 }
