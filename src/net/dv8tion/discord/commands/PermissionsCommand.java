@@ -20,26 +20,26 @@ public class PermissionsCommand extends Command
         if (!containsCommand(e.getMsg()))
             return;
 
-//        if (!Permissions.getPermissions().isOp(e.getUser()))
-//        {
-//            e.getGroup().sendMessage(new MessageBuilder()
-//                .addUserTag(e.getUser(), e.getGroup())
-//                .addString(": " + "You do not have permission to run this command! (OP required).")
-//                .build());
-//            return;
-//        }
+        if (!Permissions.getPermissions().isOp(e.getUser()))
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "You do not have permission to run this command! (OP required).")
+                .build());
+            return;
+        }
 
         String[] args = commandArgs(e.getMsg());
         if (args[0].contains(".perms") || args[0].contains(".permissions"))
         {
-            args = ArrayUtils.subarray(args, 1, args.length);
+            args = ArrayUtils.subarray(args, 1, args.length);   //We cut off the .perms or .permissions to make the array behave as .op would
         }
         else
         {
-            args[0] = args[0].replace(".", "");
+            args[0] = args[0].replace(".", "");     //Cut off the leading .
         }
 
-        if (args.length < 1)
+        if (args.length < 1)    //If the command sent was just '.perms', and we removed that above, then we have an array of length 0 currently.
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
@@ -61,8 +61,6 @@ public class PermissionsCommand extends Command
                     .build());
                 return;
         }
-        //CommandSyntax:  .perms op add @<name>  .perms op remove @<name>  .perms op list
-        //Or:   .op add @<name>   .op remove @<name>
     }
 
     @Override
@@ -83,6 +81,14 @@ public class PermissionsCommand extends Command
         return null;
     }
 
+    /**
+     * This processes all commands of the format:  .perms op / .permission op / .op
+     *
+     * @param args
+     *          The array of arguments that represent the .perms/.permissions removed command.
+     * @param e
+     *          The original UserChatEvent, used to sendMessages.
+     */
     private void processOp(String[] args, UserChatEvent e)
     {
         if (args.length < 2)
@@ -121,6 +127,14 @@ public class PermissionsCommand extends Command
         }
     }
 
+    /**
+     * This processes the addOp commands of the format:  .perms op add/ .permission op add/ .op add
+     *
+     * @param args
+     *          The array of arguments that represent the .perms/.permissions removed command.
+     * @param e
+     *          The original UserChatEvent, used to sendMessages.
+     */
     private void processAddOp(String[] args, UserChatEvent e)
     {
         if (args.length < 3)
@@ -170,6 +184,14 @@ public class PermissionsCommand extends Command
         }
     }
 
+    /**
+     * This processes the removeOp commands of the format:  .perms op remove/ .permission op remove/ .op remove
+     *
+     * @param args
+     *          The array of arguments that represent the .perms/.permissions removed command.
+     * @param e
+     *          The original UserChatEvent, used to sendMessages.
+     */
     private void processRemoveOp(String[] args, UserChatEvent e)
     {
         if (args.length < 3)
