@@ -4,6 +4,7 @@ import java.util.List;
 
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import me.itsghost.jdiscord.message.Message;
 
 public abstract class Command implements EventListener 
 {
@@ -11,4 +12,19 @@ public abstract class Command implements EventListener
     public abstract List<String> aliases();
     public abstract String commandDescription();
     public abstract String helpMessage();
+
+    protected boolean containsCommand(Message message)
+    {
+        return aliases().contains(commandArgs(message)[0]);
+    }
+
+    protected String[] commandArgs(Message message)
+    {
+        return commandArgs(message.toString());
+    }
+
+    protected String[] commandArgs(String string)
+    {
+        return string.split(" ");
+    }
 }
