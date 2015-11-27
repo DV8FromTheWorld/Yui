@@ -99,6 +99,7 @@ public class PermissionsCommand extends Command
                 processAddOp(args, e);
                 break;
             case "remove":
+                processRemoveOp(args, e);
                 break;
             case "list":
                 String ops = "";
@@ -159,6 +160,55 @@ public class PermissionsCommand extends Command
                     .addString(": ")
                     .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
                     .addString(" is already an OP!")
+                    .build());
+                return;
+            }
+        }
+        catch (Exception e1)
+        {
+            e1.printStackTrace();
+        }
+    }
+
+    private void processRemoveOp(String[] args, UserChatEvent e)
+    {
+        if (args.length < 3)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": Please provide a user!")
+                .build());
+            return;
+        }
+        Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
+        Matcher idMatch = idPattern.matcher(args[2]);
+        if (!idMatch.find())
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "Sorry, I don't recognize the user provided: " + args[2])
+                .build());
+            return;
+        }
+        try
+        {
+            if (Permissions.getPermissions().removeOp(idMatch.group()))
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": " + "Successfully removed ")
+                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                    .addString(" from the OPs list!")
+                    .build());
+                return;
+            }
+            else
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": ")
+                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
+                    .addString(" cannot be removed because they weren't an OP!")
                     .build());
                 return;
             }
