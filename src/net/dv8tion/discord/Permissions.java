@@ -5,6 +5,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import me.itsghost.jdiscord.talkable.GroupUser;
+
 public class Permissions
 {
     private static Permissions permissions;
@@ -57,26 +59,17 @@ public class Permissions
      * @return
      *      true - if the user was successfully added.
      *      false - if the user was already an OP.
-     *      null - if there was an exception.
+     * @throws SQLException
      */
-    public Boolean addOp(String userId)
+    public Boolean addOp(String userId) throws SQLException, Exception
     {
         if (ops.contains(userId))
             return false;
         ops.add(userId);
 
-        PreparedStatement addOp;
-        try
-        {
-            addOp = Database.getInstance().getStatement("addOp");
-            addOp.setString(1, userId);
-            return addOp.execute();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        PreparedStatement addOp = Database.getInstance().getStatement("addOp");
+        addOp.setString(1, userId);
+        return addOp.execute();
     }
 
     /**
@@ -87,26 +80,36 @@ public class Permissions
      * @return
      *      true - if the user was successfully removed.
      *      false - if the user was not an op.
-     *      null - if there was an exception.
+     * @throws SQLException
      */
-    public Boolean removeOp(String userId)
+    public boolean removeOp(String userId) throws SQLException, Exception
     {
         if (!ops.contains(userId))
             return false;
         ops.remove(userId);
 
-        PreparedStatement removeOp;
-        try
-        {
-            removeOp = Database.getInstance().getStatement("removeOp");
-            removeOp.setString(1, userId);
-            return removeOp.execute();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-            return null;
-        }
+        PreparedStatement removeOp = Database.getInstance().getStatement("removeOp");
+        removeOp.setString(1, userId);
+        return removeOp.execute();
+    }
+
+    @SuppressWarnings("unchecked")
+    public ArrayList<String> getOps()
+    {
+        return (ArrayList<String>) ops.clone();
+    }
+
+    /**
+     * Used to check the permissions of a user.
+     *
+     * @param user
+     *          The GroupUser to check the permission level of.
+     * @return
+     *      true - if the user is considered an OP.
+     */
+    public boolean isOp(GroupUser user)
+    {
+        return isOp(user.getUser().getId());
     }
 
     /**
