@@ -26,7 +26,7 @@ public class Permissions
             {
                 //TODO: Once we interact with the CLI, request an OP here. For now, default to make bot OP.
 //                ops.add(Bot.getAPI().getSelfInfo().getId());
-                ops.add("111761808640978944");  //This is Yui's Discord User ID. Will get it programmibly later.
+                ops.add("111761808640978944");  //This is Yui's Discord User ID. Will get it programmably later.
             }
         }
         catch (SQLException e)
@@ -69,7 +69,7 @@ public class Permissions
 
         PreparedStatement addOp = Database.getInstance().getStatement("addOp");
         addOp.setString(1, userId);
-        return addOp.execute();
+        return addOp.executeUpdate() == 1;
     }
 
     /**
@@ -90,7 +90,7 @@ public class Permissions
 
         PreparedStatement removeOp = Database.getInstance().getStatement("removeOp");
         removeOp.setString(1, userId);
-        return removeOp.execute();
+        return removeOp.executeUpdate() == 1;
     }
 
     @SuppressWarnings("unchecked")
