@@ -19,6 +19,7 @@ import me.itsghost.jdiscord.exception.NoLoginDetailsException;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
 import net.dv8tion.discord.commands.NyaaCommand;
+import net.dv8tion.discord.commands.PermissionsCommand;
 import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
@@ -120,6 +121,7 @@ public class Bot
             manager.registerListener(new AnimeNewsNetworkCommand());
             manager.registerListener(new ReloadCommand(api));
             manager.registerListener(new UpdateCommand());
+            manager.registerListener(new PermissionsCommand());
         }
         catch (NoLoginDetailsException e)
         {
