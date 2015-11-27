@@ -5,6 +5,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Permissions;
@@ -28,34 +30,27 @@ public class PermissionsCommand extends Command
 //        }
 
         String[] args = commandArgs(e.getMsg());
+        if (args[0].contains(".perms") || args[0].contains(".permissions"))
+        {
+            args = ArrayUtils.subarray(args, 1, args.length);
+        }
+        else
+        {
+            args[0] = args[0].replace(".", "");
+        }
         switch (args[0])
         {
-            case ".perms":
-            case ".permissions":
-                if (args[1].equals("op"))
-                {
-                    processOp(args, e);
-                }
-                else
-                {
-                    e.getGroup().sendMessage(new MessageBuilder()
-                        .addUserTag(e.getUser(), e.getGroup())
-                        .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
-                        .addString("\n**Provided Command:** " + e.getMsg().toString())
-                        .build());
-                    return;
-                }
+            //Only 1 case for now. Later we will have more user permissions types...probably.
+            case "op":
+                processOp(args, e);
                 break;
-            case ".op":
-                if (args.length < 3)
-                {
-                    e.getGroup().sendMessage(new MessageBuilder()
-                        .addUserTag(e.getUser(), e.getGroup())
-                        .addString(": " + "Improper syntax, requires 2 arguments")
-                        .build());
-                    return;
-                }
-                break;
+            default:
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
+                    .addString("\n**Provided Command:** " + e.getMsg().toString())
+                    .build());
+                return;
         }
         //CommandSyntax:  .perms op add @<name>  .perms op remove @<name>  .perms op list
         //Or:   .op add @<name>   .op remove @<name>
@@ -81,13 +76,13 @@ public class PermissionsCommand extends Command
 
     private void processOp(String[] args, UserChatEvent e)
     {
-        if (args.length == 4)
+        if (args.length == 3)
         {
-            if (args[2].equals("add"))
+            if (args[1].equals("add"))
             {
                 processAddOp(args, e);
             }
-            else if (args[2].equals("remove"))
+            else if (args[1].equals("remove"))
             {
 
             }
@@ -95,13 +90,13 @@ public class PermissionsCommand extends Command
             {
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[2])
+                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
                     .addString("\n**Provided Command:** " + e.getMsg().toString())
                     .build());
                 return;
             }
         }
-        else if (args.length == 3 && args[2].equals("list"))
+        else if (args.length == 2 && args[1].equals("list"))
         {
             String ops = "";
             for (String op : Permissions.getPermissions().getOps())
@@ -119,12 +114,12 @@ public class PermissionsCommand extends Command
     private void processAddOp(String[] args, UserChatEvent e)
     {
         Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
-        Matcher idMatch = idPattern.matcher(args[3]);
+        Matcher idMatch = idPattern.matcher(args[2]);
         if (!idMatch.find())
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "Sorry, I don't recognize the user provided: " + args[3])
+                .addString(": " + "Sorry, I don't recognize the user provided: " + args[2])
                 .build());
             return;
         }
