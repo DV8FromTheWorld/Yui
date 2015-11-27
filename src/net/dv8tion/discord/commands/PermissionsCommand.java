@@ -38,6 +38,15 @@ public class PermissionsCommand extends Command
         {
             args[0] = args[0].replace(".", "");
         }
+
+        if (args.length < 1)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "**Improper syntax, no permissions group provided!**")
+                .build());
+            return;
+        }
         switch (args[0])
         {
             //Only 1 case for now. Later we will have more user permissions types...probably.
@@ -76,43 +85,51 @@ public class PermissionsCommand extends Command
 
     private void processOp(String[] args, UserChatEvent e)
     {
-        if (args.length == 3)
+        if (args.length < 2)
         {
-            if (args[1].equals("add"))
-            {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + "**Improper syntax, no action argument provided!**")
+                .build());
+            return;
+        }
+        switch (args[1])
+        {
+            case "add":
                 processAddOp(args, e);
-            }
-            else if (args[1].equals("remove"))
-            {
-
-            }
-            else
-            {
+                break;
+            case "remove":
+                break;
+            case "list":
+                String ops = "";
+                for (String op : Permissions.getPermissions().getOps())
+                {
+                    ops += "<@" + op + "> ";
+                }
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addUserTag(e.getUser(), e.getGroup())
+                    .addString(": My OPs are: [" + ops.trim() + "]")
+                    .build());
+                break;
+            default:
                 e.getGroup().sendMessage(new MessageBuilder()
                     .addUserTag(e.getUser(), e.getGroup())
                     .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
                     .addString("\n**Provided Command:** " + e.getMsg().toString())
                     .build());
-                return;
-            }
-        }
-        else if (args.length == 2 && args[1].equals("list"))
-        {
-            String ops = "";
-            for (String op : Permissions.getPermissions().getOps())
-            {
-                ops += "<@" + op + "> ";
-            }
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": My OPs are: [" + ops.trim() + "]")
-                .build());
-            return;
         }
     }
 
     private void processAddOp(String[] args, UserChatEvent e)
     {
+        if (args.length < 3)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": Please provide a user!")
+                .build());
+            return;
+        }
         Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
         Matcher idMatch = idPattern.matcher(args[2]);
         if (!idMatch.find())
