@@ -65,11 +65,14 @@ public class Permissions
     {
         if (ops.contains(userId))
             return false;
-        ops.add(userId);
 
         PreparedStatement addOp = Database.getInstance().getStatement("addOp");
         addOp.setString(1, userId);
-        return addOp.executeUpdate() == 1;
+        if (addOp.executeUpdate() == 1)
+        {
+            return ops.add(userId);
+        }
+        return false;
     }
 
     /**
@@ -86,11 +89,14 @@ public class Permissions
     {
         if (!ops.contains(userId))
             return false;
-        ops.remove(userId);
 
         PreparedStatement removeOp = Database.getInstance().getStatement("removeOp");
         removeOp.setString(1, userId);
-        return removeOp.executeUpdate() == 1;
+        if (removeOp.executeUpdate() == 1)
+        {
+            return ops.remove(userId);
+        }
+        return false;
     }
 
     @SuppressWarnings("unchecked")
