@@ -49,7 +49,7 @@ public class SearchCommand extends Command
     @Override
     public String getDescription()
     {
-        return null;
+        return "Allows you to search Google. The aliases search Wiki sites and Urban dictionary.";
     }
 
     @Override

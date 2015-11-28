@@ -96,7 +96,7 @@ public class HelpCommand extends Command
     @Override
     public String getDescription()
     {
-        return null;
+        return "Command that helps use all other commands!";
     }
 
     @Override
