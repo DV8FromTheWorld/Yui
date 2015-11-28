@@ -116,7 +116,7 @@ public class Bot
 
             EventManager manager = api.getEventManager();
             HelpCommand help = new HelpCommand();
-            manager.registerListener(help);
+            manager.registerListener(help.registerCommand(help));
             manager.registerListener(help.registerCommand(new TestCommand()));
             manager.registerListener(help.registerCommand(new SearchCommand()));
             manager.registerListener(help.registerCommand(new NyaaCommand()));
