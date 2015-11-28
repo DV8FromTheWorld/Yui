@@ -11,6 +11,9 @@ import me.itsghost.jdiscord.message.MessageBuilder;
 
 public class HelpCommand extends Command
 {
+    private static final String NO_NAME = "No name provided for this command. Sorry!";
+    private static final String NO_DESCRIPTION = "No description has been provided for this command. Sorry!";
+    private static final String NO_USAGE = "No usage instructions have been provided for this command. Sorry!";
 
     private ArrayList<Command> commands;
 
@@ -32,7 +35,7 @@ public class HelpCommand extends Command
             for (Command c : commands)
             {
                 String description = c.getDescription();
-                description = (description == null || description.isEmpty()) ? "No description has been provided for this command. Sorry!" : description;
+                description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
 
                 s.append("**").append(c.getAliases().get(0)).append("** - ");
                 s.append(description).append("\n");
@@ -54,9 +57,9 @@ public class HelpCommand extends Command
                     String name = c.getName();
                     String description = c.getDescription();
                     String usageInstructions = c.getUsageInstructions();
-                    name = (name == null || name.isEmpty()) ? "No name provided for this command. Sorry!" : name;
-                    description = (description == null || description.isEmpty()) ? "No description has been provided for this command. Sorry!" : description;
-                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? "No usage instructions have been provided for this command. Sorry!" : usageInstructions;
+                    name = (name == null || name.isEmpty()) ? NO_NAME : name;
+                    description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
+                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? NO_USAGE : usageInstructions;
 
                     //TODO: Replace with a PrivateMessage
                     e.getGroup().sendMessage(new MessageBuilder()
