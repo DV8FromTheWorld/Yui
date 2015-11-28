@@ -9,6 +9,8 @@ import me.itsghost.jdiscord.talkable.GroupUser;
 
 public class Permissions
 {
+    public static final String OP_REQUIRED_MESSAGE = "You do not have permission to run this command! (OP required).";
+
     private static Permissions permissions;
     private ArrayList<String> ops;
 

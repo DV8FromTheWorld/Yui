@@ -24,7 +24,7 @@ public class UpdateCommand extends Command
         {
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "You do not have permission to run this command! (OP required).")
+                .addString(": " + Permissions.OP_REQUIRED_MESSAGE)
                 .build());
             return;
         }
