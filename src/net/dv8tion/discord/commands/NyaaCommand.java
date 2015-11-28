@@ -37,6 +37,12 @@ public class NyaaCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Nyaa Torrent Search";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         // TODO Auto-generated method stub

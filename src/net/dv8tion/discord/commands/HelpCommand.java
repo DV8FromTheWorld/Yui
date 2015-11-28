@@ -85,6 +85,12 @@ public class HelpCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Help Command";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

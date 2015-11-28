@@ -11,6 +11,7 @@ public abstract class Command implements EventListener
     public abstract void onChat(UserChatEvent e);
     public abstract List<String> getAliases();
     public abstract String getDescription();
+    public abstract String getName();
     public abstract String getUsageInstructions();
 
     protected boolean containsCommand(Message message)

@@ -76,6 +76,12 @@ public class PermissionsCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Permissions Management";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

@@ -48,6 +48,12 @@ public class MyAnimeListCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "MyAnimeList Search";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

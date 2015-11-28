@@ -53,6 +53,12 @@ public class SearchCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Google Search";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         // TODO Auto-generated method stub

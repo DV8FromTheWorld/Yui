@@ -73,6 +73,12 @@ public class ReloadCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Bot Reload/Restart Command";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

@@ -53,6 +53,12 @@ public class AnimeNewsNetworkCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "AnimeNewsNetwork Search";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

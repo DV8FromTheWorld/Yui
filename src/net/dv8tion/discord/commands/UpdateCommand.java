@@ -69,6 +69,12 @@ public class UpdateCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Bot Update Command";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return null;

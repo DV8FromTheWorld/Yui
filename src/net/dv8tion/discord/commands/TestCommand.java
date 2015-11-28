@@ -36,6 +36,12 @@ public class TestCommand extends Command
     }
 
     @Override
+    public String getName()
+    {
+        return "Test Command";
+    }
+
+    @Override
     public String getUsageInstructions()
     {
         return "This B Only a Test!";
