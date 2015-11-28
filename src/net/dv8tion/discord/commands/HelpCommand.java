@@ -43,7 +43,26 @@ public class HelpCommand extends Command
         }
         else
         {
+            String command = args[1].charAt(0) == '.' ? args[1] : "." + args[1];    //If there is not a preceding . attached to the command we are search, then prepend one.
+            for (Command c : commands)
+            {
+                if (c.getAliases().contains(command))
+                {
+                    String description = c.getDescription();
+                    String usageInstructions = c.getUsageInstructions();
+                    description = (description == null || description.isEmpty()) ? "No description has been provided for this command. Sorry!" : description;
+                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? "No usage instructions have been provided for this command. Sorry!" : usageInstructions;
 
+                    //TODO: Replace with a PrivateMessage
+                    e.getGroup().sendMessage(new MessageBuilder()
+                        .addUserTag(e.getUser(), e.getGroup())
+                        .addString(":\n**Description:** " + description + "\n")
+                        .addString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
+                        .addString("**Usage:**\n")
+                        .addString(usageInstructions)
+                        .build());
+                }
+            }
         }
     }
 
