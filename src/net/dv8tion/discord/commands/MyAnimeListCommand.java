@@ -44,7 +44,7 @@ public class MyAnimeListCommand extends Command
     @Override
     public String commandDescription()
     {
-        return "Searches the http://myanimelist.net anime/manga database for anime and manga.";
+        return "Searches the <http://myanimelist.net> anime/manga database for anime and manga.";
     }
 
     @Override

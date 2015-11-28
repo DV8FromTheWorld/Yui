@@ -33,7 +33,7 @@ public class NyaaCommand extends Command
     @Override
     public String commandDescription()
     {
-        return "Searches the http://Nyaa.se torrent tracker for torrents.";
+        return "Searches the <http://nyaa.se> torrent tracker for torrents.";
     }
 
     @Override

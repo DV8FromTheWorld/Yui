@@ -49,7 +49,7 @@ public class AnimeNewsNetworkCommand extends Command
     @Override
     public String commandDescription()
     {
-        return "Searches the http://Animenewsnetwork.com database of Anime and Manga.";
+        return "Searches the <http://animenewsnetwork.com> database of Anime and Manga.";
     }
 
     @Override
