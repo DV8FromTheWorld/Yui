@@ -71,8 +71,13 @@ public class HelpCommand extends Command
                         .addString("**Usage:**\n")
                         .addString(usageInstructions)
                         .build());
+                    return;
                 }
             }
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
+                .build());
         }
     }
 
@@ -85,7 +90,7 @@ public class HelpCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(new String[] {".help"});
+        return Arrays.asList(new String[] {".help", ".commands"});
     }
 
     @Override
