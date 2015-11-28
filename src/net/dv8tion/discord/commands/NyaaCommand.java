@@ -47,7 +47,7 @@ public class NyaaCommand extends Command
     {
         String sortType = null;
         String sortMethod = null;
-        int lastSortArg = 1;
+        int lastSortArg = 0;
         for (int i = 1; i < args.length && (sortType == null || sortMethod == null); i++)
         {
             if (!args[i].contains("/"))
@@ -58,7 +58,7 @@ public class NyaaCommand extends Command
             //If we haven't already found a type to sort by, see if one was provided. Otherwise, skip.
             if (sortType == null)
             {
-                String arg = args[i].substring(1).toLowerCase();
+                String arg = args[i].substring(1).toLowerCase();    //Cuts off the preceeding /
                 switch(arg)
                 {
                     case "date":
@@ -102,7 +102,7 @@ public class NyaaCommand extends Command
             //If we haven't already found a method of sorting (asc or desc), see if one was provided. Otherwise, skip.
             if (sortMethod == null)
             {
-                String arg = args[i].substring(1).toLowerCase();
+                String arg = args[i].substring(1).toLowerCase();    //Cuts off the preceeding /
                 switch(arg)
                 {
                     case "asc":
@@ -110,7 +110,7 @@ public class NyaaCommand extends Command
                     case "up":
                     case "asend":           //Because people can't spell
                     case "acend":           //
-                        sortMethod = "&order=1";
+                        sortMethod = "&order=2";
                         lastSortArg = i;
                         break;
                     case "des":
@@ -121,7 +121,7 @@ public class NyaaCommand extends Command
                     case "decend":          //
                     case "desend":          //
                     case "decsend":         //
-                        sortMethod = "&order=2";
+                        sortMethod = "&order=1";
                         lastSortArg = i;
                         break;
                 }
