@@ -17,6 +17,7 @@ import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
+import net.dv8tion.discord.commands.HelpCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
 import net.dv8tion.discord.commands.NyaaCommand;
 import net.dv8tion.discord.commands.PermissionsCommand;
@@ -114,14 +115,16 @@ public class Bot
             Permissions.setupPermissions();
 
             EventManager manager = api.getEventManager();
-            manager.registerListener(new TestCommand());
-            manager.registerListener(new SearchCommand());
-            manager.registerListener(new NyaaCommand());
-            manager.registerListener(new MyAnimeListCommand());
-            manager.registerListener(new AnimeNewsNetworkCommand());
-            manager.registerListener(new ReloadCommand(api));
-            manager.registerListener(new UpdateCommand());
-            manager.registerListener(new PermissionsCommand());
+            HelpCommand help = new HelpCommand();
+            manager.registerListener(help);
+            manager.registerListener(help.registerCommand(new TestCommand()));
+            manager.registerListener(help.registerCommand(new SearchCommand()));
+            manager.registerListener(help.registerCommand(new NyaaCommand()));
+            manager.registerListener(help.registerCommand(new MyAnimeListCommand()));
+            manager.registerListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+            manager.registerListener(help.registerCommand(new ReloadCommand(api)));
+            manager.registerListener(help.registerCommand(new UpdateCommand()));
+            manager.registerListener(help.registerCommand(new PermissionsCommand()));
         }
         catch (NoLoginDetailsException e)
         {
