@@ -41,19 +41,19 @@ public class SearchCommand extends Command
 	}
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(".g", ".google", ".wiki", ".urban");
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return null;
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         // TODO Auto-generated method stub
         return null;

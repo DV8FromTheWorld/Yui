@@ -64,19 +64,19 @@ public class PermissionsCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(new String[] {".perms", ".permissions", ".op"});
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Used to modify the permissions of the provided user.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }

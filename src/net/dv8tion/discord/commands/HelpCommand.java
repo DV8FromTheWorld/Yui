@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
 
@@ -29,9 +31,10 @@ public class HelpCommand extends Command
             StringBuilder s = new StringBuilder();
             for (Command c : commands)
             {
-                s.append("**").append(c.aliases().get(0)).append("** - ");
-                s.append(c.commandDescription()).append("\n");
+                s.append("**").append(c.getAliases().get(0)).append("** - ");
+                s.append(c.getDescription()).append("\n");
             }
+            //TODO: Replace with a PrivateMessage
             e.getGroup().sendMessage(new MessageBuilder()
                 .addUserTag(e.getUser(), e.getGroup())
                 .addString(": The following commands are supported by the bot\n")
@@ -51,21 +54,20 @@ public class HelpCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(new String[] {".help"});
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return null;
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }
-
 }

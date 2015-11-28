@@ -9,13 +9,13 @@ import me.itsghost.jdiscord.message.Message;
 public abstract class Command implements EventListener 
 {
     public abstract void onChat(UserChatEvent e);
-    public abstract List<String> aliases();
-    public abstract String commandDescription();
-    public abstract String helpMessage();
+    public abstract List<String> getAliases();
+    public abstract String getDescription();
+    public abstract String getUsageInstructions();
 
     protected boolean containsCommand(Message message)
     {
-        return aliases().contains(commandArgs(message)[0]);
+        return getAliases().contains(commandArgs(message)[0]);
     }
 
     protected String[] commandArgs(Message message)

@@ -57,19 +57,19 @@ public class UpdateCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(new String[] {".update"});
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Used to update the Bot to the latest available version.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }

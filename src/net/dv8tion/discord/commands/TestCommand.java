@@ -11,8 +11,8 @@ public class TestCommand extends Command
     @Override
     public void onChat(UserChatEvent e)
     {
-        String[] args = e.getMsg().getMessage().split(" ");
-        if (aliases().contains(args[0])){
+        if (containsCommand(e.getMsg()))
+        {
             e.getGroup().sendMessage(new MessageBuilder()
                     .addString("Yes, ")
                     .addUserTag(e.getUser(), e.getGroup())
@@ -24,19 +24,19 @@ public class TestCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(".t", ".test");
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Just a test method, haven't removed yet for some reason";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return "This B Only a Test!";
     }

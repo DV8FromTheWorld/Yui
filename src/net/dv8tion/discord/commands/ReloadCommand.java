@@ -61,19 +61,19 @@ public class ReloadCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(new String[] {".reload"});
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Kills the current instance and launches a fresh instance of this bot.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }

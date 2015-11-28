@@ -36,23 +36,24 @@ public class MyAnimeListCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(".mal");
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Searches the <http://myanimelist.net> anime/manga database for anime and manga.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }
 
+    @SuppressWarnings("unused")
     private String handleSearch(GoogleSearch search)
     {
         String url = search.getUrl(0);

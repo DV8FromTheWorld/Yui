@@ -25,19 +25,19 @@ public class NyaaCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(".nyaa");
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Searches the <http://nyaa.se> torrent tracker for torrents.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         // TODO Auto-generated method stub
         return null;

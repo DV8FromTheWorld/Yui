@@ -41,19 +41,19 @@ public class AnimeNewsNetworkCommand extends Command
     }
 
     @Override
-    public List<String> aliases()
+    public List<String> getAliases()
     {
         return Arrays.asList(".ann");
     }
 
     @Override
-    public String commandDescription()
+    public String getDescription()
     {
         return "Searches the <http://animenewsnetwork.com> database of Anime and Manga.";
     }
 
     @Override
-    public String helpMessage()
+    public String getUsageInstructions()
     {
         return null;
     }
