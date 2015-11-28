@@ -32,6 +32,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Bot
 {
     public static final int NORMAL_SHUTDOWN = 10;
+    public static final int RESTART_EXITCODE = 19;
     public static final int UPDATE_EXITCODE = 20;
     public static final int NEWLY_CREATED_CONFIG = 21;
     public static final int UNABLE_TO_CONNECT_TO_DISCORD = 22;
@@ -122,7 +123,7 @@ public class Bot
             manager.registerListener(help.registerCommand(new NyaaCommand()));
             manager.registerListener(help.registerCommand(new MyAnimeListCommand()));
             manager.registerListener(help.registerCommand(new AnimeNewsNetworkCommand()));
-            manager.registerListener(help.registerCommand(new ReloadCommand(api)));
+            manager.registerListener(help.registerCommand(new ReloadCommand()));
             manager.registerListener(help.registerCommand(new UpdateCommand()));
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
         }

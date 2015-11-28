@@ -1,63 +1,35 @@
 package net.dv8tion.discord.commands;
 
-import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.List;
 
-import me.itsghost.jdiscord.DiscordAPI;
-import me.itsghost.jdiscord.events.APILoadedEvent;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import me.itsghost.jdiscord.message.MessageBuilder;
+import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Permissions;
 
 public class ReloadCommand extends Command
 {
-    private DiscordAPI api;
-    private Thread thread;
-
-    public ReloadCommand(DiscordAPI api)
-    {
-        this.api = api;
-        this.thread = null;
-    }
-
     @Override
     public void onChat(UserChatEvent e)
     {
-    }
+        if (!containsCommand(e.getMsg()))
+            return;
 
-    public void onApiLoaded(APILoadedEvent e)
-    {
-        try
+        if (!Permissions.getPermissions().isOp(e.getUser()))
         {
-            Field requestManager = api.getClass().getDeclaredField("requestManager");
-            requestManager.setAccessible(true);
-            Object requestManagerObj = requestManager.get(api);
-
-            Field socketClient = requestManagerObj.getClass().getDeclaredField("socketClient");
-            socketClient.setAccessible(true);
-            Object socketClientObj = socketClient.get(requestManagerObj);
-
-            Field readyPoll = socketClientObj.getClass().getDeclaredField("readyPoll");
-            readyPoll.setAccessible(true);
-            Object readyPollObj = readyPoll.get(socketClientObj);
-
-            Field thread = readyPollObj.getClass().getDeclaredField("thread");
-            thread.setAccessible(true);
-            Object threadObj = thread.get(readyPollObj);
-            if (threadObj instanceof Thread)
-            {
-                this.thread = (Thread) threadObj;
-            }
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(" : " + Permissions.OP_REQUIRED_MESSAGE)
+                .build());
+            return;
         }
-        catch (IllegalArgumentException | IllegalAccessException
-                | NoSuchFieldException | SecurityException e1)
-        {
-            System.out.println("If you see this message, please report it to the developer. ReflectionFailure (ReloadCommand");
-            e1.printStackTrace();
-        }
-        if (this.thread == null)
-        {
-            System.out.println("Unable to capture bot thread, ReloadCommand has been disabled.");
-        }
+
+        e.getGroup().sendMessage(new MessageBuilder()
+            .addUserTag(e.getUser(), e.getGroup())
+            .addString(" : Restarting the bot, one moment...")
+            .build());
+        System.exit(Bot.RESTART_EXITCODE);
     }
 
     @Override
