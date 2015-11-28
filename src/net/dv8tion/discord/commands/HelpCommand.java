@@ -31,8 +31,11 @@ public class HelpCommand extends Command
             StringBuilder s = new StringBuilder();
             for (Command c : commands)
             {
+                String description = c.getDescription();
+                description = (description == null || description.isEmpty()) ? "No description has been provided for this command. Sorry!" : description;
+
                 s.append("**").append(c.getAliases().get(0)).append("** - ");
-                s.append(c.getDescription()).append("\n");
+                s.append(description).append("\n");
             }
             //TODO: Replace with a PrivateMessage
             e.getGroup().sendMessage(new MessageBuilder()
@@ -48,15 +51,19 @@ public class HelpCommand extends Command
             {
                 if (c.getAliases().contains(command))
                 {
+                    String name = c.getName();
                     String description = c.getDescription();
                     String usageInstructions = c.getUsageInstructions();
+                    name = (name == null || name.isEmpty()) ? "No name provided for this command. Sorry!" : name;
                     description = (description == null || description.isEmpty()) ? "No description has been provided for this command. Sorry!" : description;
                     usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? "No usage instructions have been provided for this command. Sorry!" : usageInstructions;
 
                     //TODO: Replace with a PrivateMessage
                     e.getGroup().sendMessage(new MessageBuilder()
                         .addUserTag(e.getUser(), e.getGroup())
-                        .addString(":\n**Description:** " + description + "\n")
+                        .addString(":\n")
+                        .addString("**Name:** " + name + "\n")
+                        .addString("**Description:** " + description + "\n")
                         .addString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
                         .addString("**Usage:**\n")
                         .addString(usageInstructions)
