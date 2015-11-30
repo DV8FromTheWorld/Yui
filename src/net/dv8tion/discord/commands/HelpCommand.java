@@ -68,7 +68,7 @@ public class HelpCommand extends Command
                         .addString("**Name:** " + name + "\n")
                         .addString("**Description:** " + description + "\n")
                         .addString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
-                        .addString("**Usage:**\n")
+                        .addString("**Usage:** ")
                         .addString(usageInstructions)
                         .build());
                     return;
