@@ -43,7 +43,7 @@ public class SearchCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(".g", ".google", ".wiki", ".urban");
+        return Arrays.asList(".google", ".g", ".wiki", ".urban");
     }
 
     @Override
