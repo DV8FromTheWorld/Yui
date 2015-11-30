@@ -84,7 +84,17 @@ public class PermissionsCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        return null;
+        return ".perms *<group> <action> <user>*\n"
+                + "Groups:  [op]\n"
+                + "Actions: [add, remove, list]\n"
+                + "User:  Must be an @Mentioned user.\n"
+                + "__Example:__   .perms op add @DV8FromTheWorld\n"
+                + " - This would add the user 'DV8FromTheWorld' to the OPs list.\n"
+                + "__Example 2:__ .perms op list\n"
+                + " - This would list all bot OPs.\n"
+                + "\n"
+                + "**NOTE:** you can skip the .perms and jump straight to the group by using the group alias.\n"
+                + "__Example:__  .op remove @BananaPhone";
     }
 
     /**

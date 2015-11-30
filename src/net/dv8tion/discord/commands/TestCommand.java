@@ -44,6 +44,7 @@ public class TestCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        return "This B Only a Test!";
+        return ".test\n"
+                + "Really, this command is just a test, however, it will @Mention you.";
     }
 }

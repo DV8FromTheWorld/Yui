@@ -49,7 +49,7 @@ public class SearchCommand extends Command
     @Override
     public String getDescription()
     {
-        return "Allows you to search Google. The aliases search Wiki sites and Urban dictionary.";
+        return "Allows you to search Google. The aliases search Wiki sites (not wikipedia exclusive) and Urban Dictionary.";
     }
 
     @Override
@@ -61,7 +61,6 @@ public class SearchCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return ".google *<search terms>  **OR** .wiki *<search terms>*  **OR**  .urban *<search terms>*\n";
     }
 }

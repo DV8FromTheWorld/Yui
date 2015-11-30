@@ -45,8 +45,30 @@ public class NyaaCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        // TODO Auto-generated method stub
-        return null;
+        return ".nyaa *</sortType> </sortMethod> <search terms>*\n"
+                + "__Sort Types:__\n"
+                + "  /name     - sorts by the name.\n"
+                + "  /date     - sort search by date. **default**\n"
+                + "  /seeders  - sort by the amount of seeders.\n"
+                + "     *{seed, seeds, seeder, seeders}*\n"
+                + "  /leechers - sort by the amount of leechers.\n"
+                + "     *{leech, leecher, leechers}*\n"
+                + "  /download - sorts by the amount of times downloads.\n"
+                + "     *{dl, dls, download, downloads}*\n"
+                + "  /size     - sorts by the total size of the torrent.\n"
+                + "\n"
+                + "__Sort Methods:__\n"
+                + "  /asc      - sorts the type in ascending fashion (smallest to largest, a-Z, 0-9)\n"
+                + "     *{asc, ascend, up}\n"
+                + "  /desc     - sorts the type in descending fashion (largest to smallest, Z-a, 9-0) **default**\n"
+                + "     *{des, desc, descend, down}\n"
+                + "\n"
+                + "__Example:__   .nyaa steins gate\n"
+                + " - Returns search of \"steins gate\", sorts by date, descending. (newest torrents first)\n"
+                + "__Example 2:__ .nyaa /seed /down familar of zero\n"
+                + " - returns search of \"familar of zero\", sorts by seeders, descending. (torrents with most seeders first)\n"
+                + "__Example 3:__ .nyaa /name /ascend one punch man commie\n"
+                + " - returns search of \"one punch man\", sorts by name, ascending. (torrents sorted alphabetically)";
     }
 
     private String createUrl(String[] args)

@@ -108,6 +108,10 @@ public class HelpCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        return null;
+        return ".help   **OR**  .help *<command>*\n"
+                + ".help - returns the list of commands along with a simple description of each.\n"
+                + ".help <command> - returns the name, description, aliases and usage information of a command.\n"
+                + "   - This can use the aliases of a command as input as well.\n"
+                + "__Example:__ .help ann";
     }
 }

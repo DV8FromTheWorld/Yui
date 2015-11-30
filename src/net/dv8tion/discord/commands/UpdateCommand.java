@@ -77,6 +77,8 @@ public class UpdateCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        return null;
+        return ".update\n"
+                + "If you are running the bot without the bootloader, this command will be disabled.\n"
+                + "The bootloader is required to update the bot.";
     }
 }

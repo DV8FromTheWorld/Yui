@@ -61,7 +61,11 @@ public class AnimeNewsNetworkCommand extends Command
     @Override
     public String getUsageInstructions()
     {
-        return null;
+        return ".ann *<search terms>*\n"
+                + "__Example:__ .ann Steins;Gate\n"
+                + " - This will return the AnimeNewsNetwork page for the anime Steins;Gate\n"
+                + "__Example 2:__ .ann Boku no Hero Academia Manga\n"
+                + " - This will return the manga page for Boku no Hero Academia (hopefully)";
     }
 
     private String handleSearch(GoogleSearch search)
