@@ -25,6 +25,7 @@ import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
+import net.dv8tion.discord.handlers.IRCHandler;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -126,6 +127,7 @@ public class Bot
             manager.registerListener(help.registerCommand(new ReloadCommand()));
             manager.registerListener(help.registerCommand(new UpdateCommand()));
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
+            manager.registerListener(new IRCHandler());
 
             //Waiting until we update discord. Currently, 1.3 is bugged and cannot support this.
 //            manager.registerListener(new EventListener()
