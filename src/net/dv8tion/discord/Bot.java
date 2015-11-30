@@ -111,7 +111,7 @@ public class Bot
                 System.out.println("Could not determine build date.");
                 e.printStackTrace();
             }
-            DiscordAPI api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
+            api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
             Database.getInstance();
             Permissions.setupPermissions();
 
