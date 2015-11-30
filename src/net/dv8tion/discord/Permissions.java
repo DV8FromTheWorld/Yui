@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import me.itsghost.jdiscord.SelfData;
 import me.itsghost.jdiscord.talkable.GroupUser;
 
 public class Permissions
@@ -51,6 +52,18 @@ public class Permissions
     public static Permissions getPermissions()
     {
         return permissions;
+    }
+
+    /**
+     * Used to set the bot as an OP after the jDiscord API has connected and acquired
+     * the login account's ID.
+     *
+     * @param bot
+     *          The User object representing the currently logged in account.
+     */
+    public void setBotAsOp(SelfData bot)
+    {
+        ops.add(bot.getId());
     }
 
     /**
