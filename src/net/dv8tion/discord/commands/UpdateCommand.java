@@ -59,7 +59,7 @@ public class UpdateCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(new String[] {".update"});
+        return Arrays.asList(".update");
     }
 
     @Override

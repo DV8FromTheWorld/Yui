@@ -35,7 +35,7 @@ public class ReloadCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(new String[] {".reload"});
+        return Arrays.asList(".reload");
     }
 
     @Override
