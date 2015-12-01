@@ -11,6 +11,9 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
+
+import net.dv8tion.discord.handlers.IRCConnectInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -73,6 +76,7 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
+        newSettings.setIrcConnectInfos(Arrays.asList(IRCConnectInfo.getDefault()));
         return newSettings;
     }
 
@@ -81,6 +85,7 @@ public class SettingsManager {
         Settings defaults = getDefaultSettings();
         if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
         if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
+        if (settings.getIrcConnectInfos() == null) settings.setIrcConnectInfos(defaults.getIrcConnectInfos());
         saveSettings();
     }
 
