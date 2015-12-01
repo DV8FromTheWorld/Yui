@@ -13,7 +13,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-import net.dv8tion.discord.handlers.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IRCConnectInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;

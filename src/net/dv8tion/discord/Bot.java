@@ -26,6 +26,7 @@ import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
 import net.dv8tion.discord.handlers.IRCHandler;
+import net.dv8tion.discord.util.Database;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;

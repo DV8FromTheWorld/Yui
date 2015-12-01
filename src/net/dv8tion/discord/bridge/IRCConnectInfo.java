@@ -1,4 +1,4 @@
-package net.dv8tion.discord.handlers;
+package net.dv8tion.discord.bridge;
 
 import java.util.Arrays;
 import java.util.List;

@@ -9,8 +9,8 @@ import java.util.List;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Bot;
-import net.dv8tion.discord.Downloader;
 import net.dv8tion.discord.Permissions;
+import net.dv8tion.discord.util.Downloader;
 
 public class UpdateCommand extends Command
 {

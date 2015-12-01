@@ -7,7 +7,7 @@ package net.dv8tion.discord;
 
 import java.util.List;
 
-import net.dv8tion.discord.handlers.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IRCConnectInfo;
 
 public class Settings {
     private String email;
