@@ -13,6 +13,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
 
+import net.dv8tion.discord.bridge.EndPoint;
+import net.dv8tion.discord.bridge.EndPointSerializer;
 import net.dv8tion.discord.bridge.IRCConnectInfo;
 
 import com.google.gson.Gson;
@@ -20,7 +22,7 @@ import com.google.gson.GsonBuilder;
 
 public class SettingsManager {
     private static SettingsManager instance;
-    private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPoint.class, new EndPointSerializer()).setPrettyPrinting().create();
     private Settings settings;
     private final Path configFile = new File(".").toPath().resolve("Config.json");
 
