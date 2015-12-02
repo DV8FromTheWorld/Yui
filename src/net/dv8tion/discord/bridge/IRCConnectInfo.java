@@ -1,6 +1,5 @@
 package net.dv8tion.discord.bridge;
 
-import java.util.Arrays;
 import java.util.List;
 
 import org.pircbotx.Configuration;
@@ -86,18 +85,6 @@ public class IRCConnectInfo
             builder.addAutoJoinChannel(channel);
         }
         return builder.buildConfiguration();
-    }
-
-    public static IRCConnectInfo getDefault()
-    {
-        IRCConnectInfo connectDefault = new IRCConnectInfo();
-        connectDefault.setHost("");
-        connectDefault.setPort(6667);
-        connectDefault.setNick("");
-        connectDefault.setIdentNick("");
-        connectDefault.setIdentPass("");
-        connectDefault.setAutojoinChannels(Arrays.asList(""));
-        return connectDefault;
     }
 }
 

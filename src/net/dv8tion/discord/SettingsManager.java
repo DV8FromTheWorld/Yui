@@ -12,6 +12,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.HashMap;
 
 import net.dv8tion.discord.bridge.EndPoint;
 import net.dv8tion.discord.bridge.EndPointSerializer;
@@ -78,7 +79,19 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
-        newSettings.setIrcConnectInfos(Arrays.asList(IRCConnectInfo.getDefault()));
+
+        IRCConnectInfo connectDefault = new IRCConnectInfo();
+        connectDefault.setHost("");
+        connectDefault.setPort(6667);
+        connectDefault.setNick("");
+        connectDefault.setIdentNick("");
+        connectDefault.setIdentPass("");
+        connectDefault.setAutojoinChannels(Arrays.asList(""));
+        newSettings.setIrcConnectInfos(Arrays.asList(connectDefault));
+
+        HashMap<EndPoint, EndPoint> bridgeDefault = new HashMap<EndPoint, EndPoint>();
+        bridgeDefault.put(new EndPoint("", ""), new EndPoint("", ""));
+        newSettings.setBridges(bridgeDefault);
         return newSettings;
     }
 
@@ -88,6 +101,7 @@ public class SettingsManager {
         if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
         if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
         if (settings.getIrcConnectInfos() == null) settings.setIrcConnectInfos(defaults.getIrcConnectInfos());
+        if (settings.getBridges() == null) settings.setBridges(defaults.getBridges());
         saveSettings();
     }
 

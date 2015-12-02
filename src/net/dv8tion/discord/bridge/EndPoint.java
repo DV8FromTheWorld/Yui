@@ -6,7 +6,6 @@ public class EndPoint
     private String connectorId;
     private String channelId;
 
-    public EndPoint() {};
     public EndPoint(String connectorId, String channelId)
     {
         this.connectorId = connectorId;
@@ -36,10 +35,5 @@ public class EndPoint
     public String toString()
     {
         return connectorId + SEPARATOR + channelId;
-    }
-
-    public static EndPoint getDefault()
-    {
-        return new EndPoint("", "");
     }
 }
