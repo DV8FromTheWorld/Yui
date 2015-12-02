@@ -12,7 +12,9 @@ import java.util.Date;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
+import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.event.EventManager;
+import me.itsghost.jdiscord.events.APILoadedEvent;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
@@ -25,6 +27,7 @@ import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
+import net.dv8tion.discord.fixes.EventManagerX;
 import net.dv8tion.discord.handlers.IRCHandler;
 import net.dv8tion.discord.util.Database;
 
@@ -114,6 +117,7 @@ public class Bot
                 e.printStackTrace();
             }
             api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
+            EventManagerX.replaceEventManager(api); //TODO: Remove this once jDiscord includes the fix.
             Database.getInstance();
             Permissions.setupPermissions();
 
@@ -130,15 +134,15 @@ public class Bot
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
             manager.registerListener(new IRCHandler());
 
-            //Waiting until we update discord. Currently, 1.3 is bugged and cannot support this.
-//            manager.registerListener(new EventListener()
-//            {
-//                @SuppressWarnings("unused")
-//                public void onApiLoaded(APILoadedEvent e)
-//                {
-//                    Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
-//                }
-//            });
+            manager.registerListener(new EventListener()
+            {
+                @SuppressWarnings("unused")
+                public void onApiLoaded(APILoadedEvent e)
+                {
+                    System.out.println("I did a thing!");
+                    Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+                }
+            });
         }
         catch (NoLoginDetailsException e)
         {
