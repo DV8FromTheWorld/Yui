@@ -2,26 +2,30 @@ package net.dv8tion.discord.bridge.endpoint;
 
 public class DiscordEndPoint extends EndPoint
 {
+    private String serverId;
+    private String groupId;
 
     public DiscordEndPoint(EndPointInfo info)
     {
         super(EndPointType.DISCORD);
+        this.serverId = info.getConnectorId();
+        this.groupId = info.getChannelId();
     }
 
     public String getServerId()
     {
-        return null;
+        return serverId;
     }
 
-    public String getChannelId()
+    public String getGroupId()
     {
-        return null;
+        return groupId;
     }
 
     @Override
     public EndPointInfo toEndPointInfo()
     {
-        return null;
+        return new EndPointInfo(this.serverId, this.groupId, this.connectionType);
     }
 
 }

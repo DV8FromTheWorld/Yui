@@ -39,18 +39,8 @@ public abstract class EndPoint
         this.connectionType = connectionType;
     }
 
-    public EndPointType getType()
-    {
-        return connectionType;
-    }
-
     public boolean isType(EndPointType connectionType)
     {
         return this.connectionType.equals(connectionType);
-    }
-
-    protected void setType(EndPointType connectionType)
-    {
-        this.connectionType = connectionType;
     }
 }
