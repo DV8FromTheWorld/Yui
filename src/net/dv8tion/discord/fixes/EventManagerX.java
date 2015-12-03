@@ -9,6 +9,14 @@ import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.event.EventManager;
 
+/**
+ * Example usage:
+ *      DiscordAPI api = new DiscordBuilder("email", "password").build().login();
+ *      EventManagerX.replaceEventManager(api);
+ *
+ *      api.getEventManager().registerListener(...);    //The getEventManager will always return the EventManagerX now.
+ * @author DV8FromTheworld
+ */
 public class EventManagerX extends EventManager
 {
     private ArrayList<EventListener> listeners;
@@ -45,7 +53,15 @@ public class EventManagerX extends EventManager
         }
     }
 
+    //Copied this into this class so that we can use the same register method but store them
+    //  in OUR listener list instead of the old one.
+    @Override
+    public void registerListener(EventListener e) {
+        listeners.add(e);
+    }
+
     //Copied straight from jDiscord's EventManager.
+    @Override
     public void executeEvent(Object e) {
         for (EventListener ClassO : listeners) {
             for (Method m : ClassO.getClass().getMethods()) {
