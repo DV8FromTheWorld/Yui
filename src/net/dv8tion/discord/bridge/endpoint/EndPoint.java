@@ -2,13 +2,29 @@ package net.dv8tion.discord.bridge.endpoint;
 
 public abstract class EndPoint
 {
-    public enum EndPointType
-    {
-        DISCORD, IRC, ANY;
-    }
-
     protected EndPointInfo info;
     protected EndPointType connectionType;
+
+    public abstract boolean isType(EndPointInfo info);
+    public abstract EndPointInfo toEndPointInfo();
+
+    public enum EndPointType
+    {
+        DISCORD("DISCORD"),
+        IRC("IRC"),
+        ANY("ANY");
+
+        private String name;
+        EndPointType(String name)
+        {
+            this.name = name;
+        }
+
+        public String getName()
+        {
+            return name;
+        }
+    }
 
     public EndPoint(EndPointInfo info)
     {
