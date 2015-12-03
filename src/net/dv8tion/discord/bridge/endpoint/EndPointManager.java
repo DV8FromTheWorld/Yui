@@ -22,6 +22,44 @@ public class EndPointManager
 
     public EndPoint getOrCreate(EndPointInfo info)
     {
+        EndPoint endPoint = null;
+        switch (info.getType())
+        {
+            case DISCORD:
+                endPoint = getEndPointFromInfo(info);
+                if (endPoint != null)
+                    return endPoint;
+                else
+                {
+                    EndPoint newEndPoint = new DiscordEndPoint(info);
+                    endPoints.add(newEndPoint);
+                    return newEndPoint;
+                }
+            case IRC:
+                endPoint = getEndPointFromInfo(info);
+                if (endPoint != null)
+                    return endPoint;
+                else
+                {
+                    EndPoint newEndPoint = new IrcEndPoint(info);
+                    endPoints.add(newEndPoint);
+                    return newEndPoint;
+                }
+            case UNKNOWN:
+                //FAIL
+                return null;
+            default:
+                throw new RuntimeException("We were provided an unknown EndPointType: " + info.getType().getName());
+        }
+    }
+
+    private EndPoint getEndPointFromInfo(EndPointInfo info)
+    {
+        for (EndPoint point : endPoints)
+        {
+            if (point.toEndPointInfo().equals(info))
+                return point;
+        }
         return null;
     }
 }
