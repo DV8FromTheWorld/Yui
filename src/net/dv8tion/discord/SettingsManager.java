@@ -16,14 +16,14 @@ import java.util.HashMap;
 
 import net.dv8tion.discord.bridge.IRCConnectInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
-import net.dv8tion.discord.serialize.EndPointSerializer;
+import net.dv8tion.discord.serialize.EndPointInfoSerializer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class SettingsManager {
     private static SettingsManager instance;
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPointInfo.class, new EndPointSerializer()).setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPointInfo.class, new EndPointInfoSerializer()).setPrettyPrinting().create();
     private Settings settings;
     private final Path configFile = new File(".").toPath().resolve("Config.json");
 

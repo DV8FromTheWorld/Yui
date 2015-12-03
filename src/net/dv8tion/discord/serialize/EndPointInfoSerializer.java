@@ -12,7 +12,7 @@ import com.google.gson.JsonPrimitive;
 import com.google.gson.JsonSerializationContext;
 import com.google.gson.JsonSerializer;
 
-public class EndPointSerializer implements JsonSerializer<EndPointInfo>, JsonDeserializer<EndPointInfo>
+public class EndPointInfoSerializer implements JsonSerializer<EndPointInfo>, JsonDeserializer<EndPointInfo>
 {
 
     @Override
