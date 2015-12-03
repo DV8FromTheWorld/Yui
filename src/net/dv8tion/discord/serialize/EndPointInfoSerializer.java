@@ -3,6 +3,7 @@ package net.dv8tion.discord.serialize;
 import java.lang.reflect.Type;
 
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPoint.EndPointType;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
@@ -25,16 +26,16 @@ public class EndPointInfoSerializer implements JsonSerializer<EndPointInfo>, Jso
     public EndPointInfo deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException
     {
         String jsonString = json.getAsString();
-        if (!jsonString.contains(EndPointInfo.SEPARATOR))
+        String[] info = jsonString.split(EndPointInfo.SEPARATOR);
+        if (info.length != 3)
         {
             System.err.println("PROBLEM LOADING BRIDGE: '" + jsonString + "'");
-            System.err.printf("Correct Format:  \"connectorId%schannelId\" : \"connectorId%schannelId\"\n", EndPointInfo.SEPARATOR, EndPointInfo.SEPARATOR);
+            System.err.printf("Correct Format:  \"connectorType%sconnectorId%schannelId\" : \"connectorType%sconnectorId%schannelId\"\n",
+                    EndPointInfo.SEPARATOR, EndPointInfo.SEPARATOR, EndPointInfo.SEPARATOR);
             System.err.println("This specific bridge will be disabled. Please fix the config to enable!");
             return null;
         }
-        String connectorId = jsonString.substring(0, jsonString.indexOf(EndPointInfo.SEPARATOR));
-        String channelId = jsonString.substring(jsonString.indexOf(EndPointInfo.SEPARATOR) + EndPointInfo.SEPARATOR.length());
 
-        return new EndPointInfo(connectorId, channelId);
+        return new EndPointInfo(info[0], info[1], EndPointType.getFromName(info[2]));
     }
 }

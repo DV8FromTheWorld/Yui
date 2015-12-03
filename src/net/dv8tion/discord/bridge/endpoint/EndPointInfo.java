@@ -1,15 +1,19 @@
 package net.dv8tion.discord.bridge.endpoint;
 
+import net.dv8tion.discord.bridge.endpoint.EndPoint.EndPointType;
+
 public class EndPointInfo
 {
     public static final String SEPARATOR = ":";
+    private EndPointType type;
     private String connectorId;
     private String channelId;
 
-    public EndPointInfo(String connectorId, String channelId)
+    public EndPointInfo(String connectorId, String channelId, EndPointType type)
     {
         this.connectorId = connectorId;
         this.channelId = channelId;
+        this.type = type;
     }
 
     public String getConnectorId()
@@ -34,6 +38,16 @@ public class EndPointInfo
 
     public String toString()
     {
-        return connectorId + SEPARATOR + channelId;
+        return type.getName() + SEPARATOR + connectorId + SEPARATOR + channelId;
+    }
+
+    public EndPointType getType()
+    {
+        return type;
+    }
+
+    public void setType(EndPointType type)
+    {
+        this.type = type;
     }
 }
