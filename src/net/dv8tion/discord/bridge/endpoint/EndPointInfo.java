@@ -50,4 +50,13 @@ public class EndPointInfo
     {
         this.type = type;
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (!(o instanceof EndPointInfo))
+            return false;
+        EndPointInfo oInfo = (EndPointInfo) o;
+        return toString().equals(oInfo.toString());
+    }
 }
