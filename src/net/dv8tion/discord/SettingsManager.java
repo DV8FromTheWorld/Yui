@@ -90,7 +90,6 @@ public class SettingsManager {
         newSettings.setIrcConnectInfos(Arrays.asList(connectDefault));
 
         HashMap<EndPointInfo, EndPointInfo> bridgeDefault = new HashMap<EndPointInfo, EndPointInfo>();
-        bridgeDefault.put(new EndPointInfo("", ""), new EndPointInfo("", ""));
         newSettings.setBridges(bridgeDefault);
         return newSettings;
     }
