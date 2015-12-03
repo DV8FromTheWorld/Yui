@@ -14,16 +14,16 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import net.dv8tion.discord.bridge.EndPoint;
-import net.dv8tion.discord.bridge.EndPointSerializer;
 import net.dv8tion.discord.bridge.IRCConnectInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.serialize.EndPointSerializer;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 public class SettingsManager {
     private static SettingsManager instance;
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPoint.class, new EndPointSerializer()).setPrettyPrinting().create();
+    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPointInfo.class, new EndPointSerializer()).setPrettyPrinting().create();
     private Settings settings;
     private final Path configFile = new File(".").toPath().resolve("Config.json");
 
@@ -89,8 +89,8 @@ public class SettingsManager {
         connectDefault.setAutojoinChannels(Arrays.asList(""));
         newSettings.setIrcConnectInfos(Arrays.asList(connectDefault));
 
-        HashMap<EndPoint, EndPoint> bridgeDefault = new HashMap<EndPoint, EndPoint>();
-        bridgeDefault.put(new EndPoint("", ""), new EndPoint("", ""));
+        HashMap<EndPointInfo, EndPointInfo> bridgeDefault = new HashMap<EndPointInfo, EndPointInfo>();
+        bridgeDefault.put(new EndPointInfo("", ""), new EndPointInfo("", ""));
         newSettings.setBridges(bridgeDefault);
         return newSettings;
     }

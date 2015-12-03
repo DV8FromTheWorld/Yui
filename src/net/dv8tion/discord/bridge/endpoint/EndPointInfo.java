@@ -1,12 +1,12 @@
-package net.dv8tion.discord.bridge;
+package net.dv8tion.discord.bridge.endpoint;
 
-public class EndPoint
+public class EndPointInfo
 {
     public static final String SEPARATOR = ":";
     private String connectorId;
     private String channelId;
 
-    public EndPoint(String connectorId, String channelId)
+    public EndPointInfo(String connectorId, String channelId)
     {
         this.connectorId = connectorId;
         this.channelId = channelId;
