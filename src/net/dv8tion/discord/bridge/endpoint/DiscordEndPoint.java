@@ -5,7 +5,7 @@ public class DiscordEndPoint extends EndPoint
 
     public DiscordEndPoint(EndPointInfo info)
     {
-        super(info, EndPointType.DISCORD);
+        super(EndPointType.DISCORD);
     }
 
     public String getServerId()
@@ -14,6 +14,12 @@ public class DiscordEndPoint extends EndPoint
     }
 
     public String getChannelId()
+    {
+        return null;
+    }
+
+    @Override
+    public EndPointInfo toEndPointInfo()
     {
         return null;
     }

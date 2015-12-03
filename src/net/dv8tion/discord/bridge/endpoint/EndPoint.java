@@ -2,17 +2,15 @@ package net.dv8tion.discord.bridge.endpoint;
 
 public abstract class EndPoint
 {
-    protected EndPointInfo info;
     protected EndPointType connectionType;
 
-    public abstract boolean isType(EndPointInfo info);
     public abstract EndPointInfo toEndPointInfo();
 
     public enum EndPointType
     {
         DISCORD("DISCORD"),
         IRC("IRC"),
-        ANY("ANY");
+        UNKNOWN(null);
 
         private String name;
         EndPointType(String name)
@@ -24,16 +22,20 @@ public abstract class EndPoint
         {
             return name;
         }
+
+        public static EndPointType getFromName(String name)
+        {
+            for (EndPointType type : values())
+            {
+                if (type.getName().equals(name))
+                    return type;
+            }
+            return UNKNOWN;
+        }
     }
 
-    public EndPoint(EndPointInfo info)
+    protected EndPoint(EndPointType connectionType)
     {
-        this(info, EndPointType.ANY);
-    }
-
-    protected EndPoint(EndPointInfo info, EndPointType connectionType)
-    {
-        this.info = info;
         this.connectionType = connectionType;
     }
 

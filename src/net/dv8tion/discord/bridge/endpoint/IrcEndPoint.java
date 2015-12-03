@@ -6,7 +6,7 @@ public class IrcEndPoint extends EndPoint
 {
     public IrcEndPoint(EndPointInfo info)
     {
-        super(info, EndPointType.IRC);
+        super(EndPointType.IRC);
     }
 
     public Channel getChannel()
@@ -15,6 +15,12 @@ public class IrcEndPoint extends EndPoint
     }
 
     public String getChannelName()
+    {
+        return null;
+    }
+
+    @Override
+    public EndPointInfo toEndPointInfo()
     {
         return null;
     }
