@@ -12,12 +12,18 @@ import java.util.Date;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
+import me.itsghost.jdiscord.Server;
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.event.EventManager;
 import me.itsghost.jdiscord.events.APILoadedEvent;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import me.itsghost.jdiscord.talkable.Group;
+import net.dv8tion.discord.bridge.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IrcConnection;
+import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.HelpCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
@@ -28,7 +34,6 @@ import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
 import net.dv8tion.discord.fixes.EventManagerX;
-import net.dv8tion.discord.handlers.IRCHandler;
 import net.dv8tion.discord.util.Database;
 
 import org.apache.commons.io.IOUtils;
@@ -132,14 +137,24 @@ public class Bot
             manager.registerListener(help.registerCommand(new ReloadCommand()));
             manager.registerListener(help.registerCommand(new UpdateCommand()));
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
-            manager.registerListener(new IRCHandler());
+            for (IRCConnectInfo info  : settings.getIrcConnectInfos())
+            {
+                manager.registerListener(new IrcConnection(info.getIrcConfigBuilder()));
+            }
 
             manager.registerListener(new EventListener()
             {
                 @SuppressWarnings("unused")
                 public void onApiLoaded(APILoadedEvent e)
                 {
-                    System.out.println("I did a thing!");
+                    //Creates and Stores all Discord endpoints in our Manager.
+                    for (Server server : api.getAvailableServers())
+                    {
+                        for (Group group : server.getGroups())
+                        {
+                            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromDiscordGroup(group));
+                        }
+                    }
                     Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
                 }
             });
