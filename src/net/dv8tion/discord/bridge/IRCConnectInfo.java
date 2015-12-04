@@ -74,7 +74,7 @@ public class IRCConnectInfo
         this.autojoinChannels = autojoinChannels;
     }
 
-    public Configuration getIRCConfiguration()
+    public Configuration.Builder<PircBotX> getIrcConfigBuilder()
     {
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         builder.setName(nick);
@@ -84,7 +84,7 @@ public class IRCConnectInfo
         {
             builder.addAutoJoinChannel(channel);
         }
-        return builder.buildConfiguration();
+        return builder;
     }
 }
 
