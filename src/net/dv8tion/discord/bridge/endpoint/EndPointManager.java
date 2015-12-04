@@ -53,6 +53,10 @@ public class EndPointManager
         }
     }
 
+    public List<EndPoint> getEndPoints()
+    {
+        return endPoints;
+    }
     private EndPoint getEndPointFromInfo(EndPointInfo info)
     {
         for (EndPoint point : endPoints)

@@ -5,6 +5,8 @@ import java.util.ArrayList;
 
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
@@ -72,7 +74,8 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     @Override
     public void onJoin(JoinEvent<PircBotX> event)
     {
-        System.out.println(event.getUser().getNick() + " joined dis Channel: " + event.getChannel().getName());
+        if (event.getBot().getUserBot().equals(event.getUser()))
+            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromIrcChannel(event.getChannel()));
     }
 
     public void onDiscordGroupChat(UserChatEvent e)
