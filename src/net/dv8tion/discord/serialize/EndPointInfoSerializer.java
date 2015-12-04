@@ -3,7 +3,7 @@ package net.dv8tion.discord.serialize;
 import java.lang.reflect.Type;
 
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
-import net.dv8tion.discord.bridge.endpoint.EndPoint.EndPointType;
+import net.dv8tion.discord.bridge.endpoint.EndPointType;
 
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;

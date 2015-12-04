@@ -5,7 +5,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
-import net.dv8tion.discord.bridge.endpoint.EndPoint.EndPointType;
+import net.dv8tion.discord.bridge.endpoint.EndPointType;
 
 public class Bridge
 {

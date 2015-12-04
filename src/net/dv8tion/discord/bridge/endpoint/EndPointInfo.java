@@ -1,7 +1,6 @@
 package net.dv8tion.discord.bridge.endpoint;
 
 import me.itsghost.jdiscord.talkable.Group;
-import net.dv8tion.discord.bridge.endpoint.EndPoint.EndPointType;
 
 import org.pircbotx.Channel;
 
