@@ -5,6 +5,7 @@ import java.util.ArrayList;
 
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 
@@ -65,7 +66,8 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     @Override
     public void onMessage(MessageEvent<PircBotX> event)
     {
-
+        EndPoint p = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
+        System.out.println("I found this bridge: " + p.toEndPointInfo().getChannelId());
     }
 
     @Override
@@ -83,6 +85,8 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
 
     public void onDiscordGroupChat(UserChatEvent e)
     {
-
+        EndPoint p = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordGroup(e.getGroup()));
+        if (p != null)
+            System.out.println("I found this bridge: " + p.toEndPointInfo().getChannelId());
     }
 }

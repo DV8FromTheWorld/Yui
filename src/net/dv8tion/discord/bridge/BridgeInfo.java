@@ -33,4 +33,9 @@ public class BridgeInfo
     {
         this.endPoint2 = endPoint2;
     }
+
+    public boolean contains(EndPointInfo endPointInfo)
+    {
+        return endPoint1.equals(endPointInfo) || endPoint2.equals(endPointInfo);
+    }
 }
