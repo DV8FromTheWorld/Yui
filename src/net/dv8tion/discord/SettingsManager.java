@@ -97,12 +97,31 @@ public class SettingsManager {
 
     private void checkOldSettingsFile()
     {
+        boolean modified = false;
         Settings defaults = getDefaultSettings();
-        if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
-        if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
-        if (settings.getIrcConnectInfos() == null) settings.setIrcConnectInfos(defaults.getIrcConnectInfos());
-        if (settings.getBridges() == null) settings.setBridges(defaults.getBridges());
-        saveSettings();
+        if (settings.getEmail() == null)
+        {
+            settings.setEmail(defaults.getEmail());
+            modified = true;
+        }
+        if (settings.getPassword() == null)
+        {
+            settings.setPassword(defaults.getPassword());
+            modified = true;
+        }
+        if (settings.getIrcConnectInfos() == null)
+        {
+            settings.setIrcConnectInfos(defaults.getIrcConnectInfos());
+            modified = true;
+        }
+        if (settings.getBridges() == null)
+        {
+            settings.setBridges(defaults.getBridges());
+            modified = true;
+        }
+
+        if (modified)
+            saveSettings();
     }
 
     private void checkBadEscapes(Path filePath) throws IOException
