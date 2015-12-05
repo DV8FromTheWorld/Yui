@@ -25,7 +25,7 @@ public class DiscordEndPoint extends EndPoint
     @Override
     public EndPointInfo toEndPointInfo()
     {
-        return new EndPointInfo(this.serverId, this.groupId, this.connectionType);
+        return new EndPointInfo( this.connectionType, this.serverId, this.groupId);
     }
 
 }

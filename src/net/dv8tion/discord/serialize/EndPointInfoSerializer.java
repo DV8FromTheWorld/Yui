@@ -35,7 +35,6 @@ public class EndPointInfoSerializer implements JsonSerializer<EndPointInfo>, Jso
             System.err.println("This specific bridge will be disabled. Please fix the config to enable!");
             return null;
         }
-
-        return new EndPointInfo(info[0], info[1], EndPointType.getFromName(info[2]));
+        return new EndPointInfo(EndPointType.getFromName(info[0]), info[1], info[2]);
     }
 }

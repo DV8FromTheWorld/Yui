@@ -11,7 +11,7 @@ public class EndPointInfo
     private String connectorId;
     private String channelId;
 
-    public EndPointInfo(String connectorId, String channelId, EndPointType type)
+    public EndPointInfo(EndPointType type, String connectorId, String channelId)
     {
         this.connectorId = connectorId;
         this.channelId = channelId;
@@ -64,11 +64,11 @@ public class EndPointInfo
 
     public static EndPointInfo createFromDiscordGroup(Group group)
     {
-        return new EndPointInfo(group.getServer().getId(), group.getId(), EndPointType.DISCORD);
+        return new EndPointInfo(EndPointType.DISCORD, group.getServer().getId(), group.getId());
     }
 
     public static EndPointInfo createFromIrcChannel(String identifier, Channel channel)
     {
-        return new EndPointInfo(identifier, channel.getName(), EndPointType.IRC);
+        return new EndPointInfo(EndPointType.IRC, identifier, channel.getName());
     }
 }

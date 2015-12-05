@@ -28,6 +28,6 @@ public class IrcEndPoint extends EndPoint
     @Override
     public EndPointInfo toEndPointInfo()
     {
-        return new EndPointInfo(connectionName, channelName, connectionType);
+        return new EndPointInfo(connectionType, connectionName, channelName);
     }
 }
