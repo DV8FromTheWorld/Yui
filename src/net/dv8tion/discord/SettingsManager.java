@@ -11,9 +11,10 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
+import net.dv8tion.discord.bridge.BridgeInfo;
 import net.dv8tion.discord.bridge.IRCConnectInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.serialize.EndPointInfoSerializer;
@@ -90,8 +91,8 @@ public class SettingsManager {
         connectDefault.setAutojoinChannels(Arrays.asList(""));
         newSettings.setIrcConnectInfos(Arrays.asList(connectDefault));
 
-        HashMap<EndPointInfo, EndPointInfo> bridgeDefault = new HashMap<EndPointInfo, EndPointInfo>();
-        newSettings.setBridges(bridgeDefault);
+        ArrayList<BridgeInfo> bridgesDefault = new ArrayList<BridgeInfo>();
+        newSettings.setBridges(bridgesDefault);
         return newSettings;
     }
 

@@ -6,16 +6,15 @@
 package net.dv8tion.discord;
 
 import java.util.List;
-import java.util.Map;
 
+import net.dv8tion.discord.bridge.BridgeInfo;
 import net.dv8tion.discord.bridge.IRCConnectInfo;
-import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 
 public class Settings {
     private String email;
     private String password;
     private List<IRCConnectInfo> ircConnectInfos;
-    private Map<EndPointInfo, EndPointInfo> bridges;
+    private List<BridgeInfo> bridges;
 
     public String getEmail() {
         return email;
@@ -43,12 +42,12 @@ public class Settings {
         this.ircConnectInfos = ircConnectInfos;
     }
 
-    public Map<EndPointInfo, EndPointInfo> getBridges()
+    public List<BridgeInfo> getBridges()
     {
         return bridges;
     }
 
-    public void setBridges(Map<EndPointInfo, EndPointInfo> bridges)
+    public void setBridges(List<BridgeInfo> bridges)
     {
         this.bridges = bridges;
     }
