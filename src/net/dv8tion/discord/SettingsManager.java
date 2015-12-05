@@ -81,6 +81,7 @@ public class SettingsManager {
         newSettings.setPassword("password");
 
         IRCConnectInfo connectDefault = new IRCConnectInfo();
+        connectDefault.setIdentifier("IrcConnection1");
         connectDefault.setHost("");
         connectDefault.setPort(6667);
         connectDefault.setNick("");

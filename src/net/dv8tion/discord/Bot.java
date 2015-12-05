@@ -139,7 +139,7 @@ public class Bot
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
             for (IRCConnectInfo info  : settings.getIrcConnectInfos())
             {
-                manager.registerListener(new IrcConnection(info.getIrcConfigBuilder()));
+                manager.registerListener(new IrcConnection(info));
             }
 
             manager.registerListener(new EventListener()

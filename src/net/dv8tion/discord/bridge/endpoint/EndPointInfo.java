@@ -67,8 +67,8 @@ public class EndPointInfo
         return new EndPointInfo(group.getServer().getId(), group.getId(), EndPointType.DISCORD);
     }
 
-    public static EndPointInfo createFromIrcChannel(Channel channel)
+    public static EndPointInfo createFromIrcChannel(String identifier, Channel channel)
     {
-        return new EndPointInfo(channel.getBot().getLocalAddress().getHostName(), channel.getName(), EndPointType.IRC);
+        return new EndPointInfo(identifier, channel.getName(), EndPointType.IRC);
     }
 }

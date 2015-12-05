@@ -8,7 +8,7 @@ import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 
-import org.pircbotx.Configuration;
+import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
 import org.pircbotx.hooks.ListenerAdapter;
@@ -18,12 +18,15 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class IrcConnection extends ListenerAdapter<PircBotX> implements EventListener
 {
+    private String identifier;
     private Thread botThread;
     private PircBotX bot;
     private ArrayList<Bridge> bridges;
 
-    public IrcConnection(Configuration.Builder<PircBotX> builder)
+    public IrcConnection(IRCConnectInfo info)
     {
+        identifier = info.getIdentifier();
+        Builder<PircBotX> builder = info.getIrcConfigBuilder();
         builder.addListener(this);
         builder.setMessageDelay(250);  //TODO: Make this configurable.
         bot = new PircBotX(builder.buildConfiguration());
@@ -75,7 +78,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     public void onJoin(JoinEvent<PircBotX> event)
     {
         if (event.getBot().getUserBot().equals(event.getUser()))
-            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromIrcChannel(event.getChannel()));
+            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
     }
 
     public void onDiscordGroupChat(UserChatEvent e)

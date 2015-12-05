@@ -7,12 +7,23 @@ import org.pircbotx.PircBotX;
 
 public class IRCConnectInfo
 {
+    private String identifier;
     private String host;
     private int port;
     private String nick;
     private String identNick;
     private String identPass;
     private List<String> autojoinChannels;
+
+    public String getIdentifier()
+    {
+        return identifier;
+    }
+
+    public void setIdentifier(String identifier)
+    {
+        this.identifier = identifier;
+    }
 
     public String getHost()
     {
