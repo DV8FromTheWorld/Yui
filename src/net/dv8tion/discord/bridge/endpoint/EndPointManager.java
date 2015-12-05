@@ -57,6 +57,27 @@ public class EndPointManager
     {
         return endPoints;
     }
+
+    public void informDisconnect(EndPointInfo endPointInfo)
+    {
+        //TODO: Consider informing bridges that the EndPoint has disconnected.
+        EndPoint endPoint = getEndPointFromInfo(endPointInfo);
+        if (endPoint != null)
+            endPoint.setConnected(false);
+        else
+            throw new RuntimeException("Tried to inform disconnect on EndPoint but could not find EndPoint in Manager. EndPoint: " + endPointInfo.toString());
+    }
+
+    public void informReconnect(EndPointInfo endPointInfo)
+    {
+      //TODO: Consider informing bridges that the EndPoint has reconnected.
+        EndPoint endPoint = getEndPointFromInfo(endPointInfo);
+        if (endPoint != null)
+            endPoint.setConnected(true);
+        else
+            throw new RuntimeException("Tried to inform reconnect on EndPoint but could not find EndPoint in Manager. EndPoint: " + endPointInfo.toString());
+    }
+
     private EndPoint getEndPointFromInfo(EndPointInfo info)
     {
         for (EndPoint point : endPoints)
