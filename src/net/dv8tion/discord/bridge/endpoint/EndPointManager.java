@@ -20,37 +20,36 @@ public class EndPointManager
         return manager;
     }
 
-    public EndPoint getOrCreate(EndPointInfo info)
+    public EndPoint createEndPoint(EndPointInfo info)
     {
-        EndPoint endPoint = null;
+        if (getEndPoint(info) != null)
+            throw new RuntimeException("We tried to create an EndPoint but it already existed! EndPointInfo: " + info.toString());
+
         switch (info.getType())
         {
             case DISCORD:
-                endPoint = getEndPointFromInfo(info);
-                if (endPoint != null)
-                    return endPoint;
-                else
-                {
-                    EndPoint newEndPoint = new DiscordEndPoint(info);
-                    endPoints.add(newEndPoint);
-                    return newEndPoint;
-                }
+                EndPoint discordEndPoint = new DiscordEndPoint(info);
+                endPoints.add(discordEndPoint);
+                return discordEndPoint;
             case IRC:
-                endPoint = getEndPointFromInfo(info);
-                if (endPoint != null)
-                    return endPoint;
-                else
-                {
-                    EndPoint newEndPoint = new IrcEndPoint(info);
-                    endPoints.add(newEndPoint);
-                    return newEndPoint;
-                }
+                EndPoint ircEndPoint = new IrcEndPoint(info);
+                endPoints.add(ircEndPoint);
+                return ircEndPoint;
             case UNKNOWN:
-                //FAIL
-                return null;
+                throw new RuntimeException("You can't make an endpoint from type UNKNOWN! EndPointInfo: " + info.toString());
             default:
-                throw new RuntimeException("We were provided an unknown EndPointType: " + info.getType().getName());
+                throw new RuntimeException("We were provided an unrecognized EndPointType. EndPointInfo: " + info.toString());
         }
+    }
+
+    public EndPoint getEndPoint(EndPointInfo info)
+    {
+        for (EndPoint point : endPoints)
+        {
+            if (point.toEndPointInfo().equals(info))
+                return point;
+        }
+        return null;
     }
 
     public List<EndPoint> getEndPoints()
@@ -61,7 +60,7 @@ public class EndPointManager
     public void informDisconnect(EndPointInfo endPointInfo)
     {
         //TODO: Consider informing bridges that the EndPoint has disconnected.
-        EndPoint endPoint = getEndPointFromInfo(endPointInfo);
+        EndPoint endPoint = getEndPoint(endPointInfo);
         if (endPoint != null)
             endPoint.setConnected(false);
         else
@@ -71,20 +70,10 @@ public class EndPointManager
     public void informReconnect(EndPointInfo endPointInfo)
     {
       //TODO: Consider informing bridges that the EndPoint has reconnected.
-        EndPoint endPoint = getEndPointFromInfo(endPointInfo);
+        EndPoint endPoint = getEndPoint(endPointInfo);
         if (endPoint != null)
             endPoint.setConnected(true);
         else
             throw new RuntimeException("Tried to inform reconnect on EndPoint but could not find EndPoint in Manager. EndPoint: " + endPointInfo.toString());
-    }
-
-    private EndPoint getEndPointFromInfo(EndPointInfo info)
-    {
-        for (EndPoint point : endPoints)
-        {
-            if (point.toEndPointInfo().equals(info))
-                return point;
-        }
-        return null;
     }
 }

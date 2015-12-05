@@ -152,7 +152,7 @@ public class Bot
                     {
                         for (Group group : server.getGroups())
                         {
-                            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromDiscordGroup(group));
+                            EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromDiscordGroup(group));
                         }
                     }
                     Permissions.getPermissions().setBotAsOp(api.getSelfInfo());

@@ -78,7 +78,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     public void onJoin(JoinEvent<PircBotX> event)
     {
         if (event.getBot().getUserBot().equals(event.getUser()))
-            EndPointManager.getInstance().getOrCreate(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
+            EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
     }
 
     public void onDiscordGroupChat(UserChatEvent e)
