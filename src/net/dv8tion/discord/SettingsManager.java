@@ -24,7 +24,8 @@ import com.google.gson.GsonBuilder;
 
 public class SettingsManager {
     private static SettingsManager instance;
-    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPointInfo.class, new EndPointInfoSerializer()).setPrettyPrinting().create();
+//    private final Gson gson = new GsonBuilder().registerTypeAdapter(EndPointInfo.class, new EndPointInfoSerializer()).setPrettyPrinting().create();
+  private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
     private Settings settings;
     private final Path configFile = new File(".").toPath().resolve("Config.json");
 
