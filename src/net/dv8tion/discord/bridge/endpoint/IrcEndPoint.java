@@ -1,11 +1,14 @@
 package net.dv8tion.discord.bridge.endpoint;
 
+import net.dv8tion.discord.Bot;
+
 import org.pircbotx.Channel;
 
 public class IrcEndPoint extends EndPoint
 {
     private String connectionName;
     private String channelName;
+    private Channel channel;
 
     public IrcEndPoint(EndPointInfo info)
     {
@@ -16,7 +19,16 @@ public class IrcEndPoint extends EndPoint
 
     public Channel getChannel()
     {
-        //TODO: get IRC channel.
+        if (channel != null)
+            return channel;
+        for (Channel c : Bot.getIrcConnection(connectionName).getIrcBot().getUserBot().getChannels())
+        {
+            if (c.getName().equals(channelName))
+            {
+                channel = c;
+                return c;
+            }
+        }
         return null;
     }
 
@@ -29,5 +41,21 @@ public class IrcEndPoint extends EndPoint
     public EndPointInfo toEndPointInfo()
     {
         return new EndPointInfo(connectionType, connectionName, channelName);
+    }
+
+    @Override
+    public void sendMessage(String message)
+    {
+        if (!connected)
+            throw new IllegalStateException("Cannot send message to disconnected EndPoint! EndPoint: " + this.toEndPointInfo().toString());
+        this.getChannel().send().message(message);
+    }
+
+    @Override
+    public void sendMessage(EndPointMessage message)
+    {
+        if (!connected)
+            throw new IllegalStateException("Cannot send message to disconnected EndPoint! EndPoint: " + this.toEndPointInfo().toString());
+        this.sendMessage(String.format("<%s> %s", message.getSenderName(), message.getMessage()));        
     }
 }

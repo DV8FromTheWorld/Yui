@@ -8,7 +8,9 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
@@ -55,6 +57,7 @@ public class Bot
 
     private static Date BUILD_DATE;
     private static DiscordAPI api;
+    private static List<IrcConnection> ircConnections;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -92,6 +95,16 @@ public class Bot
         return api;
     }
 
+    public static IrcConnection getIrcConnection(String identifier)
+    {
+        for (IrcConnection irc : ircConnections)
+        {
+            if (irc.getIdentifier().equals(identifier))
+                return irc;
+        }
+        return null;
+    }
+
     private static void setupBot()
     {
         try
@@ -125,6 +138,7 @@ public class Bot
             EventManagerX.replaceEventManager(api); //TODO: Remove this once jDiscord includes the fix.
             Database.getInstance();
             Permissions.setupPermissions();
+            ircConnections = new ArrayList<IrcConnection>();
 
             EventManager manager = api.getEventManager();
             HelpCommand help = new HelpCommand();
@@ -139,7 +153,9 @@ public class Bot
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
             for (IRCConnectInfo info  : settings.getIrcConnectInfos())
             {
-                manager.registerListener(new IrcConnection(info));
+                IrcConnection irc = new IrcConnection(info);
+                ircConnections.add(irc);
+                manager.registerListener(irc);
             }
 
             manager.registerListener(new EventListener()

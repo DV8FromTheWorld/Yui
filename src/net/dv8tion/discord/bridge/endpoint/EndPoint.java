@@ -1,11 +1,14 @@
 package net.dv8tion.discord.bridge.endpoint;
 
+
 public abstract class EndPoint
 {
     protected EndPointType connectionType;
     protected boolean connected;
 
     public abstract EndPointInfo toEndPointInfo();
+    public abstract void sendMessage(String message);
+    public abstract void sendMessage(EndPointMessage message);
 
     protected EndPoint(EndPointType connectionType)
     {

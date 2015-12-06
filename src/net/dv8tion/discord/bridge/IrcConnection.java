@@ -4,9 +4,11 @@ import java.io.IOException;
 
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
+import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
+import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
 
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
@@ -76,14 +78,19 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     @Override
     public void onMessage(MessageEvent<PircBotX> event)
     {
-        EndPoint p = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
-        System.out.println("I found this bridge: " + p.toEndPointInfo().getChannelId());
+        //If this returns null, then this EndPoint isn't part of a bridge.
+        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
+        if (endPoint != null)
+        {
+            EndPointMessage message = EndPointMessage.createFromIrcEvent(event);
+            endPoint.sendMessage(message);
+        }
     }
 
     @Override
     public void onConnect(ConnectEvent<PircBotX> event)
     {
-        System.out.println("We connected");
+
     }
 
     @Override
@@ -97,8 +104,16 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
 
     public void onDiscordGroupChat(UserChatEvent e)
     {
-        EndPoint p = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordGroup(e.getGroup()));
-        if (p != null)
-            System.out.println("I found this bridge: " + p.toEndPointInfo().getChannelId());
+        //Basically: If we are the ones that sent the message, don't send it to IRC.
+        if (Bot.getAPI().getSelfInfo().getId().equals(e.getUser().getUser().getId()))
+            return;
+
+        //If this returns null, then this EndPoint isn't part of a bridge.
+        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordGroup(e.getGroup()));
+        if (endPoint != null)
+        {
+            EndPointMessage message = EndPointMessage.createFromDiscordEvent(e);
+            endPoint.sendMessage(message);
+        }
     }
 }
