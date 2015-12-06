@@ -3,13 +3,11 @@ package net.dv8tion.discord.commands;
 import java.util.Arrays;
 import java.util.List;
 
+import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.util.Downloader;
 import net.dv8tion.discord.util.GoogleSearch;
 
 import org.apache.commons.lang3.StringUtils;
-
-import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
 
 public class MyAnimeListCommand extends Command
 {
@@ -29,10 +27,7 @@ public class MyAnimeListCommand extends Command
                         StringUtils.join(args, "+", 1, args.length),
                         "site:myanimelist.net"));
 
-        e.getGroup().sendMessage(new MessageBuilder()
-            .addUserTag(e.getUser(), e.getGroup())
-            .addString(": " + search.getSuggestedReturn())
-            .build());
+        sendMessage(e, search.getSuggestedReturn());
     }
 
     @Override

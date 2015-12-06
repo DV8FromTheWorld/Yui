@@ -5,11 +5,12 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang3.ArrayUtils;
-
 import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
+import me.itsghost.jdiscord.talkable.User;
+import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 public class PermissionsCommand extends Command
 {
@@ -22,10 +23,7 @@ public class PermissionsCommand extends Command
 
         if (!Permissions.getPermissions().isOp(e.getUser()))
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "You do not have permission to run this command! (OP required).")
-                .build());
+            sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;
         }
 
@@ -41,10 +39,7 @@ public class PermissionsCommand extends Command
 
         if (args.length < 1)    //If the command sent was just '.perms', and we removed that above, then we have an array of length 0 currently.
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "**Improper syntax, no permissions group provided!**")
-                .build());
+            sendMessage(e, "**Improper syntax, no permissions group provided!**");
             return;
         }
         switch (args[0])
@@ -54,11 +49,10 @@ public class PermissionsCommand extends Command
                 processOp(args, e);
                 break;
             default:
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
-                    .addString("\n**Provided Command:** " + e.getMsg().toString())
-                    .build());
+                sendMessage(e, new StringBuilder()
+                    .append("**Improper syntax, unrecognized argument:** " + args[1])
+                    .append("\n**Provided Command:** " + e.getMsg().toString())
+                    .toString());
                 return;
         }
     }
@@ -109,10 +103,7 @@ public class PermissionsCommand extends Command
     {
         if (args.length < 2)
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "**Improper syntax, no action argument provided!**")
-                .build());
+            sendMessage(e, "**Improper syntax, no action argument provided!**");
             return;
         }
         switch (args[1])
@@ -129,17 +120,13 @@ public class PermissionsCommand extends Command
                 {
                     ops += "<@" + op + "> ";
                 }
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": My OPs are: [" + ops.trim() + "]")
-                    .build());
+                sendMessage(e, "My OPs are: [" + ops.trim() + "]");
                 break;
             default:
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "**Improper syntax, unrecognized argument:** " + args[1])
-                    .addString("\n**Provided Command:** " + e.getMsg().toString())
-                    .build());
+                sendMessage(e, new StringBuilder()
+                    .append("**Improper syntax, unrecognized argument:** " + args[1])
+                    .append("\n**Provided Command:** " + e.getMsg().toString())
+                    .toString());
         }
     }
 
@@ -155,42 +142,29 @@ public class PermissionsCommand extends Command
     {
         if (args.length < 3)
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": Please provide a user!")
-                .build());
+            sendMessage(e, "Please provide a user!");
             return;
         }
         Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
         Matcher idMatch = idPattern.matcher(args[2]);
         if (!idMatch.find())
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "Sorry, I don't recognize the user provided: " + args[2])
-                .build());
+            sendMessage(e, "Sorry, I don't recognize the user provided: " + args[2]);
             return;
         }
         try
         {
+            User user = Bot.getAPI().getUserById(idMatch.group());
+            String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
+
             if (Permissions.getPermissions().addOp(idMatch.group()))
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "Successfully added ")
-                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                    .addString(" to the OPs list!")
-                    .build());
+                sendMessage(e, "Successfully added " + username + " to the OPs list!");
                 return;
             }
             else
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": ")
-                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                    .addString(" is already an OP!")
-                    .build());
+                sendMessage(e, username + " is already an OP!");
                 return;
             }
         }
@@ -212,42 +186,29 @@ public class PermissionsCommand extends Command
     {
         if (args.length < 3)
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": Please provide a user!")
-                .build());
+            sendMessage(e, "Please provide a user!");
             return;
         }
         Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
         Matcher idMatch = idPattern.matcher(args[2]);
         if (!idMatch.find())
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + "Sorry, I don't recognize the user provided: " + args[2])
-                .build());
+            sendMessage(e, "Sorry, I don't recognize the user provided: " + args[2]);
             return;
         }
         try
         {
+            User user = Bot.getAPI().getUserById(idMatch.group());
+            String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
+
             if (Permissions.getPermissions().removeOp(idMatch.group()))
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "Successfully removed ")
-                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                    .addString(" from the OPs list!")
-                    .build());
+                sendMessage(e, "Successfully removed " + username + " from the OPs list!");
                 return;
             }
             else
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": ")
-                    .addUserTag(e.getServer().getGroupUserById(idMatch.group()), e.getGroup())
-                    .addString(" cannot be removed because they weren't an OP!")
-                    .build());
+                sendMessage(e, username + " cannot be removed because they weren't an OP!");
                 return;
             }
         }

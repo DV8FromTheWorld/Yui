@@ -104,6 +104,10 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
 
     public void onDiscordGroupChat(UserChatEvent e)
     {
+        //If this is a PM message, return. We don't bridge PMs
+        if (e.getServer() == null)
+            return;
+
         //Basically: If we are the ones that sent the message, don't send it to IRC.
         if (Bot.getAPI().getSelfInfo().getId().equals(e.getUser().getUser().getId()))
             return;

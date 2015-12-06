@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.commons.lang3.StringUtils;
-
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
+import me.itsghost.jdiscord.talkable.Group;
+
+import org.apache.commons.lang3.StringUtils;
 
 public class HelpCommand extends Command
 {
@@ -28,6 +29,18 @@ public class HelpCommand extends Command
         if (!containsCommand(e.getMsg()))
             return;
 
+        //This represents the user's private message "group"
+        Group userGroup = e.getUser().getUser().getGroup();
+
+        //This isn't a PM. Tell them we are sending the help info as a PM.
+        if (e.getServer() != null)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": Help information was sent as a private message.")
+                .build());
+        }
+
         String[] args = commandArgs(e.getMsg());
         if (args.length < 2)
         {
@@ -40,10 +53,9 @@ public class HelpCommand extends Command
                 s.append("**").append(c.getAliases().get(0)).append("** - ");
                 s.append(description).append("\n");
             }
-            //TODO: Replace with a PrivateMessage
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": The following commands are supported by the bot\n")
+
+            userGroup.sendMessage(new MessageBuilder()
+                .addString("The following commands are supported by the bot\n")
                 .addString(s.toString())
                 .build());
         }
@@ -62,9 +74,7 @@ public class HelpCommand extends Command
                     usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? NO_USAGE : usageInstructions;
 
                     //TODO: Replace with a PrivateMessage
-                    e.getGroup().sendMessage(new MessageBuilder()
-                        .addUserTag(e.getUser(), e.getGroup())
-                        .addString(":\n")
+                    userGroup.sendMessage(new MessageBuilder()
                         .addString("**Name:** " + name + "\n")
                         .addString("**Description:** " + description + "\n")
                         .addString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
@@ -74,9 +84,8 @@ public class HelpCommand extends Command
                     return;
                 }
             }
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
+            userGroup.sendMessage(new MessageBuilder()
+                .addString("The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
                 .build());
         }
     }

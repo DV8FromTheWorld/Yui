@@ -7,7 +7,6 @@ import java.util.Date;
 import java.util.List;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.util.Downloader;
@@ -22,10 +21,7 @@ public class UpdateCommand extends Command
 
         if (!Permissions.getPermissions().isOp(e.getUser().getUser().getId()))
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + Permissions.OP_REQUIRED_MESSAGE)
-                .build());
+            sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;
         }
 
@@ -36,18 +32,12 @@ public class UpdateCommand extends Command
             Date botBuildDate = Bot.getBuildDate();
             if (botBuildDate == null || botBuildDate.before(latestBuildDate))
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "Updating to latest version.\n**Latest version's build date:** " + dateOutput.format(latestBuildDate))
-                    .build());
+                sendMessage(e, "Updating to latest version.\n**Latest version's build date:** " + dateOutput.format(latestBuildDate));
                 System.exit(Bot.UPDATE_EXITCODE);
             }
             else
             {
-                e.getGroup().sendMessage(new MessageBuilder()
-                    .addUserTag(e.getUser(), e.getGroup())
-                    .addString(": " + "The Bot is currently up-to-date.\n**Current version's build date:** " + dateOutput.format(botBuildDate))
-                    .build());
+                sendMessage(e, "The Bot is currently up-to-date.\n**Current version's build date:** " + dateOutput.format(botBuildDate));
             }
         }
         catch (ParseException e1)

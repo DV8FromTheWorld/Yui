@@ -6,7 +6,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.util.Downloader;
 import net.dv8tion.discord.util.GoogleSearch;
 
@@ -34,10 +33,8 @@ public class AnimeNewsNetworkCommand extends Command
                 String.format("%s+%s",
                         StringUtils.join(args, "+", 1, args.length),
                         "site:animenewsnetwork.com"));
-        e.getGroup().sendMessage(new MessageBuilder()
-            .addUserTag(e.getUser(), e.getGroup())
-            .addString(": " + handleSearch(search))
-            .build());
+
+        sendMessage(e, handleSearch(search));
     }
 
     @Override

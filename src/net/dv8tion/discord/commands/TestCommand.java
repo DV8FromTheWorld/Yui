@@ -13,14 +13,31 @@ public class TestCommand extends Command
     {
         if (containsCommand(e.getMsg()))
         {
-            e.getGroup().sendMessage(new MessageBuilder()
+            if (e.getServer() != null)
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
                     .addString("Yes, ")
                     .addUserTag(e.getUser(), e.getGroup())
                     .addString("?")
                     .build());
+            }
+            else //This is a PM
+            {
+                e.getGroup().sendMessage(new MessageBuilder()
+                    .addString(String.format("Yes, %s?", e.getUser().getUser().getUsername()))
+                    .build());
+            }
         }
-        if (e.getServer().getId().equals("107563502712954880")) //The Gaming Bunch's ServerId
-            System.out.println((e.getMsg().isEdited() ? "# " : "") + "[" + e.getGroup().getName() + "] " + e.getUser() + " > " + e.getMsg().getMessage());
+
+        //If a PM or The Gaming Bunch's Server
+        if (e.getServer() == null)
+        {
+            System.out.println((e.getMsg().isEdited() ? "# " : "") + "[Private Message] <" + e.getUser() + "> " + e.getMsg().getMessage());
+        }
+        else if (e.getServer().getId().equals("107563502712954880")) //The Gaming Bunch's ServerId)
+        {
+            System.out.println((e.getMsg().isEdited() ? "# " : "") + "[#" + e.getGroup().getName() + "] <" + e.getUser() + "> " + e.getMsg().getMessage());
+        }
     }
 
     @Override
