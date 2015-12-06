@@ -66,7 +66,7 @@ public class PermissionsCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(new String[] {".perms", ".permissions", ".op"});
+        return Arrays.asList(".perms", ".permissions", ".op");
     }
 
     @Override

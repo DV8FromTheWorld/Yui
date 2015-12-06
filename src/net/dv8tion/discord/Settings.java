@@ -5,9 +5,16 @@
 
 package net.dv8tion.discord;
 
+import java.util.List;
+
+import net.dv8tion.discord.bridge.BridgeInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
+
 public class Settings {
     private String email;
     private String password;
+    private List<IrcConnectInfo> ircConnectInfos;
+    private List<BridgeInfo> bridges;
 
     public String getEmail() {
         return email;
@@ -23,5 +30,25 @@ public class Settings {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<IrcConnectInfo> getIrcConnectInfos()
+    {
+        return ircConnectInfos;
+    }
+
+    public void setIrcConnectInfos(List<IrcConnectInfo> ircConnectInfos)
+    {
+        this.ircConnectInfos = ircConnectInfos;
+    }
+
+    public List<BridgeInfo> getBridges()
+    {
+        return bridges;
+    }
+
+    public void setBridges(List<BridgeInfo> bridges)
+    {
+        this.bridges = bridges;
     }
 }

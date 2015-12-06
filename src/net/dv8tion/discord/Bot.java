@@ -8,14 +8,24 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import me.itsghost.jdiscord.DiscordAPI;
 import me.itsghost.jdiscord.DiscordBuilder;
+import me.itsghost.jdiscord.Server;
+import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.event.EventManager;
+import me.itsghost.jdiscord.events.APILoadedEvent;
 import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
+import me.itsghost.jdiscord.talkable.Group;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
+import net.dv8tion.discord.bridge.IrcConnection;
+import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
 import net.dv8tion.discord.commands.HelpCommand;
 import net.dv8tion.discord.commands.MyAnimeListCommand;
@@ -25,6 +35,8 @@ import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
+import net.dv8tion.discord.fixes.EventManagerX;
+import net.dv8tion.discord.util.Database;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -45,6 +57,7 @@ public class Bot
 
     private static Date BUILD_DATE;
     private static DiscordAPI api;
+    private static List<IrcConnection> ircConnections;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
     {
@@ -82,6 +95,16 @@ public class Bot
         return api;
     }
 
+    public static IrcConnection getIrcConnection(String identifier)
+    {
+        for (IrcConnection irc : ircConnections)
+        {
+            if (irc.getIdentifier().equals(identifier))
+                return irc;
+        }
+        return null;
+    }
+
     private static void setupBot()
     {
         try
@@ -112,8 +135,10 @@ public class Bot
                 e.printStackTrace();
             }
             api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
+            EventManagerX.replaceEventManager(api); //TODO: Remove this once jDiscord includes the fix.
             Database.getInstance();
             Permissions.setupPermissions();
+            ircConnections = new ArrayList<IrcConnection>();
 
             EventManager manager = api.getEventManager();
             HelpCommand help = new HelpCommand();
@@ -126,16 +151,29 @@ public class Bot
             manager.registerListener(help.registerCommand(new ReloadCommand()));
             manager.registerListener(help.registerCommand(new UpdateCommand()));
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
+            for (IrcConnectInfo info  : settings.getIrcConnectInfos())
+            {
+                IrcConnection irc = new IrcConnection(info);
+                ircConnections.add(irc);
+                manager.registerListener(irc);
+            }
 
-            //Waiting until we update discord. Currently, 1.3 is bugged and cannot support this.
-//            manager.registerListener(new EventListener()
-//            {
-//                @SuppressWarnings("unused")
-//                public void onApiLoaded(APILoadedEvent e)
-//                {
-//                    Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
-//                }
-//            });
+            manager.registerListener(new EventListener()
+            {
+                @SuppressWarnings("unused")
+                public void onApiLoaded(APILoadedEvent e)
+                {
+                    //Creates and Stores all Discord endpoints in our Manager.
+                    for (Server server : api.getAvailableServers())
+                    {
+                        for (Group group : server.getGroups())
+                        {
+                            EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromDiscordGroup(group));
+                        }
+                    }
+                    Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+                }
+            });
         }
         catch (NoLoginDetailsException e)
         {

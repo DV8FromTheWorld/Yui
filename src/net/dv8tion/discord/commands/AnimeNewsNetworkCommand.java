@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.MessageBuilder;
-import net.dv8tion.discord.Downloader;
-import net.dv8tion.discord.GoogleSearch;
+import net.dv8tion.discord.util.Downloader;
+import net.dv8tion.discord.util.GoogleSearch;
 
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.apache.commons.lang3.StringUtils;

@@ -1,4 +1,4 @@
-package net.dv8tion.discord;
+package net.dv8tion.discord.util;
 
 import java.io.BufferedReader;
 import java.io.IOException;
