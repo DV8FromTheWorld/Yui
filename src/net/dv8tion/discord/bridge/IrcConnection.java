@@ -1,7 +1,6 @@
 package net.dv8tion.discord.bridge;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
@@ -22,7 +21,6 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     private String identifier;
     private Thread botThread;
     private PircBotX bot;
-    private ArrayList<Bridge> bridges;
 
     public IrcConnection(IRCConnectInfo info)
     {
@@ -63,6 +61,18 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
         bot.sendIRC().quitServer(reason);
     }
 
+    public String getIdentifier()
+    {
+        return identifier;
+    }
+
+    public PircBotX getIrcBot()
+    {
+        return bot;
+    }
+    // -----  Events -----
+
+    // -- IRC --
     @Override
     public void onMessage(MessageEvent<PircBotX> event)
     {
@@ -82,6 +92,8 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
         if (event.getBot().getUserBot().equals(event.getUser()))
             EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
     }
+
+    // -- Discord --
 
     public void onDiscordGroupChat(UserChatEvent e)
     {
