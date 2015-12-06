@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 import net.dv8tion.discord.bridge.BridgeInfo;
-import net.dv8tion.discord.bridge.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -79,7 +79,7 @@ public class SettingsManager {
         newSettings.setEmail("email");
         newSettings.setPassword("password");
 
-        IRCConnectInfo connectDefault = new IRCConnectInfo();
+        IrcConnectInfo connectDefault = new IrcConnectInfo();
         connectDefault.setIdentifier("IrcConnection1");
         connectDefault.setHost("");
         connectDefault.setPort(6667);

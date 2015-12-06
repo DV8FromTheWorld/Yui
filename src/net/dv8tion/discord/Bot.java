@@ -22,7 +22,7 @@ import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
 import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
 import me.itsghost.jdiscord.exception.NoLoginDetailsException;
 import me.itsghost.jdiscord.talkable.Group;
-import net.dv8tion.discord.bridge.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
 import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
@@ -151,7 +151,7 @@ public class Bot
             manager.registerListener(help.registerCommand(new ReloadCommand()));
             manager.registerListener(help.registerCommand(new UpdateCommand()));
             manager.registerListener(help.registerCommand(new PermissionsCommand()));
-            for (IRCConnectInfo info  : settings.getIrcConnectInfos())
+            for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
                 IrcConnection irc = new IrcConnection(info);
                 ircConnections.add(irc);

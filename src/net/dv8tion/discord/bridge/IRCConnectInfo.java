@@ -5,7 +5,7 @@ import java.util.List;
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
 
-public class IRCConnectInfo
+public class IrcConnectInfo
 {
     private String identifier;
     private String host;

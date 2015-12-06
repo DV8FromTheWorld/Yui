@@ -8,12 +8,12 @@ package net.dv8tion.discord;
 import java.util.List;
 
 import net.dv8tion.discord.bridge.BridgeInfo;
-import net.dv8tion.discord.bridge.IRCConnectInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
 
 public class Settings {
     private String email;
     private String password;
-    private List<IRCConnectInfo> ircConnectInfos;
+    private List<IrcConnectInfo> ircConnectInfos;
     private List<BridgeInfo> bridges;
 
     public String getEmail() {
@@ -32,12 +32,12 @@ public class Settings {
         this.password = password;
     }
 
-    public List<IRCConnectInfo> getIrcConnectInfos()
+    public List<IrcConnectInfo> getIrcConnectInfos()
     {
         return ircConnectInfos;
     }
 
-    public void setIrcConnectInfos(List<IRCConnectInfo> ircConnectInfos)
+    public void setIrcConnectInfos(List<IrcConnectInfo> ircConnectInfos)
     {
         this.ircConnectInfos = ircConnectInfos;
     }

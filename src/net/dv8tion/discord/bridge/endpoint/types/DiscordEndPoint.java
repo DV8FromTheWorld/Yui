@@ -1,8 +1,12 @@
-package net.dv8tion.discord.bridge.endpoint;
+package net.dv8tion.discord.bridge.endpoint.types;
 
 import me.itsghost.jdiscord.Server;
 import me.itsghost.jdiscord.talkable.Group;
 import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.bridge.endpoint.EndPoint;
+import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
+import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
+import net.dv8tion.discord.bridge.endpoint.EndPointType;
 
 public class DiscordEndPoint extends EndPoint
 {

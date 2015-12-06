@@ -24,7 +24,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     private Thread botThread;
     private PircBotX bot;
 
-    public IrcConnection(IRCConnectInfo info)
+    public IrcConnection(IrcConnectInfo info)
     {
         identifier = info.getIdentifier();
         Builder<PircBotX> builder = info.getIrcConfigBuilder();
