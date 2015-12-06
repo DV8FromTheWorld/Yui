@@ -5,6 +5,7 @@ import java.util.List;
 import me.itsghost.jdiscord.event.EventListener;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import me.itsghost.jdiscord.message.Message;
+import me.itsghost.jdiscord.message.MessageBuilder;
 
 public abstract class Command implements EventListener 
 {
@@ -27,5 +28,22 @@ public abstract class Command implements EventListener
     protected String[] commandArgs(String string)
     {
         return string.split(" ");
+    }
+
+    protected void sendMessage(UserChatEvent e, String message)
+    {
+        if (e.getServer() != null)
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addUserTag(e.getUser(), e.getGroup())
+                .addString(": " + message)
+                .build());
+        }
+        else //This is a PM
+        {
+            e.getGroup().sendMessage(new MessageBuilder()
+                .addString(message)
+                .build());
+        }
     }
 }

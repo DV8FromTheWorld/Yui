@@ -5,6 +5,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import net.dv8tion.discord.util.Database;
 import me.itsghost.jdiscord.SelfData;
 import me.itsghost.jdiscord.talkable.GroupUser;
 

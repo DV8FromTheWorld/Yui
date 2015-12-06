@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
 
@@ -18,24 +17,18 @@ public class ReloadCommand extends Command
 
         if (!Permissions.getPermissions().isOp(e.getUser()))
         {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(" : " + Permissions.OP_REQUIRED_MESSAGE)
-                .build());
+            sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;
         }
 
-        e.getGroup().sendMessage(new MessageBuilder()
-            .addUserTag(e.getUser(), e.getGroup())
-            .addString(" : Restarting the bot, one moment...")
-            .build());
+        sendMessage(e, "Restarting the bot, one moment...");
         System.exit(Bot.RESTART_EXITCODE);
     }
 
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(new String[] {".reload"});
+        return Arrays.asList(".reload");
     }
 
     @Override

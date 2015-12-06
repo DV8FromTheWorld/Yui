@@ -11,6 +11,11 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.Arrays;
+
+import net.dv8tion.discord.bridge.BridgeInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -73,15 +78,49 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
+
+        IrcConnectInfo connectDefault = new IrcConnectInfo();
+        connectDefault.setIdentifier("IrcConnection1");
+        connectDefault.setHost("");
+        connectDefault.setPort(6667);
+        connectDefault.setNick("");
+        connectDefault.setIdentNick("");
+        connectDefault.setIdentPass("");
+        connectDefault.setAutojoinChannels(Arrays.asList(""));
+        newSettings.setIrcConnectInfos(Arrays.asList(connectDefault));
+
+        ArrayList<BridgeInfo> bridgesDefault = new ArrayList<BridgeInfo>();
+        newSettings.setBridges(bridgesDefault);
         return newSettings;
     }
 
     private void checkOldSettingsFile()
     {
+        boolean modified = false;
         Settings defaults = getDefaultSettings();
-        if (settings.getEmail() == null) settings.setEmail(defaults.getEmail());
-        if (settings.getPassword() == null) settings.setPassword(defaults.getPassword());
-        saveSettings();
+        if (settings.getEmail() == null)
+        {
+            settings.setEmail(defaults.getEmail());
+            modified = true;
+        }
+        if (settings.getPassword() == null)
+        {
+            settings.setPassword(defaults.getPassword());
+            modified = true;
+        }
+        if (settings.getIrcConnectInfos() == null)
+        {
+            settings.setIrcConnectInfos(defaults.getIrcConnectInfos());
+            modified = true;
+        }
+        if (settings.getBridges() == null)
+        {
+            settings.setBridges(defaults.getBridges());
+            modified = true;
+        }
+
+        if (modified)
+            saveSettings();
     }
 
     private void checkBadEscapes(Path filePath) throws IOException

@@ -4,7 +4,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -18,10 +17,7 @@ public class NyaaCommand extends Command
         if (!containsCommand(e.getMsg()))
             return;
 
-        e.getGroup().sendMessage(new MessageBuilder()
-        .addString(createUrl(commandArgs(e.getMsg())))
-        .build());
-//        Downloader.webpage("");
+        sendMessage(e, createUrl(commandArgs(e.getMsg())));
     }
 
     @Override
