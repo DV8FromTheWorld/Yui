@@ -29,9 +29,8 @@ public class SearchCommand extends Command
 		}
 
 		GoogleSearch search = new GoogleSearch(
-		        String.format("%s+%s",
-		                StringUtils.join(splitMessage, "+", 1, splitMessage.length),
-		                filter));
+		        StringUtils.join(splitMessage, "+", 1, splitMessage.length)
+		        + ((filter != null) ? ("+" + filter) : ""));
 
 		sendMessage(e, search.getSuggestedReturn());
 	}
