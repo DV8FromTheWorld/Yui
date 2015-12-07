@@ -20,6 +20,8 @@ import org.pircbotx.hooks.events.MessageEvent;
 
 public class IrcConnection extends ListenerAdapter<PircBotX> implements EventListener
 {
+    public static final int MESSAGE_DELAY_AMOUNT = 250;
+
     private String identifier;
     private Thread botThread;
     private PircBotX bot;
@@ -29,7 +31,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
         identifier = info.getIdentifier();
         Builder<PircBotX> builder = info.getIrcConfigBuilder();
         builder.addListener(this);
-        builder.setMessageDelay(250);  //TODO: Make this configurable.
+        builder.setMessageDelay(MESSAGE_DELAY_AMOUNT);
         bot = new PircBotX(builder.buildConfiguration());
         this.open();
     }
