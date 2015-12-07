@@ -10,6 +10,8 @@ import net.dv8tion.discord.bridge.endpoint.EndPointType;
 
 public class DiscordEndPoint extends EndPoint
 {
+    public static final int MAX_MESSAGE_LENGTH = 2000;
+
     private String serverId;
     private String groupId;
 
@@ -47,6 +49,12 @@ public class DiscordEndPoint extends EndPoint
     }
 
     @Override
+    public int getMaxMessageLength()
+    {
+        return MAX_MESSAGE_LENGTH;
+    }
+
+    @Override
     public void sendMessage(String message)
     {
         if (!connected)
@@ -65,8 +73,8 @@ public class DiscordEndPoint extends EndPoint
                 getGroup().sendMessage(message.getDiscordMessage());
                 break;
             default:
-                sendMessage(String.format("<%s> %s", message.getSenderName(), message.getMessage()));
+                for (String segment : this.divideMessageForSending(message.getMessage()))
+                    sendMessage(String.format("<%s> %s", message.getSenderName(), segment));
         }
     }
-
 }

@@ -10,6 +10,8 @@ import org.pircbotx.Channel;
 
 public class IrcEndPoint extends EndPoint
 {
+    public static final int MAX_LINE_LENGTH = 450;
+
     private String connectionName;
     private String channelName;
     private Channel channel;
@@ -47,6 +49,13 @@ public class IrcEndPoint extends EndPoint
         return new EndPointInfo(connectionType, connectionName, channelName);
     }
 
+
+    @Override
+    public int getMaxMessageLength()
+    {
+        return MAX_LINE_LENGTH;
+    }
+
     @Override
     public void sendMessage(String message)
     {
@@ -60,6 +69,13 @@ public class IrcEndPoint extends EndPoint
     {
         if (!connected)
             throw new IllegalStateException("Cannot send message to disconnected EndPoint! EndPoint: " + this.toEndPointInfo().toString());
-        this.sendMessage(String.format("<%s> %s", message.getSenderName(), message.getMessage()));        
+        String[] lines = message.getMessage().split("\n");
+        for (String line : lines)
+        {
+            for (String segment : this.divideMessageForSending(line))
+            {
+                this.sendMessage(String.format("<%s> %s", message.getSenderName(), segment));
+            }
+        }
     }
 }
