@@ -78,6 +78,7 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
+        newSettings.setUseBetaBuilds(new Boolean(false));
 
         IrcConnectInfo connectDefault = new IrcConnectInfo();
         connectDefault.setIdentifier("IrcConnection1");
@@ -106,6 +107,11 @@ public class SettingsManager {
         if (settings.getPassword() == null)
         {
             settings.setPassword(defaults.getPassword());
+            modified = true;
+        }
+        if (settings.getUseBetaBuilds() == null)
+        {
+            settings.setUseBetaBuilds(defaults.getUseBetaBuilds());
             modified = true;
         }
         if (settings.getIrcConnectInfos() == null)

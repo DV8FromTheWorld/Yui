@@ -9,6 +9,7 @@ import java.util.List;
 import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
+import net.dv8tion.discord.SettingsManager;
 import net.dv8tion.discord.util.Downloader;
 
 public class UpdateCommand extends Command
@@ -27,17 +28,33 @@ public class UpdateCommand extends Command
 
         try
         {
-            SimpleDateFormat dateOutput = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a zzz");
-            Date latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.LATEST_BUILD_DATE_URL));
-            Date botBuildDate = Bot.getBuildDate();
-            if (botBuildDate == null || botBuildDate.before(latestBuildDate))
+            boolean useBetaBuilds = SettingsManager.getInstance().getSettings().getUseBetaBuilds();
+            Date latestBuildDate = null;
+            String buildType;
+            if (useBetaBuilds)
             {
-                sendMessage(e, "Updating to latest version.\n**Latest version's build date:** " + dateOutput.format(latestBuildDate));
-                System.exit(Bot.UPDATE_EXITCODE);
+                latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.BUILD_DATE_LATEST_URL));
+                buildType = "beta";
             }
             else
             {
-                sendMessage(e, "The Bot is currently up-to-date.\n**Current version's build date:** " + dateOutput.format(botBuildDate));
+                latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.BUILD_DATE_RECOMMENDED_URL));
+                buildType = "recommended";
+            }
+
+            SimpleDateFormat dateOutput = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a zzz");
+            Date botBuildDate = Bot.getBuildDate();
+            if (botBuildDate == null || botBuildDate.before(latestBuildDate))
+            {
+                sendMessage(e, "Updating to latest **" + buildType + "** version.\n**Latest " + buildType + " version's build date:** " + dateOutput.format(latestBuildDate));
+                if (useBetaBuilds)
+                    System.exit(Bot.UPDATE_LATEST_EXITCODE);
+                else
+                    System.exit(Bot.UPDATE_RECOMMENDED_EXITCODE);
+            }
+            else
+            {
+                sendMessage(e, "The Bot is currently up-to-date compared to the latest " + buildType + " build.\n**Current version's build date:** " + dateOutput.format(botBuildDate));
             }
         }
         catch (ParseException e1)

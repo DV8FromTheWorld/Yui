@@ -13,6 +13,7 @@ import net.dv8tion.discord.bridge.IrcConnectInfo;
 public class Settings {
     private String email;
     private String password;
+    private Boolean useBetaBuilds;
     private List<IrcConnectInfo> ircConnectInfos;
     private List<BridgeInfo> bridges;
 
@@ -50,5 +51,15 @@ public class Settings {
     public void setBridges(List<BridgeInfo> bridges)
     {
         this.bridges = bridges;
+    }
+
+    public Boolean getUseBetaBuilds()
+    {
+        return useBetaBuilds;
+    }
+
+    public void setUseBetaBuilds(boolean useBetaBuilds)
+    {
+        this.useBetaBuilds = useBetaBuilds;
     }
 }

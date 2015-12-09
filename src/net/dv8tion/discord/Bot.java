@@ -45,13 +45,15 @@ public class Bot
 {
     public static final int NORMAL_SHUTDOWN = 10;
     public static final int RESTART_EXITCODE = 19;
-    public static final int UPDATE_EXITCODE = 20;
+    public static final int UPDATE_LATEST_EXITCODE = 25;
+    public static final int UPDATE_RECOMMENDED_EXITCODE = 20;
     public static final int NEWLY_CREATED_CONFIG = 21;
     public static final int UNABLE_TO_CONNECT_TO_DISCORD = 22;
     public static final int BAD_USERNAME_PASS_COMBO = 23;
     public static final int NO_USERNAME_PASS_COMBO = 24;
 
-    public static final String LATEST_BUILD_DATE_URL = "https://drone.io/github.com/DV8FromTheWorld/Yui/files/target/classes/build-date.txt";
+    public static final String BUILD_DATE_RECOMMENDED_URL = "https://drone.io/github.com/DV8FromTheWorld/Yui/files/release/build-date-recommended.txt";
+    public static final String BUILD_DATE_LATEST_URL = "https://drone.io/github.com/DV8FromTheWorld/Yui/files/release/build-date-latest.txt";
     public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
