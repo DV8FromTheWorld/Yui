@@ -42,8 +42,8 @@
     </resources>
   </build>
   <artifactId>Yui</artifactId>
-  <name>Yui Discord Bot</name>
-  <url>https://github.com/DV8FromTheWorld/Discord-Bot</url>
+  <name>Yui Bot</name>
+  <url>https://github.com/DV8FromTheWorld/Yui</url>
   <description>Bot for the Gaming Bunch's Discord Server. Uses the jDiscord API by Ghost</description>
   <dependencies>
     <dependency>
