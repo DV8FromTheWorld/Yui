@@ -11,6 +11,7 @@ import org.pircbotx.Channel;
 public class IrcEndPoint extends EndPoint
 {
     public static final int MAX_LINE_LENGTH = 450;
+    public static final char NAME_BREAK_CHAR = '\u200B';
 
     private String connectionName;
     private String channelName;
@@ -74,7 +75,21 @@ public class IrcEndPoint extends EndPoint
         {
             for (String segment : this.divideMessageForSending(line))
             {
-                this.sendMessage(String.format("<%s> %s", message.getSenderName(), segment));
+                String username = message.getSenderName();
+                StringBuilder builder = new StringBuilder();
+                builder.append("<");
+                if (username.length() > 1)
+                {
+                    int midway = username.length() / 2;
+                    builder.append(username.substring(0, midway));
+                    builder.append(NAME_BREAK_CHAR);
+                    builder.append(username.substring(midway));
+                }
+                else
+                    builder.append(username);
+                builder.append("> ");
+                builder.append(segment);
+                this.sendMessage(builder.toString());
             }
         }
     }
