@@ -3,10 +3,10 @@ package net.dv8tion.discord.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.util.Downloader;
 import net.dv8tion.discord.util.GoogleSearch;
 
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 public class MyAnimeListCommand extends Command
@@ -16,12 +16,8 @@ public class MyAnimeListCommand extends Command
     public static final String CHARACTER_URL = "http://myanimelist.net/character/";
 
     @Override
-    public void onChat(UserChatEvent e)
+    public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (!containsCommand(e.getMsg()))
-            return;
-
-        String[] args = commandArgs(e.getMsg());
         GoogleSearch search = new GoogleSearch(
                 String.format("%s+%s",
                         StringUtils.join(args, "+", 1, args.length),

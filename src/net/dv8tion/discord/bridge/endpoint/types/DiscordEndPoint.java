@@ -1,51 +1,51 @@
 package net.dv8tion.discord.bridge.endpoint.types;
 
-import me.itsghost.jdiscord.Server;
-import me.itsghost.jdiscord.talkable.Group;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
 import net.dv8tion.discord.bridge.endpoint.EndPointType;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
 
 public class DiscordEndPoint extends EndPoint
 {
     public static final int MAX_MESSAGE_LENGTH = 2000;
 
-    private String serverId;
-    private String groupId;
+    private String guildId;
+    private String channelId;
 
     public DiscordEndPoint(EndPointInfo info)
     {
         super(EndPointType.DISCORD);
-        this.serverId = info.getConnectorId();
-        this.groupId = info.getChannelId();
+        this.guildId = info.getConnectorId();
+        this.channelId = info.getChannelId();
     }
 
-    public String getServerId()
+    public String getGuildId()
     {
-        return serverId;
+        return guildId;
     }
 
-    public Server getServer()
+    public Guild getGuild()
     {
-        return Bot.getAPI().getServerById(serverId);
+        return Bot.getAPI().getGuildById(guildId);
     }
 
-    public String getGroupId()
+    public String getChannelId()
     {
-        return groupId;
+        return channelId;
     }
 
-    public Group getGroup()
+    public TextChannel getChannel()
     {
-        return Bot.getAPI().getGroupById(groupId);
+        return Bot.getAPI().getTextChannelById(channelId);
     }
 
     @Override
     public EndPointInfo toEndPointInfo()
     {
-        return new EndPointInfo( this.connectionType, this.serverId, this.groupId);
+        return new EndPointInfo( this.connectionType, this.guildId, this.channelId);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class DiscordEndPoint extends EndPoint
     {
         if (!connected)
             throw new IllegalStateException("Cannot send message to disconnected EndPoint! EndPoint: " + this.toEndPointInfo().toString());
-        getGroup().sendMessage(message);
+        getChannel().sendMessage(message);
     }
 
     @Override
@@ -70,7 +70,7 @@ public class DiscordEndPoint extends EndPoint
         switch (message.getType())
         {
             case DISCORD:
-                getGroup().sendMessage(message.getDiscordMessage());
+                getChannel().sendMessage(message.getDiscordMessage());
                 break;
             default:
                 for (String segment : this.divideMessageForSending(message.getMessage()))

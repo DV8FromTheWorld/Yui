@@ -5,29 +5,25 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.talkable.User;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
 
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 public class PermissionsCommand extends Command
 {
 
     @Override
-    public void onChat(UserChatEvent e)
+    public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (!containsCommand(e.getMsg()))
-            return;
-
-        if (!Permissions.getPermissions().isOp(e.getUser()))
+        if (!Permissions.getPermissions().isOp(e.getAuthor()))
         {
             sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;
         }
 
-        String[] args = commandArgs(e.getMsg());
         if (args[0].contains(".perms") || args[0].contains(".permissions"))
         {
             args = ArrayUtils.subarray(args, 1, args.length);   //We cut off the .perms or .permissions to make the array behave as .op would
@@ -46,13 +42,13 @@ public class PermissionsCommand extends Command
         {
             //Only 1 case for now. Later we will have more user permissions types...probably.
             case "op":
-                processOp(args, e);
+                processOp(e, args);
                 break;
             default:
                 sendMessage(e, new StringBuilder()
-                    .append("**Improper syntax, unrecognized argument:** " + args[1])
-                    .append("\n**Provided Command:** " + e.getMsg().toString())
-                    .toString());
+                        .append("**Improper syntax, unrecognized permission group:** " + args[0])
+                        .append("\n**Provided Command:** " + e.getMessage().getContent())
+                        .toString());
                 return;
         }
     }
@@ -99,7 +95,7 @@ public class PermissionsCommand extends Command
      * @param e
      *          The original UserChatEvent, used to sendMessages.
      */
-    private void processOp(String[] args, UserChatEvent e)
+    private void processOp(MessageReceivedEvent e, String[] args)
     {
         if (args.length < 2)
         {
@@ -109,10 +105,10 @@ public class PermissionsCommand extends Command
         switch (args[1])
         {
             case "add":
-                processAddOp(args, e);
+                processAddOp(e, args);
                 break;
             case "remove":
-                processRemoveOp(args, e);
+                processRemoveOp(e, args);
                 break;
             case "list":
                 String ops = "";
@@ -125,7 +121,7 @@ public class PermissionsCommand extends Command
             default:
                 sendMessage(e, new StringBuilder()
                     .append("**Improper syntax, unrecognized argument:** " + args[1])
-                    .append("\n**Provided Command:** " + e.getMsg().toString())
+                    .append("\n**Provided Command:** " + e.getMessage().getContent())
                     .toString());
         }
     }
@@ -138,7 +134,7 @@ public class PermissionsCommand extends Command
      * @param e
      *          The original UserChatEvent, used to sendMessages.
      */
-    private void processAddOp(String[] args, UserChatEvent e)
+    private void processAddOp(MessageReceivedEvent e, String[] args)
     {
         if (args.length < 3)
         {
@@ -182,7 +178,7 @@ public class PermissionsCommand extends Command
      * @param e
      *          The original UserChatEvent, used to sendMessages.
      */
-    private void processRemoveOp(String[] args, UserChatEvent e)
+    private void processRemoveOp(MessageReceivedEvent e, String[] args)
     {
         if (args.length < 3)
         {

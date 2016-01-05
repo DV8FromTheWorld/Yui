@@ -78,6 +78,8 @@ public class SettingsManager {
         Settings newSettings = new Settings();
         newSettings.setEmail("email");
         newSettings.setPassword("password");
+        newSettings.setProxyHost("");
+        newSettings.setProxyPort("8080");
         newSettings.setUseBetaBuilds(new Boolean(false));
 
         IrcConnectInfo connectDefault = new IrcConnectInfo();
@@ -122,6 +124,16 @@ public class SettingsManager {
         if (settings.getBridges() == null)
         {
             settings.setBridges(defaults.getBridges());
+            modified = true;
+        }
+        if (settings.getProxyHost() == null)
+        {
+            settings.setProxyHost(defaults.getProxyHost());
+            modified = true;
+        }
+        if (settings.getProxyPort() == null)
+        {
+            settings.setProxyPort(defaults.getProxyPort());
             modified = true;
         }
 

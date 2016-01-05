@@ -6,8 +6,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import net.dv8tion.discord.util.Database;
-import me.itsghost.jdiscord.SelfData;
-import me.itsghost.jdiscord.talkable.GroupUser;
+import net.dv8tion.jda.entities.SelfInfo;
+import net.dv8tion.jda.entities.User;
 
 public class Permissions
 {
@@ -62,7 +62,7 @@ public class Permissions
      * @param bot
      *          The User object representing the currently logged in account.
      */
-    public void setBotAsOp(SelfData bot)
+    public void setBotAsOp(SelfInfo bot)
     {
         ops.add(bot.getId());
     }
@@ -129,9 +129,9 @@ public class Permissions
      * @return
      *      true - if the user is considered an OP.
      */
-    public boolean isOp(GroupUser user)
+    public boolean isOp(User user)
     {
-        return isOp(user.getUser().getId());
+        return isOp(user.getId());
     }
 
     /**

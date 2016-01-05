@@ -3,19 +3,16 @@ package net.dv8tion.discord.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class ReloadCommand extends Command
 {
     @Override
-    public void onChat(UserChatEvent e)
+    public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (!containsCommand(e.getMsg()))
-            return;
-
-        if (!Permissions.getPermissions().isOp(e.getUser()))
+        if (!Permissions.getPermissions().isOp(e.getAuthor()))
         {
             sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;

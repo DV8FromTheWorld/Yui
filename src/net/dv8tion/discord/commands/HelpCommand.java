@@ -4,10 +4,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.MessageBuilder;
-import me.itsghost.jdiscord.talkable.Group;
-
+import net.dv8tion.jda.MessageBuilder;
+import net.dv8tion.jda.entities.PrivateChannel;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 public class HelpCommand extends Command
@@ -23,77 +24,23 @@ public class HelpCommand extends Command
         commands = new ArrayList<Command>();
     }
 
-    @Override
-    public void onChat(UserChatEvent e)
-    {
-        if (!containsCommand(e.getMsg()))
-            return;
-
-        //This represents the user's private message "group"
-        Group userGroup = e.getUser().getUser().getGroup();
-
-        //This isn't a PM. Tell them we are sending the help info as a PM.
-        if (e.getServer() != null)
-        {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": Help information was sent as a private message.")
-                .build());
-        }
-
-        String[] args = commandArgs(e.getMsg());
-        if (args.length < 2)
-        {
-            StringBuilder s = new StringBuilder();
-            for (Command c : commands)
-            {
-                String description = c.getDescription();
-                description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
-
-                s.append("**").append(c.getAliases().get(0)).append("** - ");
-                s.append(description).append("\n");
-            }
-
-            userGroup.sendMessage(new MessageBuilder()
-                .addString("The following commands are supported by the bot\n")
-                .addString(s.toString())
-                .build());
-        }
-        else
-        {
-            String command = args[1].charAt(0) == '.' ? args[1] : "." + args[1];    //If there is not a preceding . attached to the command we are search, then prepend one.
-            for (Command c : commands)
-            {
-                if (c.getAliases().contains(command))
-                {
-                    String name = c.getName();
-                    String description = c.getDescription();
-                    String usageInstructions = c.getUsageInstructions();
-                    name = (name == null || name.isEmpty()) ? NO_NAME : name;
-                    description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
-                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? NO_USAGE : usageInstructions;
-
-                    //TODO: Replace with a PrivateMessage
-                    userGroup.sendMessage(new MessageBuilder()
-                        .addString("**Name:** " + name + "\n")
-                        .addString("**Description:** " + description + "\n")
-                        .addString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
-                        .addString("**Usage:** ")
-                        .addString(usageInstructions)
-                        .build());
-                    return;
-                }
-            }
-            userGroup.sendMessage(new MessageBuilder()
-                .addString("The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
-                .build());
-        }
-    }
-
     public Command registerCommand(Command command)
     {
         commands.add(command);
         return command;
+    }
+
+    @Override
+    public void onCommand(MessageReceivedEvent e, String[] args)
+    {
+        if(!e.isPrivate())
+        {
+            e.getTextChannel().sendMessage(new MessageBuilder()
+                    .appendMention(e.getAuthor())
+                    .appendString(": Help information was sent as a private message.")
+                    .build());
+        }
+        sendPrivate(e.getAuthor().getPrivateChannel(), args);
     }
 
     @Override
@@ -122,5 +69,55 @@ public class HelpCommand extends Command
                 + ".help <command> - returns the name, description, aliases and usage information of a command.\n"
                 + "   - This can use the aliases of a command as input as well.\n"
                 + "__Example:__ .help ann";
+    }
+
+    private void sendPrivate(PrivateChannel channel, String[] args)
+    {
+        if (args.length < 2)
+        {
+            StringBuilder s = new StringBuilder();
+            for (Command c : commands)
+            {
+                String description = c.getDescription();
+                description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
+
+                s.append("**").append(c.getAliases().get(0)).append("** - ");
+                s.append(description).append("\n");
+            }
+
+            channel.sendMessage(new MessageBuilder()
+                    .appendString("The following commands are supported by the bot\n")
+                    .appendString(s.toString())
+                    .build());
+        }
+        else
+        {
+            String command = args[1].charAt(0) == '.' ? args[1] : "." + args[1];    //If there is not a preceding . attached to the command we are search, then prepend one.
+            for (Command c : commands)
+            {
+                if (c.getAliases().contains(command))
+                {
+                    String name = c.getName();
+                    String description = c.getDescription();
+                    String usageInstructions = c.getUsageInstructions();
+                    name = (name == null || name.isEmpty()) ? NO_NAME : name;
+                    description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
+                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? NO_USAGE : usageInstructions;
+
+                    //TODO: Replace with a PrivateMessage
+                    channel.sendMessage(new MessageBuilder()
+                            .appendString("**Name:** " + name + "\n")
+                            .appendString("**Description:** " + description + "\n")
+                            .appendString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
+                            .appendString("**Usage:** ")
+                            .appendString(usageInstructions)
+                            .build());
+                    return;
+                }
+            }
+            channel.sendMessage(new MessageBuilder()
+                    .appendString("The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
+                    .build());
+        }
     }
 }

@@ -13,6 +13,8 @@ import net.dv8tion.discord.bridge.IrcConnectInfo;
 public class Settings {
     private String email;
     private String password;
+    private String proxyHost;
+    private String proxyPort;
     private Boolean useBetaBuilds;
     private List<IrcConnectInfo> ircConnectInfos;
     private List<BridgeInfo> bridges;
@@ -31,6 +33,26 @@ public class Settings {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public String getProxyHost()
+    {
+        return proxyHost;
+    }
+
+    public void setProxyHost(String proxyHost)
+    {
+        this.proxyHost = proxyHost;
+    }
+
+    public String getProxyPort()
+    {
+        return proxyPort;
+    }
+
+    public void setProxyPort(String proxyPort)
+    {
+        this.proxyPort = proxyPort;
     }
 
     public List<IrcConnectInfo> getIrcConnectInfos()

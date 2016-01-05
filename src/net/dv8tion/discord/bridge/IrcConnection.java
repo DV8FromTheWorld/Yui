@@ -2,14 +2,15 @@ package net.dv8tion.discord.bridge;
 
 import java.io.IOException;
 
-import me.itsghost.jdiscord.event.EventListener;
-import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
 
+import net.dv8tion.jda.events.Event;
+import net.dv8tion.jda.events.message.guild.*;
+import net.dv8tion.jda.hooks.EventListener;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -80,6 +81,10 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     @Override
     public void onMessage(MessageEvent<PircBotX> event)
     {
+        //Specific to the the Imaginescape IRC/Discord channel. Dumb minecraft server spits out an empty message that is really annoying.
+        if (event.getUser().getNick().equals("IServer") && event.getMessage().equals("[Server]"))
+            return;
+
         //If this returns null, then this EndPoint isn't part of a bridge.
         EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));
         if (endPoint != null)
@@ -104,18 +109,25 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
 
     // -- Discord --
 
-    public void onDiscordGroupChat(UserChatEvent e)
+    @Override
+    public void onEvent(Event event)
     {
-        //If this is a PM message, return. We don't bridge PMs
-        if (e.getServer() == null)
+        //We only deal with TextChannel Message events
+        if (!(event instanceof GenericGuildMessageEvent))
             return;
 
+        //Don't care about deleted messages or embeds.
+        if (event instanceof GuildMessageDeleteEvent || event instanceof GuildMessageEmbedEvent)
+            return;
+
+        GenericGuildMessageEvent e = (GenericGuildMessageEvent) event;
+
         //Basically: If we are the ones that sent the message, don't send it to IRC.
-        if (Bot.getAPI().getSelfInfo().getId().equals(e.getUser().getUser().getId()))
+        if (event.getJDA().getSelfInfo().getId().equals(e.getAuthor().getId()))
             return;
 
         //If this returns null, then this EndPoint isn't part of a bridge.
-        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordGroup(e.getGroup()));
+        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordChannel(e.getChannel()));
         if (endPoint != null)
         {
             EndPointMessage message = EndPointMessage.createFromDiscordEvent(e);

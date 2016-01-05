@@ -3,11 +3,12 @@ package net.dv8tion.discord.bridge.endpoint;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.Message;
-import me.itsghost.jdiscord.talkable.Group;
 import net.dv8tion.discord.Bot;
 
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.entities.User;
+import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -18,8 +19,8 @@ public class EndPointMessage
     private String message;
 
     // -- Discord specific --
-    private UserChatEvent discordEvent;
-    private me.itsghost.jdiscord.talkable.User discordUser;
+    private GenericGuildMessageEvent discordEvent;
+    private User discordUser;
     private Message discordMessage;
 
     // -- irc specific --
@@ -42,15 +43,14 @@ public class EndPointMessage
         return message;
     }
 
-    public static EndPointMessage createFromDiscordEvent(UserChatEvent event)
+    public static EndPointMessage createFromDiscordEvent(GenericGuildMessageEvent event)
     {
         EndPointMessage message = new EndPointMessage();
         message.messageType = EndPointType.DISCORD;
-        message.setDiscordMessage(event.getMsg());
-        message.senderName = event.getUser().getUser().getUsername();
+        message.setDiscordMessage(event.getMessage());
+        message.senderName = event.getAuthor().getUsername();
         message.discordEvent = event;
-        message.discordUser = event.getUser().getUser();
-        message.discordMessage = event.getMsg();
+        message.discordUser = event.getAuthor();
         return message;
     }
 
@@ -87,14 +87,14 @@ public class EndPointMessage
 
     // ------ Discord Specific ------
 
-    public me.itsghost.jdiscord.talkable.User getDiscordUser()
+    public User getDiscordUser()
     {
         if (!messageType.equals(EndPointType.DISCORD))
             throw new IllegalStateException("Attempted to get Discord user from a non-Discord message");
         return discordUser;
     }
 
-    public UserChatEvent getDiscordEvent()
+    public GenericGuildMessageEvent getDiscordEvent()
     {
         if (!messageType.equals(EndPointType.DISCORD))
             throw new IllegalStateException("Attemped to get Discord event for non-Discord message");
@@ -110,26 +110,26 @@ public class EndPointMessage
 
     public void setDiscordMessage(Message discordMessage)
     {
-        String parsedMessage = discordMessage.getMessage();
+        String parsedMessage = discordMessage.getContent();
         Pattern userPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
-        Pattern groupPattern = Pattern.compile("(?<=<#)[0-9]{18}(?=>)");
+        Pattern channelPattern = Pattern.compile("(?<=<#)[0-9]{18}(?=>)");
 
         Matcher userMatcher = userPattern.matcher(parsedMessage);
         while (userMatcher.find())
         {
             String userId = userMatcher.group();
-            me.itsghost.jdiscord.talkable.User user = Bot.getAPI().getUserById(userId);
+            User user = Bot.getAPI().getUserById(userId);
             if (user != null)
                 parsedMessage = parsedMessage.replace("<@" + userId + ">", user.getUsername());
         }
 
-        Matcher groupMatcher = groupPattern.matcher(parsedMessage);
-        while(groupMatcher.find())
+        Matcher channelMatcher = channelPattern.matcher(parsedMessage);
+        while(channelMatcher.find())
         {
-            String groupId = groupMatcher.group();
-            Group group = Bot.getAPI().getGroupById(groupId);
-            if (group != null)
-                parsedMessage = parsedMessage.replace("<#" + groupId + ">", group.getName());
+            String channelId = channelMatcher.group();
+            TextChannel channel = Bot.getAPI().getTextChannelById(channelId);
+            if (channel != null)
+                parsedMessage = parsedMessage.replace("<#" + channelId + ">", channel.getName());
         }
 
         this.message = parsedMessage;

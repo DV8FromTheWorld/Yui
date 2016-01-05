@@ -2,18 +2,30 @@ package net.dv8tion.discord.commands;
 
 import java.util.List;
 
-import me.itsghost.jdiscord.event.EventListener;
-import me.itsghost.jdiscord.events.UserChatEvent;
-import me.itsghost.jdiscord.message.Message;
-import me.itsghost.jdiscord.message.MessageBuilder;
+import net.dv8tion.jda.MessageBuilder;
+import net.dv8tion.jda.entities.Message;
+import net.dv8tion.jda.events.message.GenericMessageEvent;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageUpdateEvent;
+import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
+import net.dv8tion.jda.events.message.priv.PrivateMessageUpdateEvent;
+import net.dv8tion.jda.hooks.ListenerAdapter;
 
-public abstract class Command implements EventListener 
+public abstract class Command extends ListenerAdapter
 {
-    public abstract void onChat(UserChatEvent e);
+    public abstract void onCommand(MessageReceivedEvent e, String[] args);
     public abstract List<String> getAliases();
     public abstract String getDescription();
     public abstract String getName();
     public abstract String getUsageInstructions();
+
+    @Override
+    public void onMessageReceived(MessageReceivedEvent e)
+    {
+        if (containsCommand(e.getMessage()))
+            onCommand(e, commandArgs(e.getMessage()));
+    }
 
     protected boolean containsCommand(Message message)
     {
@@ -22,7 +34,7 @@ public abstract class Command implements EventListener
 
     protected String[] commandArgs(Message message)
     {
-        return commandArgs(message.toString());
+        return commandArgs(message.getContent());
     }
 
     protected String[] commandArgs(String string)
@@ -30,20 +42,16 @@ public abstract class Command implements EventListener
         return string.split(" ");
     }
 
-    protected void sendMessage(UserChatEvent e, String message)
+    protected Message sendMessage(MessageReceivedEvent e, Message message)
     {
-        if (e.getServer() != null)
-        {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addUserTag(e.getUser(), e.getGroup())
-                .addString(": " + message)
-                .build());
-        }
-        else //This is a PM
-        {
-            e.getGroup().sendMessage(new MessageBuilder()
-                .addString(message)
-                .build());
-        }
+        if(e.isPrivate())
+            return e.getPrivateChannel().sendMessage(message);
+        else
+            return e.getTextChannel().sendMessage(message);
+    }
+
+    protected Message sendMessage(MessageReceivedEvent e, String message)
+    {
+        return sendMessage(e, new MessageBuilder().appendString(message).build());
     }
 }

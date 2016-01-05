@@ -6,21 +6,18 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.SettingsManager;
 import net.dv8tion.discord.util.Downloader;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class UpdateCommand extends Command
 {
     @Override
-    public void onChat(UserChatEvent e)
+    public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (!containsCommand(e.getMsg()))
-            return;
-
-        if (!Permissions.getPermissions().isOp(e.getUser().getUser().getId()))
+        if (!Permissions.getPermissions().isOp(e.getAuthor().getId()))
         {
             sendMessage(e, Permissions.OP_REQUIRED_MESSAGE);
             return;

@@ -1,7 +1,6 @@
 package net.dv8tion.discord.bridge.endpoint;
 
-import me.itsghost.jdiscord.talkable.Group;
-
+import net.dv8tion.jda.entities.TextChannel;
 import org.pircbotx.Channel;
 
 public class EndPointInfo
@@ -62,9 +61,9 @@ public class EndPointInfo
         return toString().equals(oInfo.toString());
     }
 
-    public static EndPointInfo createFromDiscordGroup(Group group)
+    public static EndPointInfo createFromDiscordChannel(TextChannel channel)
     {
-        return new EndPointInfo(EndPointType.DISCORD, group.getServer().getId(), group.getId());
+        return new EndPointInfo(EndPointType.DISCORD, channel.getGuild().getId(), channel.getId());
     }
 
     public static EndPointInfo createFromIrcChannel(String identifier, Channel channel)

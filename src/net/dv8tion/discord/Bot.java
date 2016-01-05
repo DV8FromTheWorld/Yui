@@ -12,16 +12,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import me.itsghost.jdiscord.DiscordAPI;
-import me.itsghost.jdiscord.DiscordBuilder;
-import me.itsghost.jdiscord.Server;
-import me.itsghost.jdiscord.event.EventListener;
-import me.itsghost.jdiscord.event.EventManager;
-import me.itsghost.jdiscord.events.APILoadedEvent;
-import me.itsghost.jdiscord.exception.BadUsernamePasswordException;
-import me.itsghost.jdiscord.exception.DiscordFailedToConnectException;
-import me.itsghost.jdiscord.exception.NoLoginDetailsException;
-import me.itsghost.jdiscord.talkable.Group;
 import net.dv8tion.discord.bridge.IrcConnectInfo;
 import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
@@ -35,11 +25,17 @@ import net.dv8tion.discord.commands.ReloadCommand;
 import net.dv8tion.discord.commands.SearchCommand;
 import net.dv8tion.discord.commands.TestCommand;
 import net.dv8tion.discord.commands.UpdateCommand;
-import net.dv8tion.discord.fixes.EventManagerX;
 import net.dv8tion.discord.util.Database;
 
+import net.dv8tion.jda.JDA;
+import net.dv8tion.jda.JDABuilder;
+import net.dv8tion.jda.entities.Guild;
+import net.dv8tion.jda.entities.TextChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
+
+import javax.security.auth.login.LoginException;
 
 public class Bot
 {
@@ -63,7 +59,7 @@ public class Bot
     public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
 
     private static Date BUILD_DATE;
-    private static DiscordAPI api;
+    private static JDA api;
     private static List<IrcConnection> ircConnections;
 
     public static void main(String[] args) throws InterruptedException, UnsupportedEncodingException
@@ -97,7 +93,7 @@ public class Bot
         return (Date) BUILD_DATE.clone();
     }
 
-    public static DiscordAPI getAPI()
+    public static JDA getAPI()
     {
         return api;
     }
@@ -141,64 +137,76 @@ public class Bot
                 System.out.println("Could not determine build date.");
                 e.printStackTrace();
             }
-            api = new DiscordBuilder(settings.getEmail(), settings.getPassword()).build().login();
-            EventManagerX.replaceEventManager(api); //TODO: Remove this once jDiscord includes the fix.
+            JDABuilder jdaBuilder = new JDABuilder(settings.getEmail(), settings.getPassword());
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
 
-            EventManager manager = api.getEventManager();
             HelpCommand help = new HelpCommand();
-            manager.registerListener(help.registerCommand(help));
-            manager.registerListener(help.registerCommand(new TestCommand()));
-            manager.registerListener(help.registerCommand(new SearchCommand()));
-            manager.registerListener(help.registerCommand(new NyaaCommand()));
-            manager.registerListener(help.registerCommand(new MyAnimeListCommand()));
-            manager.registerListener(help.registerCommand(new AnimeNewsNetworkCommand()));
-            manager.registerListener(help.registerCommand(new ReloadCommand()));
-            manager.registerListener(help.registerCommand(new UpdateCommand()));
-            manager.registerListener(help.registerCommand(new PermissionsCommand()));
+            jdaBuilder.addListener(help.registerCommand(help));
+            jdaBuilder.addListener(help.registerCommand(new TestCommand()));
+            jdaBuilder.addListener(help.registerCommand(new SearchCommand()));
+            jdaBuilder.addListener(help.registerCommand(new NyaaCommand()));
+            jdaBuilder.addListener(help.registerCommand(new MyAnimeListCommand()));
+            jdaBuilder.addListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+            jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
+            jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
+            jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
                 IrcConnection irc = new IrcConnection(info);
                 ircConnections.add(irc);
-                manager.registerListener(irc);
+                jdaBuilder.addListener(irc);
             }
 
-            manager.registerListener(new EventListener()
+            if (settings.getProxyHost() != null && !settings.getProxyHost().isEmpty())
             {
-                @SuppressWarnings("unused")
-                public void onApiLoaded(APILoadedEvent e)
+                //Sets JDA's proxy settings
+                jdaBuilder.setProxy(settings.getProxyHost(), Integer.valueOf(settings.getProxyPort()));
+
+                //Sets the JVM level proxy settings.
+                System.setProperty("http.proxyHost", settings.getProxyHost());
+                System.setProperty("http.proxyPort", settings.getProxyPort());
+                System.setProperty("https.proxyHost", settings.getProxyHost());
+                System.setProperty("https.proxyPort", settings.getProxyPort());
+
+            }
+
+            //Login to Discord now that we are all setup.
+            api = jdaBuilder.buildBlocking();
+            Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+
+            //Creates and Stores all Discord endpoints in our Manager.
+            for (Guild guild : api.getGuilds())
+            {
+                for (TextChannel channel : guild.getTextChannels())
                 {
-                    //Creates and Stores all Discord endpoints in our Manager.
-                    for (Server server : api.getAvailableServers())
-                    {
-                        for (Group group : server.getGroups())
-                        {
-                            EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromDiscordGroup(group));
-                        }
-                    }
-                    Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+                    EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromDiscordChannel(channel));
                 }
-            });
+            }
         }
-        catch (NoLoginDetailsException e)
+        catch (IllegalArgumentException e)
         {
             System.out.println("No login details provided! Please give an email and password in the config file.");
             System.exit(NO_USERNAME_PASS_COMBO);
         }
-        catch (BadUsernamePasswordException e)
+        catch (LoginException e)
         {
             System.out.println("The Email and Password combination provided in the Config.json was incorrect.");
             System.out.println("Did you modify the Config.json after it was created?");
             System.exit(BAD_USERNAME_PASS_COMBO);
         }
-        catch (DiscordFailedToConnectException e)
+        catch (InterruptedException e)
         {
-            System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
-            System.out.println("Also double-check your Config.json for possible mistakes.");
+            System.out.println("Our login thread was interrupted!");
             System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
+//        catch (DiscordFailedToConnectException e)
+//        {
+//            System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
+//            System.out.println("Also double-check your Config.json for possible mistakes.");
+//            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
+//        }
     }
 
     private static void relaunchInUTF8() throws InterruptedException, UnsupportedEncodingException

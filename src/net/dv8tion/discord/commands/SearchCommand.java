@@ -3,18 +3,18 @@ package net.dv8tion.discord.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import me.itsghost.jdiscord.events.UserChatEvent;
 import net.dv8tion.discord.util.GoogleSearch;
 
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 public class SearchCommand extends Command
 {
 	@Override
-	public void onChat(UserChatEvent e) {
+	public void onCommand(MessageReceivedEvent e, String[] args)
+	{
 		String filter = null;
-		String[] splitMessage = commandArgs(e.getMsg());
-		switch (splitMessage[0]) {
+		switch (args[0]) {
 			case ".google":
 			case ".g":
 				break;
@@ -29,13 +29,13 @@ public class SearchCommand extends Command
 		}
 
 		GoogleSearch search = new GoogleSearch(
-		        StringUtils.join(splitMessage, "+", 1, splitMessage.length)
-		        + ((filter != null) ? ("+" + filter) : ""));
+				StringUtils.join(args, "+", 1, args.length)
+						+ ((filter != null) ? ("+" + filter) : ""));
 
 		sendMessage(e, search.getSuggestedReturn());
 	}
 
-    @Override
+	@Override
     public List<String> getAliases()
     {
         return Arrays.asList(".google", ".g", ".wiki", ".urban");
