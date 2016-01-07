@@ -52,12 +52,6 @@ public class Yui
     public static final int BAD_USERNAME_PASS_COMBO = 31;
     public static final int NO_USERNAME_PASS_COMBO = 32;
 
-    public static final String BUILD_DATE_RECOMMENDED_URL = "https://drone.io/github.com/DV8FromTheWorld/Yui/files/release/build-date-recommended.txt";
-    public static final String BUILD_DATE_LATEST_URL = "https://drone.io/github.com/DV8FromTheWorld/Yui/files/release/build-date-latest.txt";
-    public static final String BUILD_DATE_FILE_NAME = "build-date.txt";
-    public static final SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss z");
-
-    private static Date BUILD_DATE;
     private static JDA api;
     private static List<IrcConnection> ircConnections;
 
@@ -87,11 +81,6 @@ public class Yui
         return new File(decodedPath);   //We use File so that when we send the path to the ProcessBuilder, we will be using the proper System path formatting.
     }
 
-    public static Date getBuildDate()
-    {
-        return (Date) BUILD_DATE.clone();
-    }
-
     public static JDA getAPI()
     {
         return api;
@@ -112,30 +101,7 @@ public class Yui
         try
         {
             Settings settings = SettingsManager.getInstance().getSettings();
-            try
-            {
-                //Used when in IDE
-                File buildDateFile = new File(BUILD_DATE_FILE_NAME);
-                if (buildDateFile.exists())
-                {
-                    String date = new String(Files.readAllBytes(Paths.get(BUILD_DATE_FILE_NAME)), "UTF-8");
-                    BUILD_DATE = DATE_FORMATTER.parse(date);
-                }
-                else    //Used when in JAR.
-                {
-                    String date = new String(
-                            IOUtils.toByteArray(
-                                    Thread.currentThread().getContextClassLoader().getResourceAsStream(BUILD_DATE_FILE_NAME)),
-                            "UTF-8");
-                    BUILD_DATE = DATE_FORMATTER.parse(date);
-                }
-            }
-            catch (IOException | ParseException e)
-            {
-                BUILD_DATE = null;
-                System.out.println("Could not determine build date.");
-                e.printStackTrace();
-            }
+
             JDABuilder jdaBuilder = new JDABuilder(settings.getEmail(), settings.getPassword());
             Database.getInstance();
             Permissions.setupPermissions();
@@ -153,6 +119,16 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
+                if (info.getHost() == null || info.getHost().isEmpty())
+                {
+                    System.out.println("Skipping IRC connection '" + info.getIdentifier() + "' because no Host was provided.");
+                    continue;
+                }
+                if (info.getNick() == null || info.getNick().isEmpty())
+                {
+                    System.out.println("Skipping IRC connection '" + info.getIdentifier() + "' because no Nick was provided.");
+                    continue;
+                }
                 IrcConnection irc = new IrcConnection(info);
                 ircConnections.add(irc);
                 jdaBuilder.addListener(irc);

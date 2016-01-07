@@ -9,7 +9,9 @@ import java.util.List;
 import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.SettingsManager;
+import net.dv8tion.discord.YuiInfo;
 import net.dv8tion.discord.util.Downloader;
+import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
 public class UpdateCommand extends Command
@@ -23,40 +25,35 @@ public class UpdateCommand extends Command
             return;
         }
 
-        try
+        if(SettingsManager.getInstance().getSettings().getUseBetaBuilds() && YuiInfo.hasNewBetaVersion())
         {
-            boolean useBetaBuilds = SettingsManager.getInstance().getSettings().getUseBetaBuilds();
-            Date latestBuildDate = null;
-            String buildType;
-            if (useBetaBuilds)
-            {
-                latestBuildDate = Yui.DATE_FORMATTER.parse(Downloader.webpage(Yui.BUILD_DATE_LATEST_URL));
-                buildType = "beta";
-            }
-            else
-            {
-                latestBuildDate = Yui.DATE_FORMATTER.parse(Downloader.webpage(Yui.BUILD_DATE_RECOMMENDED_URL));
-                buildType = "recommended";
-            }
-
-            SimpleDateFormat dateOutput = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a zzz");
-            Date botBuildDate = Yui.getBuildDate();
-            if (botBuildDate == null || botBuildDate.before(latestBuildDate))
-            {
-                sendMessage(e, "Updating to latest **" + buildType + "** version.\n**Latest " + buildType + " version's build date:** " + dateOutput.format(latestBuildDate));
-                if (useBetaBuilds)
-                    System.exit(Yui.UPDATE_LATEST_EXITCODE);
-                else
-                    System.exit(Yui.UPDATE_RECOMMENDED_EXITCODE);
-            }
-            else
-            {
-                sendMessage(e, "The Bot is currently up-to-date compared to the latest " + buildType + " build.\n**Current version's build date:** " + dateOutput.format(botBuildDate));
-            }
+            sendMessage(e, new MessageBuilder()
+                .appendString("Updating to the latest **beta** version.\n")
+                .appendString(YuiInfo.VERSION.toString())
+                .appendString(" -> ")
+                .appendString(YuiInfo.getLatestBetaVersion().toString())
+                .build());
+            System.exit(Yui.UPDATE_LATEST_EXITCODE);
         }
-        catch (ParseException e1)
+        else if (YuiInfo.hasNewRecommendedVersion())
         {
-            e1.printStackTrace();
+            sendMessage(e, new MessageBuilder()
+                    .appendString("Updating to the latest **recommended** version.\n")
+                    .appendString(YuiInfo.VERSION.toString())
+                    .appendString(" -> ")
+                    .appendString(YuiInfo.getLatestRecommendedVersion().toString())
+                    .build());
+            System.exit(Yui.UPDATE_RECOMMENDED_EXITCODE);
+        }
+        else
+        {
+            sendMessage(e, new MessageBuilder()
+                .appendString("Yui is currently up-to-date compared to the latest ")
+                .appendString(SettingsManager.getInstance().getSettings().getUseBetaBuilds() ? "beta" : "recommended")
+                .appendString("build.\n")
+                .appendString("Current version: ", MessageBuilder.Formatting.BOLD)
+                .appendString(YuiInfo.VERSION.toString())
+                .build());
         }
     }
 
