@@ -11,11 +11,10 @@ public class YuiInfo
     public static final String RECOMMENDED_BUILD_ROOT = "http://home.dv8tion.net:8080/job/Yui/Promoted%20Build/artifact/build/libs/";
     public static final String BETA_BUILD_ROOT = "http://home.dv8tion.net:8080/job/Yui/lastCompletedBuild/artifact/build/libs/";
     public static final Version VERSION = new Version(
-//            "@versionMajor@",
-//            "@versionMinor@",
-//            "@versionRevision@",
-//            "@versionBuild@"
-            "0","0","0","0"
+            "@versionMajor@",
+            "@versionMinor@",
+            "@versionRevision@",
+            "@versionBuild@"
     );
     private static final String URL_REGEX = "\\<a href=\"Yui-withDependencies-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*\\.jar\">(Yui-withDependencies-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*\\.jar)\\<\\/a\\>";
     private static final String VERSION_REGEX = "Yui-withDependencies-([0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*)\\.jar";
