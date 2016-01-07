@@ -1,6 +1,6 @@
 package net.dv8tion.discord.bridge.endpoint.types;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
@@ -28,7 +28,7 @@ public class IrcEndPoint extends EndPoint
     {
         if (channel != null)
             return channel;
-        for (Channel c : Bot.getIrcConnection(connectionName).getIrcBot().getUserBot().getChannels())
+        for (Channel c : Yui.getIrcConnection(connectionName).getIrcBot().getUserBot().getChannels())
         {
             if (c.getName().equals(channelName))
             {

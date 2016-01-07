@@ -3,7 +3,7 @@ package net.dv8tion.discord.bridge.endpoint;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 
 import net.dv8tion.jda.entities.Message;
 import net.dv8tion.jda.entities.TextChannel;
@@ -118,7 +118,7 @@ public class EndPointMessage
         while (userMatcher.find())
         {
             String userId = userMatcher.group();
-            User user = Bot.getAPI().getUserById(userId);
+            User user = Yui.getAPI().getUserById(userId);
             if (user != null)
                 parsedMessage = parsedMessage.replace("<@" + userId + ">", user.getUsername());
         }
@@ -127,7 +127,7 @@ public class EndPointMessage
         while(channelMatcher.find())
         {
             String channelId = channelMatcher.group();
-            TextChannel channel = Bot.getAPI().getTextChannelById(channelId);
+            TextChannel channel = Yui.getAPI().getTextChannelById(channelId);
             if (channel != null)
                 parsedMessage = parsedMessage.replace("<#" + channelId + ">", channel.getName());
         }

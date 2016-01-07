@@ -6,7 +6,7 @@ import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.SettingsManager;
 import net.dv8tion.discord.util.Downloader;
@@ -30,24 +30,24 @@ public class UpdateCommand extends Command
             String buildType;
             if (useBetaBuilds)
             {
-                latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.BUILD_DATE_LATEST_URL));
+                latestBuildDate = Yui.DATE_FORMATTER.parse(Downloader.webpage(Yui.BUILD_DATE_LATEST_URL));
                 buildType = "beta";
             }
             else
             {
-                latestBuildDate = Bot.DATE_FORMATTER.parse(Downloader.webpage(Bot.BUILD_DATE_RECOMMENDED_URL));
+                latestBuildDate = Yui.DATE_FORMATTER.parse(Downloader.webpage(Yui.BUILD_DATE_RECOMMENDED_URL));
                 buildType = "recommended";
             }
 
             SimpleDateFormat dateOutput = new SimpleDateFormat("MMM dd, yyyy hh:mm:ss a zzz");
-            Date botBuildDate = Bot.getBuildDate();
+            Date botBuildDate = Yui.getBuildDate();
             if (botBuildDate == null || botBuildDate.before(latestBuildDate))
             {
                 sendMessage(e, "Updating to latest **" + buildType + "** version.\n**Latest " + buildType + " version's build date:** " + dateOutput.format(latestBuildDate));
                 if (useBetaBuilds)
-                    System.exit(Bot.UPDATE_LATEST_EXITCODE);
+                    System.exit(Yui.UPDATE_LATEST_EXITCODE);
                 else
-                    System.exit(Bot.UPDATE_RECOMMENDED_EXITCODE);
+                    System.exit(Yui.UPDATE_RECOMMENDED_EXITCODE);
             }
             else
             {

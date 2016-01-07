@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.Permissions;
 
 import net.dv8tion.jda.entities.User;
@@ -150,7 +150,7 @@ public class PermissionsCommand extends Command
         }
         try
         {
-            User user = Bot.getAPI().getUserById(idMatch.group());
+            User user = Yui.getAPI().getUserById(idMatch.group());
             String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
 
             if (Permissions.getPermissions().addOp(idMatch.group()))
@@ -194,7 +194,7 @@ public class PermissionsCommand extends Command
         }
         try
         {
-            User user = Bot.getAPI().getUserById(idMatch.group());
+            User user = Yui.getAPI().getUserById(idMatch.group());
             String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
 
             if (Permissions.getPermissions().removeOp(idMatch.group()))

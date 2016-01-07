@@ -39,7 +39,7 @@ public class SettingsManager {
             System.out.println("SettingsManager: You will need to edit the Config.json with your login information.");
             this.settings = getDefaultSettings();
             saveSettings();
-            System.exit(Bot.NEWLY_CREATED_CONFIG);
+            System.exit(Yui.NEWLY_CREATED_CONFIG);
         }
         loadSettings();
     }

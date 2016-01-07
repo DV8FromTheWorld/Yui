@@ -33,11 +33,10 @@ import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
 
 import javax.security.auth.login.LoginException;
 
-public class Bot
+public class Yui
 {
     //Non error, no action exit codes.
     public static final int NORMAL_SHUTDOWN = 10;
@@ -77,7 +76,7 @@ public class Bot
     public static File getThisJarFile() throws UnsupportedEncodingException
     {
       //Gets the path of the currently running Jar file
-        String path = Bot.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        String path = Yui.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         String decodedPath = URLDecoder.decode(path, "UTF-8");
 
         //This is code especially written for running and testing this program in an IDE that doesn't compile to .jar when running.
@@ -214,7 +213,7 @@ public class Bot
         System.out.println("BotLauncher: We are not running in UTF-8 mode! This is a problem!");
         System.out.println("BotLauncher: Relaunching in UTF-8 mode using -Dfile.encoding=UTF-8");
 
-        String[] command = new String[] {"java", "-Dfile.encoding=UTF-8", "-jar", Bot.getThisJarFile().getAbsolutePath()};
+        String[] command = new String[] {"java", "-Dfile.encoding=UTF-8", "-jar", Yui.getThisJarFile().getAbsolutePath()};
 
         //Relaunches the bot using UTF-8 mode.
         ProcessBuilder processBuilder =  new ProcessBuilder(command);

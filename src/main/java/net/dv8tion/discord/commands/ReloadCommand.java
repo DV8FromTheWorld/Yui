@@ -3,7 +3,7 @@ package net.dv8tion.discord.commands;
 import java.util.Arrays;
 import java.util.List;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 
@@ -19,7 +19,7 @@ public class ReloadCommand extends Command
         }
 
         sendMessage(e, "Restarting the bot, one moment...");
-        System.exit(Bot.RESTART_EXITCODE);
+        System.exit(Yui.RESTART_EXITCODE);
     }
 
     @Override

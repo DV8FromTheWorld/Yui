@@ -2,7 +2,6 @@ package net.dv8tion.discord.bridge;
 
 import java.io.IOException;
 
-import net.dv8tion.discord.Bot;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;

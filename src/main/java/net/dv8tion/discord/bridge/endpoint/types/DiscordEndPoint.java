@@ -1,6 +1,6 @@
 package net.dv8tion.discord.bridge.endpoint.types;
 
-import net.dv8tion.discord.Bot;
+import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
@@ -29,7 +29,7 @@ public class DiscordEndPoint extends EndPoint
 
     public Guild getGuild()
     {
-        return Bot.getAPI().getGuildById(guildId);
+        return Yui.getAPI().getGuildById(guildId);
     }
 
     public String getChannelId()
@@ -39,7 +39,7 @@ public class DiscordEndPoint extends EndPoint
 
     public TextChannel getChannel()
     {
-        return Bot.getAPI().getTextChannelById(channelId);
+        return Yui.getAPI().getTextChannelById(channelId);
     }
 
     @Override
