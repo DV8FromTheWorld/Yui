@@ -1,0 +1,111 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+apply plugin: 'java'
+
+def versionObj = new Version(major: 1, minor: 0, revision: 0)
+group = "net.dv8tion"
+archivesBaseName = "Yui"
+version = "${versionObj.toString()}"
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+def filteredSourceDir = file("${buildDir}/filtered")
+
+sourceSets {
+    // This source set will contain all sources that we filter
+    filtered {
+        java {
+            srcDirs = [
+                    filteredSourceDir,
+                    "src/test/java",
+            ]
+        }
+    }
+}
+
+// copy the main sources and filter any '@buildVersion@' occurences. 
+task processVersion (type: Copy) {
+    from sourceSets.main.java
+    into filteredSourceDir
+    filter(ReplaceTokens, tokens: [
+            versionMajor: versionObj.getMajor(),
+            versionMinor: versionObj.getMinor(),
+            versionRevision: versionObj.getRevision(),
+            versionBuild: versionObj.getBuild()
+    ])
+}
+
+jar {
+    baseName = project.name
+    manifest {
+        attributes 'Implementation-Version': version
+    }
+}
+
+task javadocJar(type: Jar) {
+    classifier = 'javadoc'
+    from javadoc
+}
+
+task sourcesJar(type: Jar) {
+    classifier = 'sources'
+    from sourceSets.filtered.java
+}
+
+//create a single Jar with all dependencies
+task fatJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Version': version
+    }
+    baseName = project.name + '-withDependencies'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+artifacts {
+    archives javadocJar, sourcesJar
+}
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile "net.dv8tion:JDA:1.1.0_57"
+    compile "net.lingala.zip4j:zip4j:1.3.2"
+    compile "com.google.code.gson:gson:2.4"
+    compile "org.xerial:sqlite-jdbc:3.8.11.2"
+    compile "org.pircbotx:pircbotx:2.0.1"
+    compile "commons-io:commons-io:2.4"
+}
+
+class Version {
+    int major, minor, revision
+
+    String getMajor() {
+        "${major}"
+    }
+
+    String getMinor() {
+        "${minor}"
+    }
+
+    String getRevision() {
+        "${revision}"
+    }
+
+    String getBuild() {
+        System.getenv("BUILD_NUMBER") ? System.getenv("BUILD_NUMBER") : "TEST"
+    }
+
+    String toString() {
+        "${getMajor()}.${getMinor()}.${getRevision()}_${getBuild()}"
+    }
+}
+
+// tell the compileJava task to compile the filtered source 
+compileJava.source = sourceSets.filtered.java
+compileJava.dependsOn processVersion
+
+//Creates the w/ dependencies jar.
+assemble.dependsOn fatJar

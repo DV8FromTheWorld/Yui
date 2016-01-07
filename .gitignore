@@ -1,9 +1,18 @@
-/bin/
-/source/
-/target/
+# intellij #
 /.idea/
 *.iml
+
+## eclipse ## 
+/bin/
+/.settings/
+.classpath
+.project
+
+## gradle ##
+/build/
+/.gradle/
+
+## Yui ## 
 *.db
-dependency-reduced-pom.xml
 Config.json
 tokens.json
