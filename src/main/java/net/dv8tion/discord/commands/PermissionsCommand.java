@@ -1,5 +1,6 @@
 package net.dv8tion.discord.commands;
 
+import java.sql.SQLException;
 import java.util.Arrays;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -8,6 +9,7 @@ import java.util.regex.Pattern;
 import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.Permissions;
 
+import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.ArrayUtils;
@@ -45,10 +47,12 @@ public class PermissionsCommand extends Command
                 processOp(e, args);
                 break;
             default:
-                sendMessage(e, new StringBuilder()
-                        .append("**Improper syntax, unrecognized permission group:** " + args[0])
-                        .append("\n**Provided Command:** " + e.getMessage().getContent())
-                        .toString());
+                sendMessage(e, new MessageBuilder()
+                        .appendString("**Improper syntax, unrecognized permission group:** ")
+                        .appendString(args[0])
+                        .appendString("\n**Provided Command:** ")
+                        .appendString(e.getMessage().getContent())
+                        .build());
                 return;
         }
     }
@@ -111,18 +115,30 @@ public class PermissionsCommand extends Command
                 processRemoveOp(e, args);
                 break;
             case "list":
-                String ops = "";
+                boolean notFirstLoop = false;
+                StringBuilder builder = new StringBuilder();
+                builder.append("My OPs are:  [");
                 for (String op : Permissions.getPermissions().getOps())
                 {
-                    ops += "<@" + op + "> ";
+                    if (notFirstLoop)
+                        builder.append(", ");
+                    User user = e.getJDA().getUserById(op);
+                    if (user != null)
+                        builder.append(user.getUsername());
+                    else
+                        builder.append("<@").append(op).append(">");
+                    notFirstLoop = true;
                 }
-                sendMessage(e, "My OPs are: [" + ops.trim() + "]");
+                builder.append("]");
+                sendMessage(e, builder.toString());
                 break;
             default:
-                sendMessage(e, new StringBuilder()
-                    .append("**Improper syntax, unrecognized argument:** " + args[1])
-                    .append("\n**Provided Command:** " + e.getMessage().getContent())
-                    .toString());
+                sendMessage(e, new MessageBuilder()
+                    .appendString("**Improper syntax, unrecognized argument:** ")
+                    .appendString(args[1])
+                    .appendString("\n**Provided Command:** ")
+                    .appendString(e.getMessage().getContent())
+                    .build());
         }
     }
 
@@ -136,38 +152,37 @@ public class PermissionsCommand extends Command
      */
     private void processAddOp(MessageReceivedEvent e, String[] args)
     {
-        if (args.length < 3)
+        if (args.length < 3 || e.getMessage().getMentionedUsers().isEmpty())
         {
             sendMessage(e, "Please provide a user!");
             return;
         }
-        Pattern idPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
-        Matcher idMatch = idPattern.matcher(args[2]);
-        if (!idMatch.find())
-        {
-            sendMessage(e, "Sorry, I don't recognize the user provided: " + args[2]);
-            return;
-        }
+
+        for (User user : e.getMessage().getMentionedUsers())
+    {
         try
         {
-            User user = Yui.getAPI().getUserById(idMatch.group());
-            String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
-
-            if (Permissions.getPermissions().addOp(idMatch.group()))
+            if (Permissions.getPermissions().addOp(user.getId()))
             {
-                sendMessage(e, "Successfully added " + username + " to the OPs list!");
+                sendMessage(e, "Successfully added " + user.getUsername() + " to the OPs list!");
                 return;
             }
             else
             {
-                sendMessage(e, username + " is already an OP!");
+                sendMessage(e, user.getUsername() + " is already an OP!");
                 return;
             }
         }
         catch (Exception e1)
         {
-            e1.printStackTrace();
+            sendMessage(e, new MessageBuilder()
+                    .appendString("Encountered an error when attempting to add OP.\n")
+                    .appendString("User: ").appendString(user.getUsername())
+                    .appendString("Error: ").appendString(e1.getClass().getName()).appendString("\n")
+                    .appendString("Reason: ").appendString(e1.getMessage())
+                    .build());
         }
+    }
     }
 
     /**
@@ -180,7 +195,7 @@ public class PermissionsCommand extends Command
      */
     private void processRemoveOp(MessageReceivedEvent e, String[] args)
     {
-        if (args.length < 3)
+        if (args.length < 3 || e.getMessage().getMentionedUsers().isEmpty())
         {
             sendMessage(e, "Please provide a user!");
             return;
@@ -192,25 +207,31 @@ public class PermissionsCommand extends Command
             sendMessage(e, "Sorry, I don't recognize the user provided: " + args[2]);
             return;
         }
-        try
-        {
-            User user = Yui.getAPI().getUserById(idMatch.group());
-            String username = user != null ? user.getUsername() : "<@" + idMatch.group() + ">";
 
-            if (Permissions.getPermissions().removeOp(idMatch.group()))
-            {
-                sendMessage(e, "Successfully removed " + username + " from the OPs list!");
-                return;
-            }
-            else
-            {
-                sendMessage(e, username + " cannot be removed because they weren't an OP!");
-                return;
-            }
-        }
-        catch (Exception e1)
+        for (User user : e.getMessage().getMentionedUsers())
         {
-            e1.printStackTrace();
+            try
+            {
+                if (Permissions.getPermissions().removeOp(user.getId()))
+                {
+                    sendMessage(e, "Successfully removed " + user.getUsername() + " to the OPs list!");
+                    return;
+                }
+                else
+                {
+                    sendMessage(e, user.getUsername() + " cannot be removed because they weren't an OP!");
+                    return;
+                }
+            }
+            catch (Exception e1)
+            {
+                sendMessage(e, new MessageBuilder()
+                        .appendString("Encountered an error when attempting to remove OP.\n")
+                        .appendString("User: ").appendString(user.getUsername())
+                        .appendString("Error: ").appendString(e1.getClass().getName()).appendString("\n")
+                        .appendString("Reason: ").appendString(e1.getMessage())
+                        .build());
+            }
         }
     }
 }

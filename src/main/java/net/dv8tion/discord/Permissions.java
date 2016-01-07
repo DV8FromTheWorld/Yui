@@ -29,8 +29,6 @@ public class Permissions
             if (ops.size() == 0)
             {
                 //TODO: Once we interact with the CLI, request an OP here. For now, default to make bot OP.
-//                ops.add(Bot.getAPI().getSelfInfo().getId());
-                ops.add("111761808640978944");  //This is Yui's Discord User ID. Will get it programmably later.
             }
         }
         catch (SQLException e)
