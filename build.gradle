@@ -69,11 +69,11 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 repositories {
-    mavenCentral()
+    jcenter()
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:1.1.0_57"
+    compile "net.dv8tion:JDA:1.2.2_165"
     compile "net.lingala.zip4j:zip4j:1.3.2"
     compile "com.google.code.gson:gson:2.4"
     compile "org.xerial:sqlite-jdbc:3.8.11.2"
@@ -97,7 +97,7 @@ class Version {
     }
 
     String getBuild() {
-        System.getenv("BUILD_NUMBER") ? System.getenv("BUILD_NUMBER") : "-1"
+        System.getenv("BUILD_NUMBER") ? System.getenv("BUILD_NUMBER") : "DEV"
     }
 
     String toString() {
