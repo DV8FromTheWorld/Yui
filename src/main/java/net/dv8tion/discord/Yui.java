@@ -16,15 +16,7 @@ import net.dv8tion.discord.bridge.IrcConnectInfo;
 import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
-import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
-import net.dv8tion.discord.commands.HelpCommand;
-import net.dv8tion.discord.commands.MyAnimeListCommand;
-import net.dv8tion.discord.commands.NyaaCommand;
-import net.dv8tion.discord.commands.PermissionsCommand;
-import net.dv8tion.discord.commands.ReloadCommand;
-import net.dv8tion.discord.commands.SearchCommand;
-import net.dv8tion.discord.commands.TestCommand;
-import net.dv8tion.discord.commands.UpdateCommand;
+import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.util.Database;
 
 import net.dv8tion.jda.JDA;
@@ -103,6 +95,7 @@ public class Yui
             Settings settings = SettingsManager.getInstance().getSettings();
 
             JDABuilder jdaBuilder = new JDABuilder(settings.getEmail(), settings.getPassword());
+            jdaBuilder.enableVoice(false);  //Temp until LIBC is fixed or Yui is moved to a different server.
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
