@@ -109,6 +109,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
+            jdaBuilder.addListener(help.registerCommand(new TodoCommand(api)));
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
