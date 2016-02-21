@@ -73,7 +73,7 @@ repositories {
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:1.2.2_165"
+    compile "net.dv8tion:JDA:1.2.2_166"
     compile "net.lingala.zip4j:zip4j:1.3.2"
     compile "com.google.code.gson:gson:2.4"
     compile "org.xerial:sqlite-jdbc:3.8.11.2"

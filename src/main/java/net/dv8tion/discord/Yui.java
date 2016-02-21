@@ -95,7 +95,6 @@ public class Yui
             Settings settings = SettingsManager.getInstance().getSettings();
 
             JDABuilder jdaBuilder = new JDABuilder(settings.getEmail(), settings.getPassword());
-            jdaBuilder.enableVoice(false);  //Temp until LIBC is fixed or Yui is moved to a different server.
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
@@ -110,6 +109,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
+
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
                 if (info.getHost() == null || info.getHost().isEmpty())
