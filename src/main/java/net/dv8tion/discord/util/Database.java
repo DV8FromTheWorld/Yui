@@ -1,5 +1,6 @@
 package net.dv8tion.discord.util;
 
+import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.commands.TodoCommand;
 
 import java.sql.*;
@@ -56,9 +57,9 @@ public class Database
                     ")");
 
             //Permissions
-            preparedStatements.put("addOp", conn.prepareStatement("REPLACE INTO Ops (id) VALUES (?)"));
-            preparedStatements.put("getOps", conn.prepareStatement("SELECT id FROM Ops"));
-            preparedStatements.put("removeOp", conn.prepareStatement("DELETE FROM Ops WHERE id = ?"));
+            preparedStatements.put(Permissions.ADD_OP, conn.prepareStatement("REPLACE INTO Ops (id) VALUES (?)"));
+            preparedStatements.put(Permissions.GET_OPS, conn.prepareStatement("SELECT id FROM Ops"));
+            preparedStatements.put(Permissions.REMOVE_OPS, conn.prepareStatement("DELETE FROM Ops WHERE id = ?"));
 
             //TodoCommand
             preparedStatements.put(TodoCommand.ADD_TODO_LIST, conn.prepareStatement("INSERT INTO TodoLists (label, owner, locked) VALUES (?, ?, ?)"));
