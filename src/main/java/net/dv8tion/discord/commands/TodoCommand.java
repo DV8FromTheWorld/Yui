@@ -1,5 +1,6 @@
 package net.dv8tion.discord.commands;
 
+import net.dv8tion.discord.util.Database;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.Message;
@@ -7,52 +8,120 @@ import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.xml.crypto.Data;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.*;
 
 public class TodoCommand extends Command
 {
+    //Database Methods
+    public static final String ADD_TODO_LIST = "addTodoList";
+    public static final String ADD_TODO_ENTRY = "addTodoEntry";
+    public static final String ADD_TODO_USER = "addTodoUser";
+    public static final String GET_TODO_LISTS = "getTodoLists";
+    public static final String GET_TODO_ENTRIES = "getTodoEntries";
+    public static final String GET_TODO_USERS = "getTodoUsers";
+    public static final String SET_TODO_LIST_LOCKED = "setTodoListLocked";
+    public static final String SET_TODO_ENTRY_CHECKED = "setTodoEntryChecked";
+    public static final String SET_TODO_ENTRIES_CHECKED = "setTodoEntriesChecked";
+    public static final String REMOVE_TODO_LIST = "removeTodoList";
+    public static final String REMOVE_TODO_ENTRY = "removeTodoEntry";
+    public static final String REMOVE_TODO_USER = "removeTodoUser";
+
     private JDA api;
     private HashMap<String, TodoList> todoLists = new HashMap<>();
 
     public TodoCommand(JDA api)
     {
         this.api = api;
+        try
+        {
+            ResultSet sqlTodoLists = Database.getInstance().getStatement(GET_TODO_LISTS).executeQuery();
+            while (sqlTodoLists.next())
+            {
+                String label = sqlTodoLists.getString(2);
+                TodoList todoList = new TodoList(
+                        sqlTodoLists.getInt(1),     //Id
+                        label,
+                        sqlTodoLists.getString(3),  //OwnerId
+                        sqlTodoLists.getBoolean(4)  //Locked
+                );
+                todoLists.put(label, todoList);
+
+                PreparedStatement getEntries = Database.getInstance().getStatement(GET_TODO_ENTRIES);
+                getEntries.setInt(1, todoList.id);
+                ResultSet sqlTodoEntries = getEntries.executeQuery();
+                while (sqlTodoEntries.next())
+                {
+                    TodoEntry todoEntry = new TodoEntry(
+                            sqlTodoEntries.getInt(1),       //Id
+                            sqlTodoEntries.getString(2),    //Content
+                            sqlTodoEntries.getBoolean(3)    //Checked
+                    );
+                    todoList.entries.add(todoEntry);
+                }
+                getEntries.clearParameters();
+
+                PreparedStatement getUsers = Database.getInstance().getStatement(GET_TODO_USERS);
+                getUsers.setInt(1, todoList.id);
+                ResultSet sqlTodoUsers = getUsers.executeQuery();
+                while(sqlTodoUsers.next())
+                {
+                    todoList.allowedUsers.add(sqlTodoEntries.getString(1)); //UserId
+                }
+                getUsers.clearParameters();
+            }
+        }
+        catch (SQLException e)
+        {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        switch (args[1].toLowerCase())
+        try
         {
-            case "show":
-                handleShow(e, args);
-                break;
-            case "add":
-                handleAdd(e, args);
-                break;
-            case "mark":
-            case "check":
-                handleCheck(e, args, true);
-                break;
-            case "unmark":
-            case "uncheck":
-                handleCheck(e, args, false);
-                break;
-            case "lock":
-                handleLock(e, args, true);
-                break;
-            case "unlock":
-                handleLock(e, args, false);
-                break;
-            case "users":
-                handleUsers(e, args);
-                break;
-            case "clear":
-                handleClear(e, args);
-                break;
-            case "remove":
-                handleRemove(e, args);
-                break;
+            switch (args[1].toLowerCase())
+            {
+                case "show":
+                    handleShow(e, args);
+                    break;
+                case "add":
+                    handleAdd(e, args);
+                    break;
+                case "mark":
+                case "check":
+                    handleCheck(e, args, true);
+                    break;
+                case "unmark":
+                case "uncheck":
+                    handleCheck(e, args, false);
+                    break;
+                case "lock":
+                    handleLock(e, args, true);
+                    break;
+                case "unlock":
+                    handleLock(e, args, false);
+                    break;
+                case "users":
+                    handleUsers(e, args);
+                    break;
+                case "clear":
+                    handleClear(e, args);
+                    break;
+                case "remove":
+                    handleRemove(e, args);
+                    break;
+            }
+        }
+        catch (SQLException e1)
+        {
+            sendMessage(e, "An SQL error occured while processing command.\nError Message: " + e1.getMessage());
+            e1.printStackTrace();
         }
     }
 
@@ -80,7 +149,7 @@ public class TodoCommand extends Command
         return null;
     }
 
-    //alias show [ListName]s
+    //alias show [ListName]
     private void handleShow(MessageReceivedEvent e, String[] args)
     {
         String label = args[2].toLowerCase();
@@ -115,7 +184,7 @@ public class TodoCommand extends Command
     }
 
     //alias add [ListName] [Content ... ]
-    private void handleAdd(MessageReceivedEvent e, String[] args)
+    private void handleAdd(MessageReceivedEvent e, String[] args) throws SQLException
     {
         String label = args[2].toLowerCase();
         String content = StringUtils.join(args, " ", 3, args.length);
@@ -123,33 +192,46 @@ public class TodoCommand extends Command
         TodoList todoList = todoLists.get(label);
         if (todoList != null)
         {
-            if (todoList.locked && todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+            if (todoList.locked && todoList.isAuthUser(e.getAuthor()))
             {
                 sendMessage(e, "Sorry, `" + label + "` is a locked todo list and you do not have permission to modify it.");
                 return;
             }
 
-            //TODO: interface with DB. add the new todo entry. add the new corresponding boolean value.
+            PreparedStatement addTodoEntry = Database.getInstance().getStatement(ADD_TODO_ENTRY);
+            addTodoEntry.setInt(1, todoList.id);
+            addTodoEntry.setString(2, content);
+            addTodoEntry.setBoolean(3, false);
+            if (addTodoEntry.executeUpdate() == 0)
+                throw new SQLException(ADD_TODO_ENTRY + " reported no modified rows!");
 
-            //TODO: replace with DB id.
-            todoList.entries.add(new TodoEntry(todoList.entries.size() + 1, content));
+            todoList.entries.add(new TodoEntry(Database.getAutoIncrement(addTodoEntry, 1), content, false));
+            addTodoEntry.clearParameters();
 
             sendMessage(e, "Added to `" + label + "` todo list.");
         }
         else
         {
-            //TODO: interface with DB. Create new TodoList, get ID
-            //TODO: create new TodoEntry, getID, connect with the new TodoList.
-            //TODO: create new allowed user
+            PreparedStatement addTodoList = Database.getInstance().getStatement(ADD_TODO_LIST);
+            addTodoList.setString(1, label);                //Label
+            addTodoList.setString(2, e.getAuthor().getId());//OwnerId
+            addTodoList.setBoolean(3, false);               //Locked
+            if (addTodoList.executeUpdate() == 0)
+                throw new SQLException(ADD_TODO_LIST + " reported no modified rows!");
 
-            //TODO: replace ids with DB id.
-            TodoList newTodoList = new TodoList(todoLists.size() + 1, label);
-            todoLists.put(label, newTodoList);
+            todoList = new TodoList(Database.getAutoIncrement(addTodoList, 1), label, e.getAuthor().getId(), false);
+            todoLists.put(label, todoList);
+            addTodoList.clearParameters();
 
-            TodoEntry newTodoEntry = new TodoEntry(1, content);
-            newTodoList.entries.add(newTodoEntry);
+            PreparedStatement addTodoEntry = Database.getInstance().getStatement(ADD_TODO_ENTRY);
+            addTodoEntry.setInt(1, todoList.id);
+            addTodoEntry.setString(2, content);
+            addTodoEntry.setBoolean(3, false);
+            if (addTodoEntry.executeUpdate() == 0)
+                throw new SQLException(ADD_TODO_ENTRY + " reported no modified rows!");
 
-            newTodoList.allowedUsers.add(e.getAuthor().getId());
+            todoList.entries.add(new TodoEntry(Database.getAutoIncrement(addTodoEntry, 1), content, false));
+            addTodoEntry.clearParameters();
 
             sendMessage(e, "Created `" + label + "` todo list. Provided content added as first entry.");
         }
@@ -159,7 +241,7 @@ public class TodoCommand extends Command
     //alias mark [ListName] [EntryIndex]
     //alias uncheck [ListName] [EntryIndex]
     //alias unmark [ListName] [EntryIndex]
-    private void handleCheck(MessageReceivedEvent e, String[] args, boolean completed)
+    private void handleCheck(MessageReceivedEvent e, String[] args, boolean completed) throws SQLException
     {
         String label = args[2].toLowerCase();
         TodoList todoList = todoLists.get(label);
@@ -173,26 +255,25 @@ public class TodoCommand extends Command
 
         if (todoEntryString.equals("*"))
         {
-            todoList.entries.forEach(todoEntry ->
-            {
-                if (!todoEntry.checked)
-                {
-                    //TODO: interface with database, set checked true.
+            PreparedStatement setTodoEntryChecked = Database.getInstance().getStatement(SET_TODO_ENTRIES_CHECKED);
+            setTodoEntryChecked.setBoolean(1, completed);
+            setTodoEntryChecked.setInt(2, todoList.id);
+            if (setTodoEntryChecked.executeUpdate() == 0)
+                throw new SQLException(SET_TODO_ENTRIES_CHECKED + " reported no updated rows!");
 
-                    todoEntry.checked = true;
-                }
-            });
-            sendMessage(e, "Set all entries in the `" + label + "` todo list to **completed**.");
+            todoList.entries.forEach(todoEntry -> todoEntry.checked = completed);
+
+            sendMessage(e, "Set all entries in the `" + label + "` todo list to **" + (completed ? "complete**" : "incomplete**"));
         }
         else
         {
-            int todoEntry;
+            int todoEntryIndex;
             try
             {
                 //We subtract 1 from the provided value because entries are listed from 1 and higher.
                 // People don't start counting from 0, so when we display the list of entries, we start from.
                 // This means that the entry index they enter will actually be 1 greater than the actual entry.
-                todoEntry = Integer.parseInt(todoEntryString) - 1;
+                todoEntryIndex = Integer.parseInt(todoEntryString) - 1;
             }
             catch (NumberFormatException ex)
             {
@@ -200,23 +281,31 @@ public class TodoCommand extends Command
                 return;
             }
 
-            if (todoEntry < 0 || todoEntry  + 1 > todoList.entries.size())
+            if (todoEntryIndex < 0 || todoEntryIndex  + 1 > todoList.entries.size())
             {
                 //We add 1 back to the todoEntry because we subtracted 1 from it above. (Basically, we make it human readable again)
-                sendMessage(e, "The provided index to mark does not exist in this Todo list. Value provided: `" + (todoEntry + 1) + "`");
+                sendMessage(e, "The provided index to mark does not exist in this Todo list. Value provided: `" + (todoEntryIndex + 1) + "`");
                 return;
             }
 
-            //TODO: interface with database, modify checked value.
+            TodoEntry todoEntry = todoList.entries.get(todoEntryIndex);
+            if (todoEntry.checked != completed)
+            {
+                PreparedStatement setTodoEntryChecked = Database.getInstance().getStatement(SET_TODO_ENTRY_CHECKED);
+                setTodoEntryChecked.setBoolean(1, completed);
+                setTodoEntryChecked.setInt(2, todoEntry.id);
+                if (setTodoEntryChecked.executeUpdate() == 0)
+                    throw new SQLException(SET_TODO_ENTRY_CHECKED + " reported no updated rows!");
 
-            todoList.entries.get(todoEntry).checked = completed;
+                todoEntry.checked = completed;
+            }
 
-            sendMessage(e, "Item `" + (todoEntry + 1) + "` in `" + label + "` was marked as **" + (completed ? "completed**" : "incomplete**") );
+            sendMessage(e, "Item `" + (todoEntryIndex + 1) + "` in `" + label + "` was marked as **" + (completed ? "completed**" : "incomplete**") );
         }
     }
 
     //alias lock [ListName]
-    private void handleLock(MessageReceivedEvent e, String[] args, boolean lock)
+    private void handleLock(MessageReceivedEvent e, String[] args, boolean locked) throws SQLException
     {
         String label = args[2].toLowerCase();
         TodoList todoList = todoLists.get(label);
@@ -226,22 +315,27 @@ public class TodoCommand extends Command
             return;
         }
 
-        if (!todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+        if (!todoList.isAuthUser(e.getAuthor()))
         {
             sendMessage(e, "Sorry, you do not have permission to lock or unlock the `" + label + "` todo list.");
             return;
         }
 
-        //TODO: Interact with DB.
+        PreparedStatement setTodoListLocked = Database.getInstance().getStatement(SET_TODO_LIST_LOCKED);
+        setTodoListLocked.setBoolean(1, locked);
+        setTodoListLocked.setInt(2, todoList.id);
+        if (setTodoListLocked.executeUpdate() == 0)
+            throw new SQLException(SET_TODO_LIST_LOCKED + " reported no updated rows!");
+        setTodoListLocked.clearParameters();
 
-        todoList.locked = lock;
-        sendMessage(e, "The `" + label + "` todo list was `" + (lock ? "locked`" : "unlocked`"));
+        todoList.locked = locked;
+        sendMessage(e, "The `" + label + "` todo list was `" + (locked ? "locked`" : "unlocked`"));
     }
 
     //alias users add [ListName] @mention @mention ...
     //alias users remove [ListName] @mention @mention ...
     //alias users list [ListName]
-    private void handleUsers(MessageReceivedEvent e, String[] args)
+    private void handleUsers(MessageReceivedEvent e, String[] args) throws SQLException
     {
         String action = args[2].toLowerCase();
         String label = args[3].toLowerCase();
@@ -256,9 +350,9 @@ public class TodoCommand extends Command
         {
             case "add":
             {
-                if (!todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+                if (!todoList.ownerId.equals(e.getAuthor().getId()))
                 {
-                    sendMessage(e, "Sorry, you don't have permission add users to the `" + label + "` todo list.");
+                    sendMessage(e, "Sorry, but only the Owner of a list has permission add users to a todo list.");
                     return;
                 }
 
@@ -269,11 +363,16 @@ public class TodoCommand extends Command
                 }
 
                 int addedUsers = 0;
+                PreparedStatement addTodoUser = Database.getInstance().getStatement(ADD_TODO_USER);
                 for (User u : e.getMessage().getMentionedUsers())
                 {
-                    if (!todoList.allowedUsers.stream().anyMatch(id -> u.getId().equals(id)))
+                    if (!todoList.isAuthUser(u))
                     {
-                        //TODO: interface with DB
+                        addTodoUser.setInt(1, todoList.id);
+                        addTodoUser.setString(2, u.getId());
+                        if (addTodoUser.executeUpdate() == 0)
+                            throw new SQLException(ADD_TODO_LIST + " reported no updated rows!");
+                        addTodoUser.clearParameters();
 
                         todoList.allowedUsers.add(u.getId());
                         addedUsers++;
@@ -285,9 +384,9 @@ public class TodoCommand extends Command
             }
             case "remove":
             {
-                if (!todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+                if (!todoList.ownerId.equals(e.getAuthor().getId()))
                 {
-                    sendMessage(e, "Sorry, you don't have permission add users to the `" + label + "` todo list.");
+                    sendMessage(e, "Sorry, but only the Owner of a list has permission remove users from a todo list.");
                     return;
                 }
 
@@ -298,11 +397,16 @@ public class TodoCommand extends Command
                 }
 
                 int removedUsers = 0;
+                PreparedStatement removeTodoUser = Database.getInstance().getStatement(REMOVE_TODO_USER);
                 for (User u : e.getMessage().getMentionedUsers())
                 {
-                    if (!todoList.allowedUsers.stream().anyMatch(id -> u.getId().equals(id)))
+                    if (todoList.allowedUsers.stream().anyMatch(id -> u.getId().equals(id)))
                     {
-                        //TODO: interface with DB
+                        removeTodoUser.setInt(1, todoList.id);
+                        removeTodoUser.setString(2, u.getId());
+                        if (removeTodoUser.executeUpdate() == 0)
+                            throw new SQLException(REMOVE_TODO_USER + " reported no updated rows!");
+                        removeTodoUser.clearParameters();
 
                         todoList.allowedUsers.remove(u.getId());
                         removedUsers++;
@@ -315,16 +419,26 @@ public class TodoCommand extends Command
             case "list":
             {
                 MessageBuilder builder = new MessageBuilder();
-                builder.appendString("__Users for: `" + label + "`\n");
+                builder.appendString("__Owner of `" + label + "`__\n");
+                User owner = api.getUserById(todoList.ownerId);
+                if (owner != null)
+                    builder.appendString(" - " + owner.getUsername());
+                else
+                    builder.appendString(" - Unknown User ID: " + todoList.ownerId);
+                builder.appendString("\n");
+                builder.appendString("__Other Auth'd Users__\n");
+
                 for (String id : todoList.allowedUsers)
                 {
                     User u = api.getUserById(id);
                     if (u != null)
-                        builder.appendString(u.getUsername());
+                        builder.appendString(" - " + u.getUsername());
                     else
-                        builder.appendString("Unknown User ID: " + id);
+                        builder.appendString(" - Unknown User ID: " + id);
                     builder.appendString("\n");
                 }
+                if (todoList.allowedUsers.isEmpty())
+                    builder.appendString(" - None.");
                 sendMessage(e ,builder.build());
                 break;
             }
@@ -338,7 +452,7 @@ public class TodoCommand extends Command
     }
 
     //alias clear [ListName]
-    public void handleClear(MessageReceivedEvent e, String[] args)
+    public void handleClear(MessageReceivedEvent e, String[] args) throws SQLException
     {
         String label = args[2];
         TodoList todoList = todoLists.get(label);
@@ -348,19 +462,23 @@ public class TodoCommand extends Command
             return;
         }
 
-        if (todoList.locked && !todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+        if (todoList.locked && !todoList.isAuthUser(e.getAuthor()))
         {
             sendMessage(e, "Sorry, the `" + label +"` todo list is locked and you do not have permission to modify it.");
             return;
         }
 
         int clearedEntries = 0;
+        PreparedStatement removeTodoEntry = Database.getInstance().getStatement(REMOVE_TODO_ENTRY);
         for (Iterator<TodoEntry> it = todoList.entries.iterator(); it.hasNext();)
         {
             TodoEntry todoEntry = it.next();
             if (todoEntry.checked)
             {
-                //TODO: interface with DB.
+                removeTodoEntry.setInt(1, todoEntry.id);
+                if (removeTodoEntry.executeUpdate() == 0)
+                    throw new SQLException(REMOVE_TODO_ENTRY + " reported no updated rows!");
+                removeTodoEntry.clearParameters();
 
                 it.remove();
                 clearedEntries++;
@@ -370,7 +488,7 @@ public class TodoCommand extends Command
     }
 
     //alias remove [ListName]
-    public void handleRemove(MessageReceivedEvent e, String[] args)
+    public void handleRemove(MessageReceivedEvent e, String[] args) throws SQLException
     {
         String label = args[2].toLowerCase();
         TodoList todoList = todoLists.get(label);
@@ -380,13 +498,17 @@ public class TodoCommand extends Command
             return;
         }
 
-        if (todoList.locked && !todoList.allowedUsers.stream().anyMatch(id -> e.getAuthor().getId().equals(id)))
+        if (todoList.locked && !todoList.isAuthUser(e.getAuthor()))
         {
             sendMessage(e, "Sorry, the `" + label +"` todo list is locked and you do not have permission to modify it.");
             return;
         }
 
-        //TODO: interface with DB.
+        PreparedStatement removeTodoList = Database.getInstance().getStatement(REMOVE_TODO_LIST);
+        removeTodoList.setInt(1, todoList.id);
+        if (removeTodoList.executeUpdate() == 0)
+            throw new SQLException(REMOVE_TODO_LIST + " reported no updated rows!");
+        removeTodoList.clearParameters();
 
         todoLists.remove(label);
         sendMessage(e, "Deleted the `" + label + "` todo list.");
@@ -396,17 +518,24 @@ public class TodoCommand extends Command
     {
         int id;
         String labelName;
+        String ownerId;
         boolean locked;
         List<TodoEntry> entries;
         List<String> allowedUsers;
 
-        TodoList(int id, String labelName)
+        TodoList(int id, String labelName, String ownerId, boolean locked)
         {
             this.id = id;
             this.labelName = labelName;
-            this.locked = false;
+            this.ownerId = ownerId;
+            this.locked = locked;
             this.entries = new ArrayList<>();
             this.allowedUsers = new ArrayList<>();
+        }
+
+        public boolean isAuthUser(User user)
+        {
+            return ownerId.equals(user.getId()) || allowedUsers.stream().anyMatch(id -> id.equals(user.getId()));
         }
 
         @Override
@@ -438,11 +567,11 @@ public class TodoCommand extends Command
         String content;
         boolean checked;
 
-        TodoEntry(int id, String content)
+        TodoEntry(int id, String content, boolean checked)
         {
             this.id = id;
             this.content = content;
-            this.checked = false;
+            this.checked = checked;
         }
 
         @Override
