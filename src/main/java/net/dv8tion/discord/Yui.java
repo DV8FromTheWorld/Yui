@@ -109,7 +109,6 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
-            jdaBuilder.addListener(help.registerCommand(new TodoCommand(api)));
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
@@ -144,6 +143,8 @@ public class Yui
             //Login to Discord now that we are all setup.
             api = jdaBuilder.buildBlocking();
             Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+
+            api.addEventListener(help.registerCommand(new TodoCommand(api)));
 
             //Creates and Stores all Discord endpoints in our Manager.
             for (Guild guild : api.getGuilds())
