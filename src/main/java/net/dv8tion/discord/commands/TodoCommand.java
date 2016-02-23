@@ -192,7 +192,7 @@ public class TodoCommand extends Command
         TodoList todoList = todoLists.get(label);
         if (todoList != null)
         {
-            if (todoList.locked && todoList.isAuthUser(e.getAuthor()))
+            if (todoList.locked && !todoList.isAuthUser(e.getAuthor()))
             {
                 sendMessage(e, "Sorry, `" + label + "` is a locked todo list and you do not have permission to modify it.");
                 return;
