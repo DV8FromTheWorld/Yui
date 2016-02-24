@@ -8,11 +8,11 @@ import net.dv8tion.jda.entities.User;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
-import javax.xml.crypto.Data;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 public class TodoCommand extends Command
 {
@@ -89,6 +89,12 @@ public class TodoCommand extends Command
             {
                 case "show":
                     handleShow(e, args);
+                    break;
+                case "lists":
+                    handleLists(e, args);
+                    break;
+                case "create":
+                    handleCreate(e, args);
                     break;
                 case "add":
                     handleAdd(e, args);
@@ -183,58 +189,94 @@ public class TodoCommand extends Command
         sendMessage(e, builder.build());
     }
 
+    //alias lists
+    //alias lists [mentions...]
+    private void handleLists(MessageReceivedEvent e, String[] args)
+    {
+        List<User> mentionedUsers = e.getMessage().getMentionedUsers();
+        if (mentionedUsers.size() == 0)
+            mentionedUsers = Collections.singletonList(e.getAuthor());
+
+        List<Message> messages = new LinkedList<Message>();
+        for (User u : mentionedUsers)
+        {
+            MessageBuilder builder = new MessageBuilder();
+            List<TodoList> lists = todoLists.values().stream().filter(list -> list.ownerId.equals(u.getId())).collect(Collectors.toList());
+            builder.appendString("__" + u.getUsername() + " owns **" + lists.size() + "** todo lists.__\n");
+            for (TodoList list : lists)
+            {
+                String listString = " - " + list.labelName + "\n";
+                if (builder.getLength() + listString.length() > 2000)
+                {
+                    messages.add(builder.build());
+                    builder = new MessageBuilder();
+                }
+                builder.appendString(listString);
+            }
+            messages.add(builder.build());
+        }
+
+        messages.forEach(msg -> sendMessage(e, msg));
+    }
+
+    //alias create [ListName]
+    private void handleCreate(MessageReceivedEvent e, String[] args) throws SQLException
+    {
+        String label = args[2].toLowerCase();
+        TodoList todoList = todoLists.get(label);
+
+        if (todoList != null)
+        {
+            sendMessage(e, "A todo list already exists with the name `" + label + "`.");
+            return;
+        }
+
+        PreparedStatement addTodoList = Database.getInstance().getStatement(ADD_TODO_LIST);
+        addTodoList.setString(1,  label);                //Label
+        addTodoList.setString(2, e.getAuthor().getId());//OwnerId
+        addTodoList.setBoolean(3, false);               //Locked
+        if (addTodoList.executeUpdate() == 0)
+            throw new SQLException(ADD_TODO_LIST + " reported no modified rows!");
+
+        todoList = new TodoList(Database.getAutoIncrement(addTodoList, 1), label, e.getAuthor().getId(), false);
+        todoLists.put(label, todoList);
+        addTodoList.clearParameters();
+
+        sendMessage(e, "Created `" + label + "` todo list. Use `" + getAliases().get(0) + " add " + label + " CONTENT` " +
+                "to add entries to this todo list.");
+    }
+
     //alias add [ListName] [Content ... ]
     private void handleAdd(MessageReceivedEvent e, String[] args) throws SQLException
     {
         String label = args[2].toLowerCase();
         String content = StringUtils.join(args, " ", 3, args.length);
-
         TodoList todoList = todoLists.get(label);
-        if (todoList != null)
+
+        if (todoList == null)
         {
-            if (todoList.locked && !todoList.isAuthUser(e.getAuthor()))
-            {
-                sendMessage(e, "Sorry, `" + label + "` is a locked todo list and you do not have permission to modify it.");
-                return;
-            }
-
-            PreparedStatement addTodoEntry = Database.getInstance().getStatement(ADD_TODO_ENTRY);
-            addTodoEntry.setInt(1, todoList.id);
-            addTodoEntry.setString(2, content);
-            addTodoEntry.setBoolean(3, false);
-            if (addTodoEntry.executeUpdate() == 0)
-                throw new SQLException(ADD_TODO_ENTRY + " reported no modified rows!");
-
-            todoList.entries.add(new TodoEntry(Database.getAutoIncrement(addTodoEntry, 1), content, false));
-            addTodoEntry.clearParameters();
-
-            sendMessage(e, "Added to `" + label + "` todo list.");
+            sendMessage(e, "Sorry, `" + label + "` isn't a known todo list. " +
+                    "Try using `" + getAliases().get(0) + " create " + label + "` to create a new list by this name.");
+            return;
         }
-        else
+
+        if (todoList.locked && !todoList.isAuthUser(e.getAuthor()))
         {
-            PreparedStatement addTodoList = Database.getInstance().getStatement(ADD_TODO_LIST);
-            addTodoList.setString(1, label);                //Label
-            addTodoList.setString(2, e.getAuthor().getId());//OwnerId
-            addTodoList.setBoolean(3, false);               //Locked
-            if (addTodoList.executeUpdate() == 0)
-                throw new SQLException(ADD_TODO_LIST + " reported no modified rows!");
-
-            todoList = new TodoList(Database.getAutoIncrement(addTodoList, 1), label, e.getAuthor().getId(), false);
-            todoLists.put(label, todoList);
-            addTodoList.clearParameters();
-
-            PreparedStatement addTodoEntry = Database.getInstance().getStatement(ADD_TODO_ENTRY);
-            addTodoEntry.setInt(1, todoList.id);
-            addTodoEntry.setString(2, content);
-            addTodoEntry.setBoolean(3, false);
-            if (addTodoEntry.executeUpdate() == 0)
-                throw new SQLException(ADD_TODO_ENTRY + " reported no modified rows!");
-
-            todoList.entries.add(new TodoEntry(Database.getAutoIncrement(addTodoEntry, 1), content, false));
-            addTodoEntry.clearParameters();
-
-            sendMessage(e, "Created `" + label + "` todo list. Provided content added as first entry.");
+            sendMessage(e, "Sorry, `" + label + "` is a locked todo list and you do not have permission to modify it.");
+            return;
         }
+
+        PreparedStatement addTodoEntry = Database.getInstance().getStatement(ADD_TODO_ENTRY);
+        addTodoEntry.setInt(1, todoList.id);
+        addTodoEntry.setString(2, content);
+        addTodoEntry.setBoolean(3, false);
+        if (addTodoEntry.executeUpdate() == 0)
+            throw new SQLException(ADD_TODO_ENTRY + " reported no modified rows!");
+
+        todoList.entries.add(new TodoEntry(Database.getAutoIncrement(addTodoEntry, 1), content, false));
+        addTodoEntry.clearParameters();
+
+        sendMessage(e, "Added to `" + label + "` todo list.");
     }
 
     //alias check [ListName] [EntryIndex]
