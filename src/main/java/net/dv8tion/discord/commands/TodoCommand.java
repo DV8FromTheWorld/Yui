@@ -69,7 +69,7 @@ public class TodoCommand extends Command
                 ResultSet sqlTodoUsers = getUsers.executeQuery();
                 while(sqlTodoUsers.next())
                 {
-                    todoList.allowedUsers.add(sqlTodoEntries.getString(1)); //UserId
+                    todoList.allowedUsers.add(sqlTodoUsers.getString(1)); //UserId
                 }
                 getUsers.clearParameters();
             }
