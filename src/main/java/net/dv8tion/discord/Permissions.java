@@ -11,6 +11,10 @@ import net.dv8tion.jda.entities.User;
 
 public class Permissions
 {
+    public static final String ADD_OP = "addOp";
+    public static final String GET_OPS = "getOps";
+    public static final String REMOVE_OPS = "removeOp";
+
     public static final String OP_REQUIRED_MESSAGE = "You do not have permission to run this command! (OP required).";
 
     private static Permissions permissions;
@@ -21,7 +25,7 @@ public class Permissions
         ops = new ArrayList<String>();
         try
         {
-            ResultSet opsSet = Database.getInstance().getStatement("getOps").executeQuery();
+            ResultSet opsSet = Database.getInstance().getStatement(GET_OPS).executeQuery();
             while (opsSet.next())
             {
                 ops.add(opsSet.getString("id"));
@@ -75,12 +79,12 @@ public class Permissions
      *      false - if the user was already an OP.
      * @throws SQLException
      */
-    public Boolean addOp(String userId) throws SQLException, Exception
+    public Boolean addOp(String userId) throws SQLException
     {
         if (ops.contains(userId))
             return false;
 
-        PreparedStatement addOp = Database.getInstance().getStatement("addOp");
+        PreparedStatement addOp = Database.getInstance().getStatement(ADD_OP);
         addOp.setString(1, userId);
         if (addOp.executeUpdate() == 1)
         {
@@ -97,14 +101,13 @@ public class Permissions
      * @return
      *      true - if the user was successfully removed.
      *      false - if the user was not an op.
-     * @throws SQLException
      */
-    public boolean removeOp(String userId) throws SQLException, Exception
+    public boolean removeOp(String userId) throws SQLException
     {
         if (!ops.contains(userId))
             return false;
 
-        PreparedStatement removeOp = Database.getInstance().getStatement("removeOp");
+        PreparedStatement removeOp = Database.getInstance().getStatement(REMOVE_OPS);
         removeOp.setString(1, userId);
         if (removeOp.executeUpdate() == 1)
         {

@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -120,9 +121,10 @@ public class NyaaCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".nyaa *</sortType> </sortMethod> <search terms>*\n"
+        return Collections.singletonList(
+                ".nyaa *</sortType> </sortMethod> <search terms>*\n"
                 + "__Sort Types:__\n"
                 + "  /name     - sorts by the name.\n"
                 + "  /date     - sort search by date. **default**\n"
@@ -145,6 +147,6 @@ public class NyaaCommand extends Command
                 + "__Example 2:__ .nyaa /seed /down familar of zero\n"
                 + " - returns search of \"familar of zero\", sorts by seeders, descending. (torrents with most seeders first)\n"
                 + "__Example 3:__ .nyaa /name /ascend one punch man commie\n"
-                + " - returns search of \"one punch man\", sorts by name, ascending. (torrents sorted alphabetically)";
+                + " - returns search of \"one punch man\", sorts by name, ascending. (torrents sorted alphabetically)");
     }
 }

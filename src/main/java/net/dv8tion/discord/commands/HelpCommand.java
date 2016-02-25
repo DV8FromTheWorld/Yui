@@ -2,6 +2,7 @@ package net.dv8tion.discord.commands;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.jda.MessageBuilder;
@@ -62,13 +63,14 @@ public class HelpCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".help   **OR**  .help *<command>*\n"
+        return Collections.singletonList(
+                ".help   **OR**  .help *<command>*\n"
                 + ".help - returns the list of commands along with a simple description of each.\n"
                 + ".help <command> - returns the name, description, aliases and usage information of a command.\n"
                 + "   - This can use the aliases of a command as input as well.\n"
-                + "__Example:__ .help ann";
+                + "__Example:__ .help ann");
     }
 
     private void sendPrivate(PrivateChannel channel, String[] args)
@@ -99,10 +101,10 @@ public class HelpCommand extends Command
                 {
                     String name = c.getName();
                     String description = c.getDescription();
-                    String usageInstructions = c.getUsageInstructions();
+                    List<String> usageInstructions = c.getUsageInstructions();
                     name = (name == null || name.isEmpty()) ? NO_NAME : name;
                     description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
-                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? NO_USAGE : usageInstructions;
+                    usageInstructions = (usageInstructions == null || usageInstructions.isEmpty()) ? Collections.singletonList(NO_USAGE) : usageInstructions;
 
                     //TODO: Replace with a PrivateMessage
                     channel.sendMessage(new MessageBuilder()
@@ -110,8 +112,15 @@ public class HelpCommand extends Command
                             .appendString("**Description:** " + description + "\n")
                             .appendString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
                             .appendString("**Usage:** ")
-                            .appendString(usageInstructions)
+                            .appendString(usageInstructions.get(0))
                             .build());
+                    for (int i = 1; i < usageInstructions.size(); i++)
+                    {
+                        channel.sendMessage(new MessageBuilder()
+                            .appendString("__" + name + " Usage Cont. (" + (i + 1) + ")__\n")
+                            .appendString(usageInstructions.get(i))
+                            .build());
+                    }
                     return;
                 }
             }

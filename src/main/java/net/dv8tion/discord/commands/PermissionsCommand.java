@@ -2,6 +2,7 @@ package net.dv8tion.discord.commands;
 
 import java.sql.SQLException;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -76,9 +77,10 @@ public class PermissionsCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".perms *<group> <action> <user>*\n"
+        return Collections.singletonList(
+                ".perms *<group> <action> <user>*\n"
                 + "Groups:  [op]\n"
                 + "Actions: [add, remove, list]\n"
                 + "User:  Must be an @Mentioned user.\n"
@@ -88,7 +90,7 @@ public class PermissionsCommand extends Command
                 + " - This would list all bot OPs.\n"
                 + "\n"
                 + "**NOTE:** you can skip the .perms and jump straight to the group by using the group alias.\n"
-                + "__Example:__  .op remove @BananaPhone";
+                + "__Example:__  .op remove @BananaPhone");
     }
 
     /**

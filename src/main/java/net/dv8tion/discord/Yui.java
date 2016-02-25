@@ -16,15 +16,7 @@ import net.dv8tion.discord.bridge.IrcConnectInfo;
 import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
-import net.dv8tion.discord.commands.AnimeNewsNetworkCommand;
-import net.dv8tion.discord.commands.HelpCommand;
-import net.dv8tion.discord.commands.MyAnimeListCommand;
-import net.dv8tion.discord.commands.NyaaCommand;
-import net.dv8tion.discord.commands.PermissionsCommand;
-import net.dv8tion.discord.commands.ReloadCommand;
-import net.dv8tion.discord.commands.SearchCommand;
-import net.dv8tion.discord.commands.TestCommand;
-import net.dv8tion.discord.commands.UpdateCommand;
+import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.util.Database;
 
 import net.dv8tion.jda.JDA;
@@ -117,6 +109,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
+
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
                 if (info.getHost() == null || info.getHost().isEmpty())
@@ -150,6 +143,8 @@ public class Yui
             //Login to Discord now that we are all setup.
             api = jdaBuilder.buildBlocking();
             Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+
+            api.addEventListener(help.registerCommand(new TodoCommand(api)));
 
             //Creates and Stores all Discord endpoints in our Manager.
             for (Guild guild : api.getGuilds())

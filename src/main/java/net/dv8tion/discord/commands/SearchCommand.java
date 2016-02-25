@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.discord.util.GoogleSearch;
@@ -54,8 +55,9 @@ public class SearchCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".google *<search terms>  **OR** .wiki *<search terms>*  **OR**  .urban *<search terms>*\n";
+        return Collections.singletonList(
+				".google *<search terms>  **OR** .wiki *<search terms>*  **OR**  .urban *<search terms>*\n");
     }
 }
