@@ -3,6 +3,7 @@ package net.dv8tion.discord.commands;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -76,10 +77,11 @@ public class UpdateCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".update\n"
+        return Collections.singletonList(
+                ".update\n"
                 + "If you are running the bot without the bootloader, this command will be disabled.\n"
-                + "The bootloader is required to update the bot.";
+                + "The bootloader is required to update the bot.");
     }
 }

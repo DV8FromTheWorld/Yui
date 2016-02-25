@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.discord.Yui;
@@ -41,10 +42,11 @@ public class ReloadCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".reload\n"
+        return Collections.singletonList(
+                ".reload\n"
                 + "If you are running the bot without the bootloader, this command will be disabled.\n"
-                + "The bootloader is required to relaunch the bot.";
+                + "The bootloader is required to relaunch the bot.");
     }
 }

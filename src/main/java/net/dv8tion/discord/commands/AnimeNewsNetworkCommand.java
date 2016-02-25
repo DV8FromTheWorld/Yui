@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -54,13 +55,14 @@ public class AnimeNewsNetworkCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".ann *<search terms>*\n"
+        return Collections.singletonList(
+                ".ann *<search terms>*\n"
                 + "__Example:__ .ann Steins;Gate\n"
                 + " - This will return the AnimeNewsNetwork page for the anime Steins;Gate\n"
                 + "__Example 2:__ .ann Boku no Hero Academia Manga\n"
-                + " - This will return the manga page for Boku no Hero Academia (hopefully)";
+                + " - This will return the manga page for Boku no Hero Academia (hopefully)");
     }
 
     private String handleSearch(GoogleSearch search)

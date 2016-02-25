@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.discord.util.Downloader;
@@ -45,13 +46,14 @@ public class MyAnimeListCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".mal *<search terms>*\n"
+        return Collections.singletonList(
+                ".mal *<search terms>*\n"
                 + "__Example:__ .mal sao\n"
                 + " - This will return the entry for Sword Art Online.\n"
                 + "__Example 2:__ .mal magi kingdom of magic\n"
-                + " - This will return the entry for Magi - The Kingdom of Magic.";
+                + " - This will return the entry for Magi - The Kingdom of Magic.");
     }
 
     @SuppressWarnings("unused")

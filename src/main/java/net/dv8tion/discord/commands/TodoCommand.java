@@ -143,7 +143,7 @@ public class TodoCommand extends Command
     @Override
     public List<String> getAliases()
     {
-        return Arrays.asList(".todo");
+        return Arrays.asList(".todo2");
     }
 
     @Override
@@ -159,9 +159,51 @@ public class TodoCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return null;
+        return Arrays.asList(
+                ".todo [Action] <Action Arguments>\n" +
+                "__Actions:__\n" +
+                "\n" +
+                "__**show [ListName]** - Shows all todo entries in the [ListName] TodoList.__\n" +
+                "       Example: `.todo show shopping-list` would display all entries in the `shopping-list` list.\n" +
+                "\n" +
+                "__**lists <Mentions...>** - Displays the todo lists owned by the provided user(s).__\n" +
+                "       Example 1: `.todo lists`  Displays lists owned by the User that executed the command.\n" +
+                "       Example 2: `.todo lists @DV8FromTheWorld`  Displays lists owned by DV8FromTheWorld.\n" +
+                "\n" +
+                "__**create [ListName]** - Creates a new todo list with name [ListName]__\n" +
+                "       Example: `.todo list project5`  would create a todo list with the name `project5`\n" +
+                "\n" +
+                "__**add [ListName] [Content...]** - Adds a todo entry to the [ListName] todo list.__\n" +
+                "       Example: `.todo add project5 Fix bug where Users can delete System32`\n" +
+                "\n" +
+                "__**mark/unmark [TodoList] [EntryIndex]** - Marks a todo entry as **complete** or *incomplete**.__\n" +
+                "       Example 1: `.todo mark project5 2` Marks the second entry in the project5 list as compelted.\n" +
+                "       Example 2: `.todo unmark project5 3` Marks the third entry in the project5 list as incomplete.\n" +
+                "       Example 3: `.todo mark project5 *` Marks **all** todo entries in the project5 list as completed.\n" +
+                "     **Note:** You can also use `check` and `uncheck`.\n" +
+                "\n" +
+                "__**lock/unlock [ListName]** - Used to lock a todo list such that only Auth'd users can modify it.__\n" +
+                "       Example 1: `.todo lock project5` Locks the project5 list such that only Auth'd users can use `add`,`mark` and `clear`\n" +
+                "       Example 2: `.todo unlock project5` Unlocks the project5 list so that all users can modify it.\n",
+
+                //Second Usage Message
+                "__**users [SubAction] [ListName] <SubAction Args>** Used add, remove and list the Auth'd users for a todo list.__\n" +
+                "     __SubActions__:\n" +
+                "\n" +
+                "       __**add [ListName] [@mentions...]** Adds the mentions users to the Auth'd users for ListName list.__\n" +
+                "           Example: `.todo users add project5 @Joe @DudeMan` Adds Joe and DudeMan Auth'd users for the project5 list.\n" +
+                "       __**remove [ListName] [@mentions...]** Removes the mentioned users from the Auth'd users for ListName list.__\n" +
+                "           Example: `.todo users remove project5 @MrCatMan` Removes MrCatMan from the Auth'd users for the project5 list.\n" +
+                "       __**list [ListName]** Lists the Owner and Auth'd users for the ListName list.__\n" +
+                "           Example: `.todo users list project5` Lists the owner and all Auth'd users for the project5 list.\n" +
+                "\n" +
+                "__**clear [ListName]** - Clears all **completed** todo entries from a list.__\n" +
+                "       Example: `.todo clear project5` Clears all **completed** todo entries in the project5 list\n" +
+                "\n" +
+                "__**remove [ListName]** - Completely deletes the ListName list. Only the list owner can do this.__\n" +
+                "       Example: `.todo remove project5` Completely deletes the project5 todo list.\n");
     }
 
     //alias show [ListName]

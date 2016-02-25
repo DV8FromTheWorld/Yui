@@ -1,6 +1,7 @@
 package net.dv8tion.discord.commands;
 
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import net.dv8tion.jda.MessageBuilder;
@@ -58,9 +59,10 @@ public class TestCommand extends Command
     }
 
     @Override
-    public String getUsageInstructions()
+    public List<String> getUsageInstructions()
     {
-        return ".test\n"
-                + "Really, this command is just a test, however, it will @Mention you.";
+        return Collections.singletonList(
+                ".test\n"
+                + "Really, this command is just a test, however, it will @Mention you.");
     }
 }
