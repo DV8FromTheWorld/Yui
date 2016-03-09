@@ -111,25 +111,9 @@ public class EndPointMessage
     public void setDiscordMessage(Message discordMessage)
     {
         String parsedMessage = discordMessage.getContent();
-        Pattern userPattern = Pattern.compile("(?<=<@)[0-9]{18}(?=>)");
-        Pattern channelPattern = Pattern.compile("(?<=<#)[0-9]{18}(?=>)");
-
-        Matcher userMatcher = userPattern.matcher(parsedMessage);
-        while (userMatcher.find())
+        for (Message.Attachment attach : discordMessage.getAttachments())
         {
-            String userId = userMatcher.group();
-            User user = Yui.getAPI().getUserById(userId);
-            if (user != null)
-                parsedMessage = parsedMessage.replace("<@" + userId + ">", user.getUsername());
-        }
-
-        Matcher channelMatcher = channelPattern.matcher(parsedMessage);
-        while(channelMatcher.find())
-        {
-            String channelId = channelMatcher.group();
-            TextChannel channel = Yui.getAPI().getTextChannelById(channelId);
-            if (channel != null)
-                parsedMessage = parsedMessage.replace("<#" + channelId + ">", channel.getName());
+            parsedMessage += "\n" + attach.getUrl();
         }
 
         this.message = parsedMessage;
