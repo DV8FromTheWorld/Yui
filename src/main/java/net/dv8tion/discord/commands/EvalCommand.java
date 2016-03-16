@@ -29,6 +29,11 @@ public class EvalCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
+        //Specifically ignores the user meew0 due to a conflict between his bot (Elgyem) and Yui.
+        //We both agreed to make our bots ignore eachother's .eval commands.
+        if (e.getAuthor().getId().equals("66237334693085184"))  //meew0's ID
+            return;
+
         if (!Permissions.getPermissions().isOp(e.getAuthor()))
         {
             sendMessage(e, "Sorry, this command is OP only!");
