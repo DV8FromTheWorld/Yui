@@ -4,12 +4,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import net.dv8tion.discord.bridge.IrcConnectInfo;
@@ -23,7 +18,6 @@ import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.Guild;
 import net.dv8tion.jda.entities.TextChannel;
-import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.security.auth.login.LoginException;
@@ -111,6 +105,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
             jdaBuilder.addListener(help.registerCommand(new EvalCommand()));
             jdaBuilder.addListener(help.registerCommand(new RollCommand()));
+            jdaBuilder.addListener(help.registerCommand(new InfoCommand()));
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
