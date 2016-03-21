@@ -15,6 +15,7 @@
  */
 package net.dv8tion.discord.commands;
 
+import net.dv8tion.discord.YuiInfo;
 import net.dv8tion.jda.JDAInfo;
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
@@ -30,6 +31,7 @@ public class InfoCommand extends Command
     {
         MessageBuilder builder = new MessageBuilder();
         builder.appendString("__Yui Information__\n")
+                .appendString("    **Version**:       " + YuiInfo.VERSION + "\n")
                 .appendString("__Creator__\n")
                 .appendString("    **Name**:          DV8FromTheWorld (#6297)\n")
                 .appendString("    **ID**:                107562988810027008\n")
