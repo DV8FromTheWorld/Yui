@@ -1,9 +1,6 @@
 package net.dv8tion.discord.commands;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.PrivateChannel;
@@ -18,16 +15,16 @@ public class HelpCommand extends Command
     private static final String NO_DESCRIPTION = "No description has been provided for this command. Sorry!";
     private static final String NO_USAGE = "No usage instructions have been provided for this command. Sorry!";
 
-    private ArrayList<Command> commands;
+    private TreeMap<String, Command> commands;
 
     public HelpCommand()
     {
-        commands = new ArrayList<Command>();
+        commands = new TreeMap<>();
     }
 
     public Command registerCommand(Command command)
     {
-        commands.add(command);
+        commands.put(command.getAliases().get(0), command);
         return command;
     }
 
@@ -78,7 +75,7 @@ public class HelpCommand extends Command
         if (args.length < 2)
         {
             StringBuilder s = new StringBuilder();
-            for (Command c : commands)
+            for (Command c : commands.values())
             {
                 String description = c.getDescription();
                 description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
@@ -95,7 +92,7 @@ public class HelpCommand extends Command
         else
         {
             String command = args[1].charAt(0) == '.' ? args[1] : "." + args[1];    //If there is not a preceding . attached to the command we are search, then prepend one.
-            for (Command c : commands)
+            for (Command c : commands.values())
             {
                 if (c.getAliases().contains(command))
                 {
