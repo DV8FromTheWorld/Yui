@@ -110,6 +110,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
             jdaBuilder.addListener(help.registerCommand(new EvalCommand()));
+            jdaBuilder.addListener(help.registerCommand(new RollCommand()));
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
