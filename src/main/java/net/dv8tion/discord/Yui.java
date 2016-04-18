@@ -103,7 +103,7 @@ public class Yui
         {
             Settings settings = SettingsManager.getInstance().getSettings();
 
-            JDABuilder jdaBuilder = new JDABuilder(settings.getEmail(), settings.getPassword());
+            JDABuilder jdaBuilder = new JDABuilder().setBotToken(settings.getBotToken());
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
@@ -169,12 +169,12 @@ public class Yui
         }
         catch (IllegalArgumentException e)
         {
-            System.out.println("No login details provided! Please give an email and password in the config file.");
+            System.out.println("No login details provided! Please provide a botToken in the config.");
             System.exit(NO_USERNAME_PASS_COMBO);
         }
         catch (LoginException e)
         {
-            System.out.println("The Email and Password combination provided in the Config.json was incorrect.");
+            System.out.println("The botToken provided in the Config.json was incorrect.");
             System.out.println("Did you modify the Config.json after it was created?");
             System.exit(BAD_USERNAME_PASS_COMBO);
         }
@@ -183,12 +183,6 @@ public class Yui
             System.out.println("Our login thread was interrupted!");
             System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
-//        catch (DiscordFailedToConnectException e)
-//        {
-//            System.out.println("We failed to connect to the Discord API. Do you have internet connection?");
-//            System.out.println("Also double-check your Config.json for possible mistakes.");
-//            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
-//        }
     }
 
     private static void relaunchInUTF8() throws InterruptedException, UnsupportedEncodingException

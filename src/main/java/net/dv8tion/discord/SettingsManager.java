@@ -91,8 +91,7 @@ public class SettingsManager {
 
     private Settings getDefaultSettings() {
         Settings newSettings = new Settings();
-        newSettings.setEmail("email");
-        newSettings.setPassword("password");
+        newSettings.setBotToken("");
         newSettings.setProxyHost("");
         newSettings.setProxyPort("8080");
         newSettings.setUseBetaBuilds(new Boolean(false));
@@ -116,14 +115,9 @@ public class SettingsManager {
     {
         boolean modified = false;
         Settings defaults = getDefaultSettings();
-        if (settings.getEmail() == null)
+        if (settings.getBotToken() == null)
         {
-            settings.setEmail(defaults.getEmail());
-            modified = true;
-        }
-        if (settings.getPassword() == null)
-        {
-            settings.setPassword(defaults.getPassword());
+            settings.setBotToken(defaults.getBotToken());
             modified = true;
         }
         if (settings.getUseBetaBuilds() == null)
