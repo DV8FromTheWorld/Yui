@@ -121,6 +121,7 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new EvalCommand()));
             jdaBuilder.addListener(help.registerCommand(new RollCommand()));
             jdaBuilder.addListener(help.registerCommand(new InfoCommand()));
+            jdaBuilder.addListener(help.registerCommand(new UptimeCommand()));
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
