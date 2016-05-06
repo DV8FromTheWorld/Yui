@@ -118,6 +118,10 @@ public class Yui
                 jdaBuilder.addListener(help.registerCommand(new MyAnimeListCommand()));
                 jdaBuilder.addListener(help.registerCommand(new AnimeNewsNetworkCommand()));
             }
+            else
+            {
+                System.out.println("No Google API Key provided, all search commands disabled");
+            }
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
