@@ -22,6 +22,7 @@ import java.util.List;
 import net.dv8tion.discord.util.Downloader;
 import net.dv8tion.discord.util.GoogleSearch;
 
+import net.dv8tion.discord.util.SearchResult;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -34,12 +35,11 @@ public class MyAnimeListCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        GoogleSearch search = new GoogleSearch(
-                String.format("%s+%s",
-                        StringUtils.join(args, "+", 1, args.length),
-                        "site:myanimelist.net"));
+        List<SearchResult> results = GoogleSearch.performSearch(
+                "018291224751151548851:pwowlyhmpyc",
+                StringUtils.join(args, "+", 1, args.length));
 
-        sendMessage(e, search.getSuggestedReturn());
+        sendMessage(e, results.get(0).getSuggestedReturn());
     }
 
     @Override
@@ -72,9 +72,9 @@ public class MyAnimeListCommand extends Command
     }
 
     @SuppressWarnings("unused")
-    private String handleSearch(GoogleSearch search)
+    private String handleSearch(SearchResult result)
     {
-        String url = search.getUrl(0);
+        String url = result.getUrl();
         if (url.contains(ANIME_URL))
         {
             System.out.println("this is anime");

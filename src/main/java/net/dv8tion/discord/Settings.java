@@ -26,6 +26,7 @@ import net.dv8tion.discord.bridge.IrcConnectInfo;
  */
 public class Settings {
     private String botToken;
+    private String googleApiKey;
     private String proxyHost;
     private String proxyPort;
     private Boolean useBetaBuilds;
@@ -40,6 +41,16 @@ public class Settings {
     public void setBotToken(String botToken)
     {
         this.botToken = botToken;
+    }
+
+    public String getGoogleApiKey()
+    {
+        return googleApiKey;
+    }
+
+    public void setGoogleApiKey(String googleApiKey)
+    {
+        this.googleApiKey = googleApiKey;
     }
 
     public String getProxyHost()

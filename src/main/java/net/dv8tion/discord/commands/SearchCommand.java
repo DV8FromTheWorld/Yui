@@ -21,6 +21,7 @@ import java.util.List;
 
 import net.dv8tion.discord.util.GoogleSearch;
 
+import net.dv8tion.discord.util.SearchResult;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
@@ -44,11 +45,12 @@ public class SearchCommand extends Command
 				return;
 		}
 
-		GoogleSearch search = new GoogleSearch(
+		List<SearchResult> results = GoogleSearch.performSearch(
+				"018291224751151548851%3Ajzifriqvl1o",
 				StringUtils.join(args, "+", 1, args.length)
 						+ ((filter != null) ? ("+" + filter) : ""));
 
-		sendMessage(e, search.getSuggestedReturn());
+		sendMessage(e, results.get(0).getSuggestedReturn());
 	}
 
 	@Override
@@ -73,6 +75,6 @@ public class SearchCommand extends Command
     public List<String> getUsageInstructions()
     {
         return Collections.singletonList(
-				".google *<search terms>  **OR** .wiki *<search terms>*  **OR**  .urban *<search terms>*\n");
+				".google *<search terms>*  **OR** .wiki *<search terms>* **OR** .urban *<search terms>*\n");
     }
 }

@@ -92,6 +92,7 @@ public class SettingsManager {
     private Settings getDefaultSettings() {
         Settings newSettings = new Settings();
         newSettings.setBotToken("");
+        newSettings.setGoogleApiKey("");
         newSettings.setProxyHost("");
         newSettings.setProxyPort("8080");
         newSettings.setUseBetaBuilds(new Boolean(false));
@@ -118,6 +119,11 @@ public class SettingsManager {
         if (settings.getBotToken() == null)
         {
             settings.setBotToken(defaults.getBotToken());
+            modified = true;
+        }
+        if (settings.getGoogleApiKey() == null)
+        {
+            settings.setGoogleApiKey(defaults.getGoogleApiKey());
             modified = true;
         }
         if (settings.getUseBetaBuilds() == null)

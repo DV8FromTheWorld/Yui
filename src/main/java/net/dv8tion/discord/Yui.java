@@ -29,6 +29,7 @@ import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.util.Database;
 
+import net.dv8tion.discord.util.GoogleSearch;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
 import net.dv8tion.jda.entities.Guild;
@@ -111,10 +112,14 @@ public class Yui
             HelpCommand help = new HelpCommand();
             jdaBuilder.addListener(help.registerCommand(help));
             jdaBuilder.addListener(help.registerCommand(new TestCommand()));
-            jdaBuilder.addListener(help.registerCommand(new SearchCommand()));
-            jdaBuilder.addListener(help.registerCommand(new NyaaCommand()));
-            jdaBuilder.addListener(help.registerCommand(new MyAnimeListCommand()));
-            jdaBuilder.addListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+            if (settings.getGoogleApiKey() != null && !settings.getGoogleApiKey().isEmpty())
+            {
+                GoogleSearch.setup(settings.getGoogleApiKey());
+                jdaBuilder.addListener(help.registerCommand(new SearchCommand()));
+                jdaBuilder.addListener(help.registerCommand(new NyaaCommand()));
+                jdaBuilder.addListener(help.registerCommand(new MyAnimeListCommand()));
+                jdaBuilder.addListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+            }
             jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
             jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
             jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
