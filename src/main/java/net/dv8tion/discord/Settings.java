@@ -15,10 +15,10 @@
  */
 package net.dv8tion.discord;
 
-import java.util.List;
-
 import net.dv8tion.discord.bridge.BridgeInfo;
 import net.dv8tion.discord.bridge.IrcConnectInfo;
+
+import java.util.List;
 
 /**
  * This code came from Smbarbour's RavenBot

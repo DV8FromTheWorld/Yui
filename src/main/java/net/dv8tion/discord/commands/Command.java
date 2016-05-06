@@ -15,17 +15,12 @@
  */
 package net.dv8tion.discord.commands;
 
-import java.util.List;
-
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.events.message.GenericMessageEvent;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageUpdateEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageUpdateEvent;
 import net.dv8tion.jda.hooks.ListenerAdapter;
+
+import java.util.List;
 
 public abstract class Command extends ListenerAdapter
 {

@@ -15,20 +15,12 @@
  */
 package net.dv8tion.discord;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
-import java.util.ArrayList;
-import java.util.List;
-
 import net.dv8tion.discord.bridge.IrcConnectInfo;
 import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.util.Database;
-
 import net.dv8tion.discord.util.GoogleSearch;
 import net.dv8tion.jda.JDA;
 import net.dv8tion.jda.JDABuilder;
@@ -37,6 +29,12 @@ import net.dv8tion.jda.entities.TextChannel;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.security.auth.login.LoginException;
+import java.io.File;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Yui
 {

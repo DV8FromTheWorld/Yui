@@ -15,11 +15,11 @@
  */
 package net.dv8tion.discord.bridge.endpoint;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import net.dv8tion.discord.bridge.endpoint.types.DiscordEndPoint;
 import net.dv8tion.discord.bridge.endpoint.types.IrcEndPoint;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class EndPointManager
 {

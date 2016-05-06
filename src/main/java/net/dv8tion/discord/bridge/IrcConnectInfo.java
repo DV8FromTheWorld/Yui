@@ -15,10 +15,10 @@
  */
 package net.dv8tion.discord.bridge;
 
-import java.util.List;
-
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+
+import java.util.List;
 
 public class IrcConnectInfo
 {

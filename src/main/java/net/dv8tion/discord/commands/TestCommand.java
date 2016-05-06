@@ -15,15 +15,15 @@
  */
 package net.dv8tion.discord.commands;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.events.message.GenericMessageEvent;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.events.message.priv.GenericPrivateMessageEvent;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class TestCommand extends Command
 {

@@ -15,28 +15,18 @@
  */
 package net.dv8tion.discord.util;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
-
-import net.dv8tion.discord.Permissions;
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 public class GoogleSearch
 {

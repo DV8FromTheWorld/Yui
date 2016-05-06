@@ -15,15 +15,14 @@
  */
 package net.dv8tion.discord.bridge;
 
-import java.io.IOException;
-
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
-
 import net.dv8tion.jda.events.Event;
-import net.dv8tion.jda.events.message.guild.*;
+import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.events.message.guild.GuildMessageEmbedEvent;
 import net.dv8tion.jda.hooks.EventListener;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
@@ -32,6 +31,8 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+
+import java.io.IOException;
 
 public class IrcConnection extends ListenerAdapter<PircBotX> implements EventListener
 {

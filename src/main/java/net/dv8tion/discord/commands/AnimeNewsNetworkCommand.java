@@ -15,21 +15,18 @@
  */
 package net.dv8tion.discord.commands;
 
+import net.dv8tion.discord.util.Downloader;
+import net.dv8tion.discord.util.GoogleSearch;
+import net.dv8tion.discord.util.SearchResult;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.dv8tion.discord.util.Downloader;
-import net.dv8tion.discord.util.GoogleSearch;
-
-import net.dv8tion.discord.util.SearchResult;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class AnimeNewsNetworkCommand extends Command
 {

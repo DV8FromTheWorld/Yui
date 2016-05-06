@@ -15,6 +15,11 @@
  */
 package net.dv8tion.discord;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.dv8tion.discord.bridge.BridgeInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -24,12 +29,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
-
-import net.dv8tion.discord.bridge.BridgeInfo;
-import net.dv8tion.discord.bridge.IrcConnectInfo;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 /**
  * This code came directly from Smbarbour's RavenBot.

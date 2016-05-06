@@ -15,14 +15,14 @@
  */
 package net.dv8tion.discord;
 
+import net.dv8tion.discord.util.Database;
+import net.dv8tion.jda.entities.SelfInfo;
+import net.dv8tion.jda.entities.User;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-
-import net.dv8tion.discord.util.Database;
-import net.dv8tion.jda.entities.SelfInfo;
-import net.dv8tion.jda.entities.User;
 
 public class Permissions
 {
