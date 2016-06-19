@@ -110,7 +110,7 @@ public class KanzeTodoCommand extends Command
             e.getTextChannel().sendMessageAsync(e.getAuthorNick() + ": No number was provided to mark! Example: `!!todo -3`", null);
             return false;
         }
-        int index ;
+        int index;
         try
         {
             index = Integer.valueOf(arg);
@@ -128,6 +128,8 @@ public class KanzeTodoCommand extends Command
         }
 
         int searchIndex = 1;
+
+        listLoop:
         for (int i = 0; i < todoList.length(); i++)
         {
             JSONObject section = todoList.getJSONObject(i);
@@ -139,7 +141,7 @@ public class KanzeTodoCommand extends Command
                     JSONObject entry = entries.getJSONObject(j);
                     entry.put("marked", !entry.getBoolean("marked"));
                     sendSectionToDiscord(section, index - j);
-                    break;
+                    break listLoop;
                 }
                 searchIndex++;
             }
@@ -181,6 +183,7 @@ public class KanzeTodoCommand extends Command
             sendSectionToDiscord(section, index);
             index += section.getJSONArray("entries").length();
         }
+        updateSaveFile();
         return true;
     }
 
@@ -256,13 +259,16 @@ public class KanzeTodoCommand extends Command
 
     private void updateSaveFile()
     {
-        try
+        synchronized (todoList)
         {
-            Files.write(jsonFile.toPath(), todoList.toString(4).getBytes());
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
+            try
+            {
+                Files.write(jsonFile.toPath(), todoList.toString(4).getBytes());
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
         }
     }
 
@@ -299,6 +305,7 @@ public class KanzeTodoCommand extends Command
             api.getTextChannelById(TODO_CHANNEL_ID).sendMessageAsync(sb.toString(), msg ->
             {
                 section.put("messageId", msg.getId());
+                updateSaveFile();
             });
         }
         else
