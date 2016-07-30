@@ -30,6 +30,8 @@ public class TestCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
+        if (!e.isPrivate())
+            return;
         sendMessage(e, new MessageBuilder()
                 .appendString("Yes, ")
                 .appendMention(e.getAuthor())
@@ -78,6 +80,7 @@ public class TestCommand extends Command
     {
         return Collections.singletonList(
                 ".test\n"
-                + "Really, this command is just a test, however, it will @Mention you.");
+                + "Really, this command is just a test, however, it will @Mention you.\n"
+                + "Also, it is restricted to PMs currently.");
     }
 }

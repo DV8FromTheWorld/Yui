@@ -33,6 +33,8 @@ public abstract class Command extends ListenerAdapter
     @Override
     public void onMessageReceived(MessageReceivedEvent e)
     {
+        if (e.getAuthor().isBot() && !respondToBots())
+            return;
         if (containsCommand(e.getMessage()))
             onCommand(e, commandArgs(e.getMessage()));
     }
@@ -63,5 +65,10 @@ public abstract class Command extends ListenerAdapter
     protected Message sendMessage(MessageReceivedEvent e, String message)
     {
         return sendMessage(e, new MessageBuilder().appendString(message).build());
+    }
+
+    protected boolean respondToBots()
+    {
+        return false;
     }
 }
