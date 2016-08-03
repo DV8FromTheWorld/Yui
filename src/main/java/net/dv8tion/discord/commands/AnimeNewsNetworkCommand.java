@@ -1,19 +1,32 @@
+/**
+ *     Copyright 2015-2016 Austin Keener
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.dv8tion.discord.commands;
+
+import net.dv8tion.discord.util.Downloader;
+import net.dv8tion.discord.util.GoogleSearch;
+import net.dv8tion.discord.util.SearchResult;
+import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import net.dv8tion.discord.util.Downloader;
-import net.dv8tion.discord.util.GoogleSearch;
-
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
-import org.apache.commons.lang3.StringEscapeUtils;
-import org.apache.commons.lang3.StringUtils;
 
 public class AnimeNewsNetworkCommand extends Command
 {
@@ -28,12 +41,11 @@ public class AnimeNewsNetworkCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        GoogleSearch search = new GoogleSearch(
-                String.format("%s+%s",
-                        StringUtils.join(args, "+", 1, args.length),
-                        "site:animenewsnetwork.com"));
+        List<SearchResult> results = GoogleSearch.performSearch(
+                "018291224751151548851:g6kjw0k_cp8",
+                StringUtils.join(args, "+", 1, args.length));
 
-        sendMessage(e, handleSearch(search));
+        sendMessage(e, handleSearch(results.get(0)));
     }
 
     @Override
@@ -65,9 +77,9 @@ public class AnimeNewsNetworkCommand extends Command
                 + " - This will return the manga page for Boku no Hero Academia (hopefully)");
     }
 
-    private String handleSearch(GoogleSearch search)
+    private String handleSearch(SearchResult result)
     {
-        String url = search.getUrl(0);
+        String url = result.getUrl();
         if (url.contains(ANIME_URL) || url.contains(MANGA_URL))
         {
             String title = null;
@@ -83,7 +95,7 @@ public class AnimeNewsNetworkCommand extends Command
             if (m.find())
                 title = m.group();
             else
-                title = search.getTitle(0);
+                title = result.getTitle();
 
             Pattern p2 = Pattern.compile(ALT_TITLE_REGEX);
             Matcher m2 = p2.matcher(xmlReturn);
@@ -95,7 +107,7 @@ public class AnimeNewsNetworkCommand extends Command
             if (m3.find())
                 summary = m3.group();
             else
-                summary = search.getContent(0);
+                summary = result.getContent();
 
             Pattern p4 = Pattern.compile("type=\"Picture\".*?>.*?</info>");
             Matcher m4 = p4.matcher(xmlReturn);
@@ -122,7 +134,7 @@ public class AnimeNewsNetworkCommand extends Command
         }
         else
         {
-            return search.getSuggestedReturn();
+            return result.getSuggestedReturn();
         }
     }
 }

@@ -1,74 +1,77 @@
+/**
+ *     Copyright 2015-2016 Austin Keener
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.dv8tion.discord.util;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.URLDecoder;
+import java.time.LocalDateTime;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Random;
-
-import org.apache.commons.lang3.StringEscapeUtils;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonParser;
 
 public class GoogleSearch
 {
-    private JsonArray results;
+    public static final String GOOGLE_URL = "https://www.googleapis.com/customsearch/v1?cx=%s&key=%s&num=%d&q=%s";
+    private static String GOOGLE_API_KEY = null;
+    private static LocalDateTime dayStartTime = null;
+    private static int currentGoogleUsage = 0;
 
-    public GoogleSearch(String terms)
+    public static void setup(String googleApiKey)
     {
-        performSearch(terms.replaceAll(" ", "+"));
+        GOOGLE_API_KEY = googleApiKey;
+        dayStartTime = LocalDateTime.now();
     }
 
-    public String getTitle(int resultIndex)
+    public static List<SearchResult> performSearch(String engineId, String terms)
     {
-        String title = results.get(resultIndex).getAsJsonObject().get("title").toString();
-        return cleanString(title);
+        return performSearch(engineId, terms, 1);
     }
 
-    public String getContent(int resultIndex)
+    public static List<SearchResult> performSearch(String engineId, String terms, int requiredResultsCount)
     {
-        String content =  results.get(resultIndex).getAsJsonObject().get("content").toString();
-        return cleanString(content);
-    }
-
-    public String getUrl(int resultIndex)
-    {
-        String url = results.get(resultIndex).getAsJsonObject().get("url").toString();
-        url = cleanString(url);
         try
         {
-            return URLDecoder.decode(url, "UTF-8");
-        }
-        catch (UnsupportedEncodingException e)
-        {
-            e.printStackTrace();
-        }
-        return url;
-    }
+            if (GOOGLE_API_KEY == null)
+                throw new IllegalStateException("Google API Key is null, Cannot preform google search without a key! Set one in the settings!");
+            if (engineId == null || engineId.isEmpty())
+                throw new IllegalArgumentException("Google Custom Search Engine id cannot be null or empty!");
 
-    public String getSuggestedReturn()
-    {
-        return getUrl(0) + " - *" + getTitle(0) + "*: \"" + getContent(0) + "\"";
-    }
+            LocalDateTime currentTime = LocalDateTime.now();
+            if (currentTime.isAfter(dayStartTime.plusDays(1)))
+            {
+                dayStartTime = currentTime;
+                currentGoogleUsage = 1;
+            }
+            else if (currentGoogleUsage >= 80)
+            {
+                throw new IllegalStateException("Google usage has reached the premature security cap of 80");
+            }
 
-    public int getResultCount()
-    {
-        return results.size();
-    }
+            terms = terms.replace(" ", "%20");
+            String searchUrl = String.format(GOOGLE_URL, engineId, GOOGLE_API_KEY, requiredResultsCount, terms);
 
-    private void performSearch(String terms) {
-        try {
-            StringBuilder searchURLString = new StringBuilder();
-            searchURLString.append("https://ajax.googleapis.com/ajax/services/search/web?v=1.0&q=");
-            searchURLString.append(terms);
-
-            URL searchURL = new URL(searchURLString.toString());
+            URL searchURL = new URL(searchUrl);
             URLConnection conn = searchURL.openConnection();
+            currentGoogleUsage++;
             conn.setRequestProperty("User-Agent", "Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:39.0) Gecko/20100101 " + randomName(10));
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
             StringBuilder json = new StringBuilder();
@@ -77,26 +80,23 @@ public class GoogleSearch
                 json.append(line).append("\n");
             }
             in.close();
-            JsonElement element = new JsonParser().parse(json.toString());
-            results = element.getAsJsonObject().getAsJsonObject("responseData").getAsJsonArray("results");
+
+            JSONArray jsonResults = new JSONObject(json.toString()).getJSONArray("items");
+            List<SearchResult> results = new LinkedList<>();
+            for (int i = 0; i < jsonResults.length(); i++)
+            {
+                results.add(SearchResult.fromGoogle(jsonResults.getJSONObject(i)));
+            }
+            return results;
         }
         catch (IOException e)
         {
             e.printStackTrace();
+            return null;
         }
     }
 
-    private String cleanString(String uncleanString)
-    {
-        return StringEscapeUtils.unescapeJava(
-                StringEscapeUtils.unescapeHtml4(
-                        uncleanString
-                            .replaceAll("\\s+", " ")
-                            .replaceAll("\\<.*?>", "")
-                            .replaceAll("\"", "")));
-    }
-
-    private String randomName(int randomLength)
+    private static String randomName(int randomLength)
     {
         char[] characters = new char[]
                 {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',

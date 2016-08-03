@@ -1,8 +1,24 @@
 /**
- * This code came directly from Smbarbour's RavenBot.
- * https://github.com/MCUpdater/RavenBot/blob/master/src/main/java/org/mcupdater/ravenbot/SettingsManager.java
+ *     Copyright 2015-2016 Austin Keener
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package net.dv8tion.discord;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import net.dv8tion.discord.bridge.BridgeInfo;
+import net.dv8tion.discord.bridge.IrcConnectInfo;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,12 +30,10 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 
-import net.dv8tion.discord.bridge.BridgeInfo;
-import net.dv8tion.discord.bridge.IrcConnectInfo;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
+/**
+ * This code came directly from Smbarbour's RavenBot.
+ * https://github.com/MCUpdater/RavenBot/blob/master/src/main/java/org/mcupdater/ravenbot/SettingsManager.java
+ */
 public class SettingsManager {
     private static SettingsManager instance;
     private final Gson gson = new GsonBuilder().setPrettyPrinting().create();
@@ -76,8 +90,8 @@ public class SettingsManager {
 
     private Settings getDefaultSettings() {
         Settings newSettings = new Settings();
-        newSettings.setEmail("email");
-        newSettings.setPassword("password");
+        newSettings.setBotToken("");
+        newSettings.setGoogleApiKey("");
         newSettings.setProxyHost("");
         newSettings.setProxyPort("8080");
         newSettings.setUseBetaBuilds(new Boolean(false));
@@ -101,14 +115,14 @@ public class SettingsManager {
     {
         boolean modified = false;
         Settings defaults = getDefaultSettings();
-        if (settings.getEmail() == null)
+        if (settings.getBotToken() == null)
         {
-            settings.setEmail(defaults.getEmail());
+            settings.setBotToken(defaults.getBotToken());
             modified = true;
         }
-        if (settings.getPassword() == null)
+        if (settings.getGoogleApiKey() == null)
         {
-            settings.setPassword(defaults.getPassword());
+            settings.setGoogleApiKey(defaults.getGoogleApiKey());
             modified = true;
         }
         if (settings.getUseBetaBuilds() == null)

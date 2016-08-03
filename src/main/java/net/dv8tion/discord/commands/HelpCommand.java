@@ -1,16 +1,29 @@
+/**
+ *     Copyright 2015-2016 Austin Keener
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package net.dv8tion.discord.commands;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
 
 import net.dv8tion.jda.MessageBuilder;
 import net.dv8tion.jda.entities.PrivateChannel;
 import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageReceivedEvent;
-import net.dv8tion.jda.events.message.priv.PrivateMessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.TreeMap;
 
 public class HelpCommand extends Command
 {
@@ -18,16 +31,16 @@ public class HelpCommand extends Command
     private static final String NO_DESCRIPTION = "No description has been provided for this command. Sorry!";
     private static final String NO_USAGE = "No usage instructions have been provided for this command. Sorry!";
 
-    private ArrayList<Command> commands;
+    private TreeMap<String, Command> commands;
 
     public HelpCommand()
     {
-        commands = new ArrayList<Command>();
+        commands = new TreeMap<>();
     }
 
     public Command registerCommand(Command command)
     {
-        commands.add(command);
+        commands.put(command.getAliases().get(0), command);
         return command;
     }
 
@@ -78,7 +91,7 @@ public class HelpCommand extends Command
         if (args.length < 2)
         {
             StringBuilder s = new StringBuilder();
-            for (Command c : commands)
+            for (Command c : commands.values())
             {
                 String description = c.getDescription();
                 description = (description == null || description.isEmpty()) ? NO_DESCRIPTION : description;
@@ -95,7 +108,7 @@ public class HelpCommand extends Command
         else
         {
             String command = args[1].charAt(0) == '.' ? args[1] : "." + args[1];    //If there is not a preceding . attached to the command we are search, then prepend one.
-            for (Command c : commands)
+            for (Command c : commands.values())
             {
                 if (c.getAliases().contains(command))
                 {
