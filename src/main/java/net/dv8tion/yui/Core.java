@@ -78,6 +78,7 @@ public class Core
             System.exit(NEWLY_CREATED_CONFIG);
         }
         loadConfig();
+        searchForPlugins();
         //TODO: Get info from cmd line args.
 
         JDABuilder builder = new JDABuilder().setBotToken(botToken);
@@ -95,33 +96,10 @@ public class Core
         }
         catch (LoginException e)
         {
-            LOG.fatal("The botToken provided in the Config.json was incorrect.");
-            LOG.fatal("Did you modify the Config.json after it was created?");
+            LOG.fatal("The botToken provided in Yui.cfg was incorrect.");
+            LOG.fatal("Did you modify Yui.cfg after it was created?");
             System.exit(BAD_USERNAME_PASS_COMBO);
         }
-
-
-//        System.out.println(config.getLoadedConfigVersion());
-//        System.out.println(config.getDefinedConfigVersion());
-
-//        Object o1 = load("plugins/test.jar");
-//        Object o2 = load("plugins/test2.jar");
-//        Object o3 = load("plugins/test-all.jar");
-//        Plugin p1 = JclUtils.cast(o1, Plugin.class);
-//        Plugin p2 = JclUtils.cast(o2, Plugin.class);
-//        Plugin p3 = JclUtils.cast(o3, Plugin.class);
-//        System.out.println(p1.getName());
-//        System.out.println(p2.getName());
-//        System.out.println(p3.getName());
-    }
-
-    public static Object load(String path) throws MalformedURLException
-    {
-        JarClassLoader cl = new JarClassLoader();
-        cl.add(new File(path).toURI().toURL());
-        JclObjectFactory factory = JclObjectFactory.getInstance();
-        Object o = factory.create(cl, "net.dv8tion.yui.plugins.Test");
-        return o;
     }
 
     public static void loadConfig()
@@ -133,16 +111,26 @@ public class Core
         prop.setComment("The token used to login to discord");
         botToken = prop.getString();
 
-        prop = cfg.get("general", "logLevel", "info");
+        prop = cfg.get("general", "logLevel-Yui", "info");
         prop.setComment("Used to change the output logger level of Yui's Systems. Options: [fatal, warn, info, debug, trace, off]");
         String sLevel = prop.getString();
         SimpleLog.Level level = getLevel(prop.getString());
         if (level == null)
         {
-            LOG.warn("The logLevel in Yui.cfg was set to an unknown level type: `" + sLevel + "`. Defaulting to Level.INFO");
+            LOG.warn("The Log-Level in Yui.cfg was set to an unknown level type: `" + sLevel + "`. Defaulting to Level.INFO");
             level = SimpleLog.Level.INFO;
         }
         LOG.setLevel(level);
+
+        prop = cfg.get("general", "logLevel-JDA", "info");
+        prop.setComment("Used to change the output logger level of JDA's Systems. Options: [fatal, warn, info, debug, trace, off]");
+        sLevel = prop.getString();
+        level = getLevel(prop.getString());
+        if (level == null)
+        {
+            LOG.warn("The JDA-Log-Level in Yui.cfg was set to an unknown level type: `" + sLevel + "`. Defaulting to Level.INFO");
+            level = SimpleLog.Level.INFO;
+        }
         SimpleLog.LEVEL = level;
 
         prop = cfg.get("proxy", "proxyEnabled", false);
