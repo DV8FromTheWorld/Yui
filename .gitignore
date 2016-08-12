@@ -9,11 +9,13 @@
 .project
 
 ## gradle ##
-/build/
+build/
 /.gradle/
 
-## Yui ## 
+## Yui ##
+/plugins/
 *.db
+Yui.cfg
 Config.json
 tokens.json
 todo-list.json
