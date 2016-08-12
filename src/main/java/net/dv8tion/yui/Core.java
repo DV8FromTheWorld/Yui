@@ -201,7 +201,7 @@ public class Core
                     JarClassLoader cl = new JarClassLoader();
                     cl.add(f.toURI().toURL());
 
-                    Object oPlugin = factory.create(cl, "net.dv8tion.yui.plugins.Test");
+                    Object oPlugin = factory.create(cl, pluginPath);
                     Plugin plugin = JclUtils.cast(oPlugin, Plugin.class);
 
                     String id = plugin.getIdentifier();
