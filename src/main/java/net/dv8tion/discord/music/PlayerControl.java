@@ -297,6 +297,17 @@ public class PlayerControl extends ListenerAdapter
                 }
             }
         }
+        else if (".shuffle".equals(command[0]))
+        {
+            if (scheduler.queue.isEmpty())
+            {
+                event.getChannel().sendMessage("The queue is currently empty!").queue();
+                return;
+            }
+
+            scheduler.shuffle();
+            event.getChannel().sendMessage("The queue has been shuffled!").queue();
+        }
     }
 
     private void loadAndPlay(GuildMusicManager mng, final MessageChannel channel, final String trackUrl, final boolean addPlaylist)
