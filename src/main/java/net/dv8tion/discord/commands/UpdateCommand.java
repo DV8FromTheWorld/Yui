@@ -40,31 +40,31 @@ public class UpdateCommand extends Command
         if(SettingsManager.getInstance().getSettings().getUseBetaBuilds() && YuiInfo.hasNewBetaVersion())
         {
             sendMessage(e, new MessageBuilder()
-                .appendString("Updating to the latest **beta** version.\n")
-                .appendString(YuiInfo.VERSION.toString())
-                .appendString(" -> ")
-                .appendString(YuiInfo.getLatestBetaVersion().toString())
+                .append("Updating to the latest **beta** version.\n")
+                .append(YuiInfo.VERSION.toString())
+                .append(" -> ")
+                .append(YuiInfo.getLatestBetaVersion().toString())
                 .build());
             System.exit(Yui.UPDATE_LATEST_EXITCODE);
         }
         else if (YuiInfo.hasNewRecommendedVersion())
         {
             sendMessage(e, new MessageBuilder()
-                    .appendString("Updating to the latest **recommended** version.\n")
-                    .appendString(YuiInfo.VERSION.toString())
-                    .appendString(" -> ")
-                    .appendString(YuiInfo.getLatestRecommendedVersion().toString())
+                    .append("Updating to the latest **recommended** version.\n")
+                    .append(YuiInfo.VERSION.toString())
+                    .append(" -> ")
+                    .append(YuiInfo.getLatestRecommendedVersion().toString())
                     .build());
             System.exit(Yui.UPDATE_RECOMMENDED_EXITCODE);
         }
         else
         {
             sendMessage(e, new MessageBuilder()
-                .appendString("Yui is currently up-to-date compared to the latest ")
-                .appendString(SettingsManager.getInstance().getSettings().getUseBetaBuilds() ? "beta" : "recommended")
-                .appendString("build.\n")
-                .appendString("Current version: ", MessageBuilder.Formatting.BOLD)
-                .appendString(YuiInfo.VERSION.toString())
+                .append("Yui is currently up-to-date compared to the latest ")
+                .append(SettingsManager.getInstance().getSettings().getUseBetaBuilds() ? "beta" : "recommended")
+                .append("build.\n")
+                .append("Current version: ", MessageBuilder.Formatting.BOLD)
+                .append(YuiInfo.VERSION.toString())
                 .build());
         }
     }

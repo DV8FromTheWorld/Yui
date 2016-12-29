@@ -283,7 +283,7 @@ public class TodoCommand extends Command
                     messages.add(builder.build());
                     builder = new MessageBuilder();
                 }
-                builder.appendString(listString);
+                builder.append(listString);
             }
             messages.add(builder.build());
         }
