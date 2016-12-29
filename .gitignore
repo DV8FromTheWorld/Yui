@@ -13,7 +13,10 @@
 /.gradle/
 
 ## Yui ## 
+plugin/
+plugins/
 *.db
+Yui.cfg
 Config.json
 tokens.json
 todo-list.json

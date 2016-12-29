@@ -16,11 +16,11 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.util.Database;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.sql.PreparedStatement;
@@ -241,7 +241,7 @@ public class TodoCommand extends Command
         // Discord messages can only be 2000 characters.
         List<Message> todoMessages = new ArrayList<Message>();
         MessageBuilder builder = new MessageBuilder();
-        builder.appendString("__Todo for: `" + label + "`__\n");
+        builder.append("__Todo for: `" + label + "`__\n");
         for (int i = 0; i < todoList.entries.size(); i++)
         {
             TodoEntry todoEntry = todoList.entries.get(i);
@@ -249,12 +249,12 @@ public class TodoCommand extends Command
             if (todoEntry.checked)
                 todoEntryString = "~~" + todoEntryString + "~~";
             todoEntryString = (i + 1) + ") " + todoEntryString + "\n";
-            if (builder.getLength() + todoEntryString.length() > 2000)
+            if (builder.length() + todoEntryString.length() > 2000)
             {
                 todoMessages.add(builder.build());
                 builder = new MessageBuilder();
             }
-            builder.appendString(todoEntryString);
+            builder.append(todoEntryString);
         }
 
         todoMessages.forEach(message -> sendMessage(e, message));
@@ -274,11 +274,11 @@ public class TodoCommand extends Command
         {
             MessageBuilder builder = new MessageBuilder();
             List<TodoList> lists = todoLists.values().stream().filter(list -> list.ownerId.equals(u.getId())).collect(Collectors.toList());
-            builder.appendString("__" + u.getUsername() + " owns **" + lists.size() + "** todo lists.__\n");
+            builder.append("__" + u.getName() + " owns **" + lists.size() + "** todo lists.__\n");
             for (TodoList list : lists)
             {
                 String listString = " - " + list.labelName + "\n";
-                if (builder.getLength() + listString.length() > 2000)
+                if (builder.length() + listString.length() > 2000)
                 {
                     messages.add(builder.build());
                     builder = new MessageBuilder();
@@ -548,26 +548,26 @@ public class TodoCommand extends Command
             case "list":
             {
                 MessageBuilder builder = new MessageBuilder();
-                builder.appendString("__Owner of `" + label + "`__\n");
+                builder.append("__Owner of `" + label + "`__\n");
                 User owner = api.getUserById(todoList.ownerId);
                 if (owner != null)
-                    builder.appendString(" - " + owner.getUsername());
+                    builder.append(" - " + owner.getName());
                 else
-                    builder.appendString(" - Unknown User ID: " + todoList.ownerId);
-                builder.appendString("\n");
-                builder.appendString("__Other Auth'd Users__\n");
+                    builder.append(" - Unknown User ID: " + todoList.ownerId);
+                builder.append("\n");
+                builder.append("__Other Auth'd Users__\n");
 
                 for (String id : todoList.allowedUsers)
                 {
                     User u = api.getUserById(id);
                     if (u != null)
-                        builder.appendString(" - " + u.getUsername());
+                        builder.append(" - " + u.getName());
                     else
-                        builder.appendString(" - Unknown User ID: " + id);
-                    builder.appendString("\n");
+                        builder.append(" - Unknown User ID: " + id);
+                    builder.append("\n");
                 }
                 if (todoList.allowedUsers.isEmpty())
-                    builder.appendString(" - None.");
+                    builder.append(" - None.");
                 sendMessage(e ,builder.build());
                 break;
             }

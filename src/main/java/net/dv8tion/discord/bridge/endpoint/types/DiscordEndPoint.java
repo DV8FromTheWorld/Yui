@@ -20,8 +20,8 @@ import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
 import net.dv8tion.discord.bridge.endpoint.EndPointType;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
 
 public class DiscordEndPoint extends EndPoint
 {
@@ -74,7 +74,7 @@ public class DiscordEndPoint extends EndPoint
     {
         if (!connected)
             throw new IllegalStateException("Cannot send message to disconnected EndPoint! EndPoint: " + this.toEndPointInfo().toString());
-        getChannel().sendMessage(message);
+        getChannel().sendMessage(message).queue();
     }
 
     @Override
@@ -85,7 +85,7 @@ public class DiscordEndPoint extends EndPoint
         switch (message.getType())
         {
             case DISCORD:
-                getChannel().sendMessage(message.getDiscordMessage());
+                getChannel().sendMessage(message.getDiscordMessage()).queue();
                 break;
             default:
                 for (String segment : this.divideMessageForSending(message.getMessage()))

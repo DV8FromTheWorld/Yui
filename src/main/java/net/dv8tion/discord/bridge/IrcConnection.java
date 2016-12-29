@@ -19,11 +19,11 @@ import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
-import net.dv8tion.jda.events.Event;
-import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.events.message.guild.GuildMessageEmbedEvent;
-import net.dv8tion.jda.hooks.EventListener;
+import net.dv8tion.jda.core.events.Event;
+import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
+import net.dv8tion.jda.core.events.message.guild.GuildMessageEmbedEvent;
+import net.dv8tion.jda.core.hooks.EventListener;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -139,7 +139,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
         GenericGuildMessageEvent e = (GenericGuildMessageEvent) event;
 
         //Basically: If we are the ones that sent the message, don't send it to IRC.
-        if (event.getJDA().getSelfInfo().getId().equals(e.getAuthor().getId()))
+        if (event.getJDA().getSelfUser().getId().equals(e.getAuthor().getId()))
             return;
 
         //If this returns null, then this EndPoint isn't part of a bridge.

@@ -15,7 +15,7 @@
  */
 package net.dv8tion.discord.commands;
 
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;

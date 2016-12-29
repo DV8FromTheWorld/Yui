@@ -16,7 +16,7 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;

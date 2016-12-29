@@ -16,9 +16,10 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.entities.TextChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -63,7 +64,7 @@ public class KanzeTodoCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (e.isPrivate() || !e.getGuild().getId().equals(JDA_GUILD_ID))
+        if (!e.isFromType(ChannelType.TEXT) || !e.getGuild().getId().equals(JDA_GUILD_ID))
             return;
 
         if (!Permissions.getPermissions().isOp(e.getAuthor()))
@@ -88,7 +89,7 @@ public class KanzeTodoCommand extends Command
     {
         if (todoMessage.length() > 350)
         {
-            e.getTextChannel().sendMessageAsync(e.getAuthorNick() + ": Provided todo entry was greater than 350 characters. Be more concise!", null);
+            e.getTextChannel().sendMessage(e.getMember().getEffectiveName() + ": Provided todo entry was greater than 350 characters. Be more concise!").queue();
             return false;
         }
 
@@ -107,7 +108,7 @@ public class KanzeTodoCommand extends Command
         arg = arg.substring(1, arg.length());
         if (arg.isEmpty())
         {
-            e.getTextChannel().sendMessageAsync(e.getAuthorNick() + ": No number was provided to mark! Example: `!!todo -3`", null);
+            e.getTextChannel().sendMessage(e.getMember().getEffectiveName() + ": No number was provided to mark! Example: `!!todo -3`").queue();
             return false;
         }
         int index;
@@ -117,13 +118,13 @@ public class KanzeTodoCommand extends Command
         }
         catch (NumberFormatException ex)
         {
-            e.getTextChannel().sendMessageAsync(e.getAuthorNick() + ": Incorrect number format. You provided: `" + arg + "`. This isn't an int", null);
+            e.getTextChannel().sendMessage(e.getMember().getEffectiveName() + ": Incorrect number format. You provided: `" + arg + "`. This isn't an int").queue();
             return false;
         }
 
         if (index < 1 || index > getCurrentIndex())
         {
-            e.getTextChannel().sendMessageAsync(e.getAuthorNick() + ": Provided a non existent index: `" + index + "`", null);
+            e.getTextChannel().sendMessage(e.getMember().getEffectiveName() + ": Provided a non existent index: `" + index + "`").queue();
             return false;
         }
 
@@ -302,7 +303,7 @@ public class KanzeTodoCommand extends Command
         }
         if (section.isNull("messageId"))
         {
-            api.getTextChannelById(TODO_CHANNEL_ID).sendMessageAsync(sb.toString(), msg ->
+            api.getTextChannelById(TODO_CHANNEL_ID).sendMessage(sb.toString()).queue(msg ->
             {
                 section.put("messageId", msg.getId());
                 updateSaveFile();
@@ -311,8 +312,8 @@ public class KanzeTodoCommand extends Command
         else
         {
             api.getTextChannelById(TODO_CHANNEL_ID)
-                    .getMessageById(section.getString("messageId"))
-                    .updateMessageAsync(sb.toString(), null);
+                    .getMessageById(section.getString("messageId")).complete()
+                    .editMessage(sb.toString()).queue();
         }
     }
 }

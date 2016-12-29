@@ -15,10 +15,11 @@
  */
 package net.dv8tion.discord.commands;
 
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.hooks.ListenerAdapter;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.hooks.ListenerAdapter;
 
 import java.util.List;
 
@@ -56,15 +57,15 @@ public abstract class Command extends ListenerAdapter
 
     protected Message sendMessage(MessageReceivedEvent e, Message message)
     {
-        if(e.isPrivate())
-            return e.getPrivateChannel().sendMessage(message);
+        if(e.isFromType(ChannelType.PRIVATE))
+            return e.getPrivateChannel().sendMessage(message).complete();
         else
-            return e.getTextChannel().sendMessage(message);
+            return e.getTextChannel().sendMessage(message).complete();
     }
 
     protected Message sendMessage(MessageReceivedEvent e, String message)
     {
-        return sendMessage(e, new MessageBuilder().appendString(message).build());
+        return sendMessage(e, new MessageBuilder().append(message).build());
     }
 
     protected boolean respondToBots()

@@ -15,11 +15,12 @@
  */
 package net.dv8tion.discord.commands;
 
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.events.message.GenericMessageEvent;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
-import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.events.message.priv.GenericPrivateMessageEvent;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.events.message.GenericMessageEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.core.events.message.priv.GenericPrivateMessageEvent;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -30,12 +31,13 @@ public class TestCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if (!e.isPrivate())
+        if (!e.isFromType(ChannelType.PRIVATE))
             return;
+
         sendMessage(e, new MessageBuilder()
-                .appendString("Yes, ")
-                .appendMention(e.getAuthor())
-                .appendString("?")
+                .append("Yes, ")
+                .append(e.getAuthor())
+                .append("?")
                 .build());
     }
 
@@ -50,11 +52,11 @@ public class TestCommand extends Command
         {
             GenericGuildMessageEvent event = (GenericGuildMessageEvent) e;
             if (event.getGuild().getId().equals("107563502712954880"))  //Gaming Bunch Guild Id
-                System.out.println((event.getMessage().isEdited() ? "# " : "") + "[#" + event.getChannel().getName() + "] <" + event.getAuthor().getUsername() + "> " + event.getMessage().getContent());
+                System.out.println((event.getMessage().isEdited() ? "# " : "") + "[#" + event.getChannel().getName() + "] <" + event.getAuthor().getName() + "> " + event.getMessage().getContent());
         }
 
         if (e instanceof GenericPrivateMessageEvent)
-            System.out.println((e.getMessage().isEdited() ? "# " : "") + "[Private Message] <" + e.getAuthor().getUsername() + "> " + e.getMessage().getContent());
+            System.out.println((e.getMessage().isEdited() ? "# " : "") + "[Private Message] <" + e.getAuthor().getName() + "> " + e.getMessage().getContent());
     }
 
     @Override

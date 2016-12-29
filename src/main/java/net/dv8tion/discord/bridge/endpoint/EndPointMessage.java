@@ -15,9 +15,9 @@
  */
 package net.dv8tion.discord.bridge.endpoint;
 
-import net.dv8tion.jda.entities.Message;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.guild.GenericGuildMessageEvent;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
 import org.pircbotx.PircBotX;
 import org.pircbotx.hooks.events.MessageEvent;
 
@@ -57,7 +57,7 @@ public class EndPointMessage
         EndPointMessage message = new EndPointMessage();
         message.messageType = EndPointType.DISCORD;
         message.setDiscordMessage(event.getMessage());
-        message.senderName = event.getAuthor().getUsername();
+        message.senderName = event.getAuthor().getName();
         message.discordEvent = event;
         message.discordUser = event.getAuthor();
         return message;

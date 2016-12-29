@@ -17,7 +17,7 @@ package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
 import net.dv8tion.discord.Yui;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import java.util.Arrays;
 import java.util.Collections;

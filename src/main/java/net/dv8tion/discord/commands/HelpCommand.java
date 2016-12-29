@@ -15,9 +15,10 @@
  */
 package net.dv8tion.discord.commands;
 
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.PrivateChannel;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.ChannelType;
+import net.dv8tion.jda.core.entities.PrivateChannel;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Arrays;
@@ -47,12 +48,12 @@ public class HelpCommand extends Command
     @Override
     public void onCommand(MessageReceivedEvent e, String[] args)
     {
-        if(!e.isPrivate())
+        if(!e.isFromType(ChannelType.PRIVATE))
         {
             e.getTextChannel().sendMessage(new MessageBuilder()
-                    .appendMention(e.getAuthor())
-                    .appendString(": Help information was sent as a private message.")
-                    .build());
+                    .append(e.getAuthor())
+                    .append(": Help information was sent as a private message.")
+                    .build()).queue();
         }
         sendPrivate(e.getAuthor().getPrivateChannel(), args);
     }
@@ -101,9 +102,9 @@ public class HelpCommand extends Command
             }
 
             channel.sendMessage(new MessageBuilder()
-                    .appendString("The following commands are supported by the bot\n")
-                    .appendString(s.toString())
-                    .build());
+                    .append("The following commands are supported by the bot\n")
+                    .append(s.toString())
+                    .build()).queue();
         }
         else
         {
@@ -121,25 +122,25 @@ public class HelpCommand extends Command
 
                     //TODO: Replace with a PrivateMessage
                     channel.sendMessage(new MessageBuilder()
-                            .appendString("**Name:** " + name + "\n")
-                            .appendString("**Description:** " + description + "\n")
-                            .appendString("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
-                            .appendString("**Usage:** ")
-                            .appendString(usageInstructions.get(0))
-                            .build());
+                            .append("**Name:** " + name + "\n")
+                            .append("**Description:** " + description + "\n")
+                            .append("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
+                            .append("**Usage:** ")
+                            .append(usageInstructions.get(0))
+                            .build()).queue();
                     for (int i = 1; i < usageInstructions.size(); i++)
                     {
                         channel.sendMessage(new MessageBuilder()
-                            .appendString("__" + name + " Usage Cont. (" + (i + 1) + ")__\n")
-                            .appendString(usageInstructions.get(i))
-                            .build());
+                            .append("__" + name + " Usage Cont. (" + (i + 1) + ")__\n")
+                            .append(usageInstructions.get(i))
+                            .build()).queue();
                     }
                     return;
                 }
             }
             channel.sendMessage(new MessageBuilder()
-                    .appendString("The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
-                    .build());
+                    .append("The provided command '**" + args[1] + "**' does not exist. Use .help to list all commands.")
+                    .build()).queue();
         }
     }
 }

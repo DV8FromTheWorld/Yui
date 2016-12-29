@@ -22,11 +22,14 @@ import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.util.Database;
 import net.dv8tion.discord.util.GoogleSearch;
-import net.dv8tion.jda.JDA;
-import net.dv8tion.jda.JDABuilder;
-import net.dv8tion.jda.entities.Guild;
-import net.dv8tion.jda.entities.TextChannel;
+import net.dv8tion.jda.core.AccountType;
+import net.dv8tion.jda.core.JDA;
+import net.dv8tion.jda.core.JDABuilder;
+import net.dv8tion.jda.core.entities.Guild;
+import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.core.exceptions.RateLimitedException;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.http.HttpHost;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -102,7 +105,7 @@ public class Yui
         {
             Settings settings = SettingsManager.getInstance().getSettings();
 
-            JDABuilder jdaBuilder = new JDABuilder().setBotToken(settings.getBotToken());
+            JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
@@ -150,7 +153,7 @@ public class Yui
             if (settings.getProxyHost() != null && !settings.getProxyHost().isEmpty())
             {
                 //Sets JDA's proxy settings
-                jdaBuilder.setProxy(settings.getProxyHost(), Integer.valueOf(settings.getProxyPort()));
+                jdaBuilder.setProxy(new HttpHost(settings.getProxyHost(), Integer.valueOf(settings.getProxyPort())));
 
                 //Sets the JVM level proxy settings.
                 System.setProperty("http.proxyHost", settings.getProxyHost());
@@ -162,7 +165,7 @@ public class Yui
 
             //Login to Discord now that we are all setup.
             api = jdaBuilder.buildBlocking();
-            Permissions.getPermissions().setBotAsOp(api.getSelfInfo());
+            Permissions.getPermissions().setBotAsOp(api.getSelfUser());
 
             api.addEventListener(help.registerCommand(new TodoCommand(api)));
             api.addEventListener(help.registerCommand(new KanzeTodoCommand(api)));
@@ -190,6 +193,11 @@ public class Yui
         catch (InterruptedException e)
         {
             System.out.println("Our login thread was interrupted!");
+            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
+        }
+        catch (RateLimitedException e)
+        {
+            System.out.println("Encountered ratelimit while attempting to login!");
             System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
     }

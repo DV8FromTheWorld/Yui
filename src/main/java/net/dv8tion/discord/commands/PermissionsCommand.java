@@ -16,9 +16,9 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
-import net.dv8tion.jda.MessageBuilder;
-import net.dv8tion.jda.entities.User;
-import net.dv8tion.jda.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.core.MessageBuilder;
+import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 import org.apache.commons.lang3.ArrayUtils;
 
 import java.util.Arrays;
@@ -61,10 +61,10 @@ public class PermissionsCommand extends Command
                 break;
             default:
                 sendMessage(e, new MessageBuilder()
-                        .appendString("**Improper syntax, unrecognized permission group:** ")
-                        .appendString(args[0])
-                        .appendString("\n**Provided Command:** ")
-                        .appendString(e.getMessage().getContent())
+                        .append("**Improper syntax, unrecognized permission group:** ")
+                        .append(args[0])
+                        .append("\n**Provided Command:** ")
+                        .append(e.getMessage().getContent())
                         .build());
                 return;
         }
@@ -138,7 +138,7 @@ public class PermissionsCommand extends Command
                         builder.append(", ");
                     User user = e.getJDA().getUserById(op);
                     if (user != null)
-                        builder.append(user.getUsername());
+                        builder.append(user.getName());
                     else
                         builder.append("<@").append(op).append(">");
                     notFirstLoop = true;
@@ -148,10 +148,10 @@ public class PermissionsCommand extends Command
                 break;
             default:
                 sendMessage(e, new MessageBuilder()
-                    .appendString("**Improper syntax, unrecognized argument:** ")
-                    .appendString(args[1])
-                    .appendString("\n**Provided Command:** ")
-                    .appendString(e.getMessage().getContent())
+                    .append("**Improper syntax, unrecognized argument:** ")
+                    .append(args[1])
+                    .append("\n**Provided Command:** ")
+                    .append(e.getMessage().getContent())
                     .build());
         }
     }
@@ -178,22 +178,22 @@ public class PermissionsCommand extends Command
         {
             if (Permissions.getPermissions().addOp(user.getId()))
             {
-                sendMessage(e, "Successfully added " + user.getUsername() + " to the OPs list!");
+                sendMessage(e, "Successfully added " + user.getName() + " to the OPs list!");
                 return;
             }
             else
             {
-                sendMessage(e, user.getUsername() + " is already an OP!");
+                sendMessage(e, user.getName() + " is already an OP!");
                 return;
             }
         }
         catch (Exception e1)
         {
             sendMessage(e, new MessageBuilder()
-                    .appendString("Encountered an error when attempting to add OP.\n")
-                    .appendString("User: ").appendString(user.getUsername())
-                    .appendString("Error: ").appendString(e1.getClass().getName()).appendString("\n")
-                    .appendString("Reason: ").appendString(e1.getMessage())
+                    .append("Encountered an error when attempting to add OP.\n")
+                    .append("User: ").append(user.getName())
+                    .append("Error: ").append(e1.getClass().getName()).append("\n")
+                    .append("Reason: ").append(e1.getMessage())
                     .build());
         }
     }
@@ -228,22 +228,22 @@ public class PermissionsCommand extends Command
             {
                 if (Permissions.getPermissions().removeOp(user.getId()))
                 {
-                    sendMessage(e, "Successfully removed " + user.getUsername() + " to the OPs list!");
+                    sendMessage(e, "Successfully removed " + user.getName() + " to the OPs list!");
                     return;
                 }
                 else
                 {
-                    sendMessage(e, user.getUsername() + " cannot be removed because they weren't an OP!");
+                    sendMessage(e, user.getName() + " cannot be removed because they weren't an OP!");
                     return;
                 }
             }
             catch (Exception e1)
             {
                 sendMessage(e, new MessageBuilder()
-                        .appendString("Encountered an error when attempting to remove OP.\n")
-                        .appendString("User: ").appendString(user.getUsername())
-                        .appendString("Error: ").appendString(e1.getClass().getName()).appendString("\n")
-                        .appendString("Reason: ").appendString(e1.getMessage())
+                        .append("Encountered an error when attempting to remove OP.\n")
+                        .append("User: ").append(user.getName())
+                        .append("Error: ").append(e1.getClass().getName()).append("\n")
+                        .append("Reason: ").append(e1.getMessage())
                         .build());
             }
         }
