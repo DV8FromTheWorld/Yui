@@ -20,6 +20,7 @@ import net.dv8tion.discord.bridge.IrcConnection;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.commands.*;
+import net.dv8tion.discord.music.PlayerControl;
 import net.dv8tion.discord.util.Database;
 import net.dv8tion.discord.util.GoogleSearch;
 import net.dv8tion.jda.core.AccountType;
@@ -132,6 +133,9 @@ public class Yui
             jdaBuilder.addListener(help.registerCommand(new RollCommand()));
             jdaBuilder.addListener(help.registerCommand(new InfoCommand()));
             jdaBuilder.addListener(help.registerCommand(new UptimeCommand()));
+
+            //Audio stuff
+            jdaBuilder.addListener(new PlayerControl());
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {

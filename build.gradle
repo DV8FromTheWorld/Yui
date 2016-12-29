@@ -2,7 +2,7 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 apply plugin: 'java'
 
-def versionObj = new Version(major: 1, minor: 2, revision: 0)
+def versionObj = new Version(major: 1, minor: 3, revision: 0)
 group = "net.dv8tion"
 archivesBaseName = "Yui"
 version = "${versionObj.toString()}"
