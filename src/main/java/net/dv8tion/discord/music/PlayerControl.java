@@ -202,7 +202,7 @@ public class PlayerControl extends ListenerAdapter
             {
                 try
                 {
-                    int newVolume = Math.min(10, Math.max(100, Integer.parseInt(command[1])));
+                    int newVolume = Math.max(10, Math.min(100, Integer.parseInt(command[1])));
                     int oldVolume = player.getVolume();
                     player.setVolume(newVolume);
                     event.getChannel().sendMessage("Player volume changed from `" + oldVolume + "` to `" + newVolume + "`").queue();
