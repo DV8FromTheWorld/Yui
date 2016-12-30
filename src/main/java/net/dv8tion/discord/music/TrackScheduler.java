@@ -5,8 +5,10 @@ import com.sedmelluq.discord.lavaplayer.player.event.AudioEventAdapter;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrack;
 import com.sedmelluq.discord.lavaplayer.track.AudioTrackEndReason;
 
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 /**
  * This class schedules tracks for the audio player. It contains the queue of tracks.
@@ -15,7 +17,7 @@ public class TrackScheduler extends AudioEventAdapter
 {
     private boolean repeating = false;
     final AudioPlayer player;
-    final BlockingQueue<AudioTrack> queue;
+    final Queue<AudioTrack> queue;
     AudioTrack lastTrack;
 
     /**
@@ -24,7 +26,7 @@ public class TrackScheduler extends AudioEventAdapter
     public TrackScheduler(AudioPlayer player)
     {
         this.player = player;
-        this.queue = new LinkedBlockingQueue<>();
+        this.queue = new LinkedList<>();
     }
 
     /**
@@ -77,5 +79,10 @@ public class TrackScheduler extends AudioEventAdapter
     public void setRepeating(boolean repeating)
     {
         this.repeating = repeating;
+    }
+
+    public void shuffle()
+    {
+        Collections.shuffle((List<?>) queue);
     }
 }
