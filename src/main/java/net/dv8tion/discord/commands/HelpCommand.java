@@ -55,7 +55,7 @@ public class HelpCommand extends Command
                     .append(": Help information was sent as a private message.")
                     .build()).queue();
         }
-        sendPrivate(e.getAuthor().getPrivateChannel(), args);
+        sendPrivate(e.getAuthor().openPrivateChannel().complete(), args);
     }
 
     @Override

@@ -16,6 +16,7 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
+import net.dv8tion.jda.core.entities.ChannelType;
 import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
 
 import javax.script.ScriptEngine;
@@ -33,7 +34,16 @@ public class EvalCommand extends Command
         engine = new ScriptEngineManager().getEngineByName("nashorn");
         try
         {
-            engine.eval("var imports = new JavaImporter(java.io, java.lang, java.util);");
+            engine.eval("var imports = new JavaImporter(" +
+                    "java.io," +
+                    "java.lang," +
+                    "java.util," +
+                    "Packages.net.dv8tion.jda.core," +
+                    "Packages.net.dv8tion.jda.core.entities," +
+                    "Packages.net.dv8tion.jda.core.entities.impl," +
+                    "Packages.net.dv8tion.jda.core.managers," +
+                    "Packages.net.dv8tion.jda.core.managers.impl," +
+                    "Packages.net.dv8tion.jda.core.utils);");
         }
         catch (ScriptException e)
         {
@@ -58,9 +68,16 @@ public class EvalCommand extends Command
         try
         {
             engine.put("event", e);
+            engine.put("message", e.getMessage());
             engine.put("channel", e.getChannel());
             engine.put("args", args);
             engine.put("api", e.getJDA());
+            if (e.isFromType(ChannelType.TEXT))
+            {
+                engine.put("guild", e.getGuild());
+                engine.put("member", e.getMember());
+            }
+
             Object out = engine.eval(
                     "(function() {" +
                         "with (imports) {" +
