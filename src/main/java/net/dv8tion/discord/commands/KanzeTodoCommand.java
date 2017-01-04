@@ -82,7 +82,7 @@ public class KanzeTodoCommand extends Command
             success = addTodo(StringUtils.join(args, " ", 1, args.length), e);
 
         if (success)
-            e.getMessage().deleteMessage();
+            e.getMessage().deleteMessage().queue();
     }
 
     private boolean addTodo(String todoMessage, MessageReceivedEvent e)
@@ -169,9 +169,9 @@ public class KanzeTodoCommand extends Command
             }
         }
         if (oldMessageIds.size() > 1)
-            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessagesByIds(oldMessageIds);
+            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessagesByIds(oldMessageIds).queue();
         else
-            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessageById(oldMessageIds.get(0));
+            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessageById(oldMessageIds.get(0)).queue();
         todoList = new JSONArray();
         for (JSONObject entry : savedEntries)
         {
