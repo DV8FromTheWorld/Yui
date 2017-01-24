@@ -1,8 +1,12 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
+plugins {
+    id 'com.sedmelluq.jdaction' version '1.0.1'
+}
+
 apply plugin: 'java'
 
-def versionObj = new Version(major: 1, minor: 3, revision: 0)
+def versionObj = new Version(major: 1, minor: 3, revision: 1)
 group = "net.dv8tion"
 archivesBaseName = "Yui"
 version = "${versionObj.toString()}"
@@ -22,6 +26,10 @@ sourceSets {
             ]
         }
     }
+}
+
+jdaction {
+    sourceSets = [sourceSets.main]
 }
 
 // copy the main sources and filter any '@buildVersion@' occurences. 
@@ -70,15 +78,11 @@ artifacts {
 }
 repositories {
     jcenter()
-
-    maven {
-        url 'http://maven.sedmelluq.com'
-    }
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:3.0.BETA2_117"
-    compile 'com.sedmelluq:lavaplayer:1.1.34'
+    compile "net.dv8tion:JDA:3.0.BETA2_122"
+    compile 'com.sedmelluq:lavaplayer:1.1.42'
     compile "net.lingala.zip4j:zip4j:1.3.2"
     compile "com.google.code.gson:gson:2.4"
     compile "org.xerial:sqlite-jdbc:3.8.11.2"
