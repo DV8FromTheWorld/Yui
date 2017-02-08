@@ -168,10 +168,10 @@ public class KanzeTodoCommand extends Command
                     savedEntries.add(entry);
             }
         }
-        if (oldMessageIds.size() > 1)
-            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessagesByIds(oldMessageIds).queue();
-        else
-            api.getTextChannelById(TODO_CHANNEL_ID).deleteMessageById(oldMessageIds.get(0)).queue();
+
+        TextChannel channel = api.getTextChannelById(TODO_CHANNEL_ID);
+        oldMessageIds.forEach(id -> channel.deleteMessageById(id).queue());
+
         todoList = new JSONArray();
         for (JSONObject entry : savedEntries)
         {
