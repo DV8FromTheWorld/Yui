@@ -15,6 +15,7 @@
  */
 package net.dv8tion.discord.bridge;
 
+import com.google.common.base.Strings;
 import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
@@ -24,6 +25,7 @@ import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
 import net.dv8tion.jda.core.events.message.guild.GuildMessageEmbedEvent;
 import net.dv8tion.jda.core.hooks.EventListener;
+import org.apache.http.util.Args;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
 import org.pircbotx.exception.IrcException;
@@ -31,6 +33,7 @@ import org.pircbotx.hooks.ListenerAdapter;
 import org.pircbotx.hooks.events.ConnectEvent;
 import org.pircbotx.hooks.events.JoinEvent;
 import org.pircbotx.hooks.events.MessageEvent;
+import org.pircbotx.hooks.events.SocketConnectEvent;
 
 import java.io.IOException;
 
@@ -38,17 +41,20 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
 {
     public static final int MESSAGE_DELAY_AMOUNT = 250;
 
+    private final IrcConnectInfo info;
     private String identifier;
     private Thread botThread;
     private PircBotX bot;
 
     public IrcConnection(IrcConnectInfo info)
     {
+        this.info = info;
         identifier = info.getIdentifier();
         Builder<PircBotX> builder = info.getIrcConfigBuilder();
         builder.addListener(this);
         builder.setMessageDelay(MESSAGE_DELAY_AMOUNT);
         builder.setAutoReconnect(true);
+        builder.setAutoNickChange(true);
         bot = new PircBotX(builder.buildConfiguration());
         this.open();
     }
@@ -79,6 +85,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     public void close(String reason)
     {
         //TODO: Cleanup the EndPoints of this connection in EndPointManager.
+        bot.stopBotReconnect();
         bot.sendIRC().quitServer(reason);
     }
 
@@ -91,9 +98,24 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     {
         return bot;
     }
+
     // -----  Events -----
 
     // -- IRC --
+
+    @Override
+    public void onConnect(ConnectEvent<PircBotX> event)
+    {
+        //If, after connection, we don't have the defined nick AND we have auth info, attempt to ghost
+        // account using our desired nick and switch to our desired nick.
+        if (!event.getBot().getUserBot().getNick().equals(info.getNick())
+                && !Strings.isNullOrEmpty(info.getIdentPass()))
+        {
+            event.getBot().sendRaw().rawLine("NICKSERV GHOST " + info.getNick() + " " + info.getIdentPass());
+            event.getBot().sendIRC().changeNick(info.getNick());
+        }
+    }
+
     @Override
     public void onMessage(MessageEvent<PircBotX> event)
     {
@@ -108,12 +130,6 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
             EndPointMessage message = EndPointMessage.createFromIrcEvent(event);
             endPoint.sendMessage(message);
         }
-    }
-
-    @Override
-    public void onConnect(ConnectEvent<PircBotX> event)
-    {
-
     }
 
     @Override

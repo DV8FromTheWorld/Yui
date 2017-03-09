@@ -17,6 +17,7 @@ package net.dv8tion.discord.bridge;
 
 import org.pircbotx.Configuration;
 import org.pircbotx.PircBotX;
+import org.pircbotx.cap.SASLCapHandler;
 
 import java.util.List;
 
@@ -104,6 +105,21 @@ public class IrcConnectInfo
     {
         Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
         builder.setName(nick);
+        builder.setSocketTimeout(1000 * 30);
+        if (identNick != null && !identNick.isEmpty())
+        {
+            builder.setLogin(identNick);
+            if (identPass != null && !identPass.isEmpty())
+            {
+                if (host.contains("esper"))
+                {
+                    builder.setCapEnabled(true);
+                    builder.addCapHandler(new SASLCapHandler(getIdentNick(), getIdentPass()));
+                }
+                else
+                    builder.setNickservPassword(identPass);
+            }
+        }
         builder.setServer(host, port);
         builder.setAutoNickChange(true);
         for (String channel : autojoinChannels)
