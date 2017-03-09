@@ -113,7 +113,6 @@ public class Yui
 
             HelpCommand help = new HelpCommand();
             jdaBuilder.addListener(help.registerCommand(help));
-            jdaBuilder.addListener(help.registerCommand(new TestCommand()));
             if (settings.getGoogleApiKey() != null && !settings.getGoogleApiKey().isEmpty())
             {
                 GoogleSearch.setup(settings.getGoogleApiKey());
