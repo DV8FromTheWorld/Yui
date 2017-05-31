@@ -82,7 +82,7 @@ public class KanzeTodoCommand extends Command
             success = addTodo(StringUtils.join(args, " ", 1, args.length), e);
 
         if (success)
-            e.getMessage().deleteMessage().queue();
+            e.getMessage().delete().queue();
     }
 
     private boolean addTodo(String todoMessage, MessageReceivedEvent e)

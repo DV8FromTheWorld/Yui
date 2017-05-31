@@ -81,8 +81,8 @@ repositories {
 }
 
 dependencies {
-    compile "net.dv8tion:JDA:3.0.BETA2_122"
-    compile 'com.sedmelluq:lavaplayer:1.1.42'
+    compile "net.dv8tion:JDA:3.1.1_210"
+    compile 'com.sedmelluq:lavaplayer:1.2.39'
     compile "net.lingala.zip4j:zip4j:1.3.2"
     compile "com.google.code.gson:gson:2.4"
     compile "org.xerial:sqlite-jdbc:3.8.11.2"

@@ -28,7 +28,6 @@ public class EndPointMessage
     private String message;
 
     // -- Discord specific --
-    private GenericGuildMessageEvent discordEvent;
     private User discordUser;
     private Message discordMessage;
 
@@ -52,14 +51,13 @@ public class EndPointMessage
         return message;
     }
 
-    public static EndPointMessage createFromDiscordEvent(GenericGuildMessageEvent event)
+    public static EndPointMessage createFromDiscordEvent(Message msg)
     {
         EndPointMessage message = new EndPointMessage();
         message.messageType = EndPointType.DISCORD;
-        message.setDiscordMessage(event.getMessage());
-        message.senderName = event.getAuthor().getName();
-        message.discordEvent = event;
-        message.discordUser = event.getAuthor();
+        message.setDiscordMessage(msg);
+        message.senderName = msg.getAuthor().getName();
+        message.discordUser = msg.getAuthor();
         return message;
     }
 
@@ -101,13 +99,6 @@ public class EndPointMessage
         if (!messageType.equals(EndPointType.DISCORD))
             throw new IllegalStateException("Attempted to get Discord user from a non-Discord message");
         return discordUser;
-    }
-
-    public GenericGuildMessageEvent getDiscordEvent()
-    {
-        if (!messageType.equals(EndPointType.DISCORD))
-            throw new IllegalStateException("Attemped to get Discord event for non-Discord message");
-         return discordEvent;
     }
 
     public Message getDiscordMessage()

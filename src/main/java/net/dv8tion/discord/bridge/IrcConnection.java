@@ -20,10 +20,10 @@ import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
+import net.dv8tion.jda.core.entities.Message;
+import net.dv8tion.jda.core.entities.User;
 import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.message.guild.GenericGuildMessageEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageDeleteEvent;
-import net.dv8tion.jda.core.events.message.guild.GuildMessageEmbedEvent;
+import net.dv8tion.jda.core.events.message.guild.*;
 import net.dv8tion.jda.core.hooks.EventListener;
 import org.apache.http.util.Args;
 import org.pircbotx.Configuration.Builder;
@@ -144,25 +144,29 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     @Override
     public void onEvent(Event event)
     {
-        //We only deal with TextChannel Message events
-        if (!(event instanceof GenericGuildMessageEvent))
+        Message msg;
+        if (event instanceof GuildMessageReceivedEvent)
+        {
+            msg = ((GuildMessageReceivedEvent) event).getMessage();
+        }
+        else if (event instanceof GuildMessageUpdateEvent)
+        {
+            msg = ((GuildMessageUpdateEvent) event).getMessage();
+        }
+        else
+        {
             return;
-
-        //Don't care about deleted messages or embeds.
-        if (event instanceof GuildMessageDeleteEvent || event instanceof GuildMessageEmbedEvent)
-            return;
-
-        GenericGuildMessageEvent e = (GenericGuildMessageEvent) event;
+        }
 
         //Basically: If we are the ones that sent the message, don't send it to IRC.
-        if (event.getJDA().getSelfUser().getId().equals(e.getAuthor().getId()))
+        if (event.getJDA().getSelfUser().equals(msg.getAuthor()))
             return;
 
         //If this returns null, then this EndPoint isn't part of a bridge.
-        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordChannel(e.getChannel()));
+        EndPoint endPoint = BridgeManager.getInstance().getOtherEndPoint(EndPointInfo.createFromDiscordChannel(msg.getTextChannel()));
         if (endPoint != null)
         {
-            EndPointMessage message = EndPointMessage.createFromDiscordEvent(e);
+            EndPointMessage message = EndPointMessage.createFromDiscordEvent(msg);
             endPoint.sendMessage(message);
         }
     }

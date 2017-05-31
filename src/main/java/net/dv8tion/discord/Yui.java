@@ -112,29 +112,29 @@ public class Yui
             ircConnections = new ArrayList<IrcConnection>();
 
             HelpCommand help = new HelpCommand();
-            jdaBuilder.addListener(help.registerCommand(help));
+            jdaBuilder.addEventListener(help.registerCommand(help));
             if (settings.getGoogleApiKey() != null && !settings.getGoogleApiKey().isEmpty())
             {
                 GoogleSearch.setup(settings.getGoogleApiKey());
-                jdaBuilder.addListener(help.registerCommand(new SearchCommand()));
-                jdaBuilder.addListener(help.registerCommand(new NyaaCommand()));
-                jdaBuilder.addListener(help.registerCommand(new MyAnimeListCommand()));
-                jdaBuilder.addListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+                jdaBuilder.addEventListener(help.registerCommand(new SearchCommand()));
+                jdaBuilder.addEventListener(help.registerCommand(new NyaaCommand()));
+                jdaBuilder.addEventListener(help.registerCommand(new MyAnimeListCommand()));
+                jdaBuilder.addEventListener(help.registerCommand(new AnimeNewsNetworkCommand()));
             }
             else
             {
                 System.out.println("No Google API Key provided, all search commands disabled");
             }
-            jdaBuilder.addListener(help.registerCommand(new ReloadCommand()));
-            jdaBuilder.addListener(help.registerCommand(new UpdateCommand()));
-            jdaBuilder.addListener(help.registerCommand(new PermissionsCommand()));
-            jdaBuilder.addListener(help.registerCommand(new EvalCommand()));
-            jdaBuilder.addListener(help.registerCommand(new RollCommand()));
-            jdaBuilder.addListener(help.registerCommand(new InfoCommand()));
-            jdaBuilder.addListener(help.registerCommand(new UptimeCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new ReloadCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new UpdateCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new PermissionsCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new EvalCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new RollCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new InfoCommand()));
+            jdaBuilder.addEventListener(help.registerCommand(new UptimeCommand()));
 
             //Audio stuff
-            jdaBuilder.addListener(new PlayerControl());
+            jdaBuilder.addEventListener(new PlayerControl());
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
@@ -150,7 +150,7 @@ public class Yui
                 }
                 IrcConnection irc = new IrcConnection(info);
                 ircConnections.add(irc);
-                jdaBuilder.addListener(irc);
+                jdaBuilder.addEventListener(irc);
             }
 
             if (settings.getProxyHost() != null && !settings.getProxyHost().isEmpty())

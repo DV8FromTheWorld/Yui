@@ -310,8 +310,16 @@ public class PlayerControl extends ListenerAdapter
         }
     }
 
-    private void loadAndPlay(GuildMusicManager mng, final MessageChannel channel, final String trackUrl, final boolean addPlaylist)
+    private void loadAndPlay(GuildMusicManager mng, final MessageChannel channel, String url, final boolean addPlaylist)
     {
+        final String trackUrl;
+
+        //Strip <>'s that prevent discord from embedding link resources
+        if (url.startsWith("<") && url.endsWith(">"))
+            trackUrl = url.substring(1, url.length() - 1);
+        else
+            trackUrl = url;
+
         playerManager.loadItemOrdered(mng, trackUrl, new AudioLoadResultHandler()
         {
             @Override
