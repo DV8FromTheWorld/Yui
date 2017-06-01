@@ -109,7 +109,13 @@ public class PlayerControl extends ListenerAdapter
             }
             else
             {
-                VoiceChannel chan = guild.getVoiceChannelById(command[1]);
+                VoiceChannel chan = null;
+                try
+                {
+                     chan = guild.getVoiceChannelById(command[1]);
+                }
+                catch (NumberFormatException ignored) {}
+
                 if (chan == null)
                     chan = guild.getVoiceChannelsByName(command[1], true).stream().findFirst().orElse(null);
                 if (chan == null)
