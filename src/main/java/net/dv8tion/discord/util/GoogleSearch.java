@@ -30,7 +30,7 @@ import java.util.Random;
 
 public class GoogleSearch
 {
-    public static final String GOOGLE_URL = "https://www.googleapis.com/customsearch/v1?safe=high&cx=%s&key=%s&num=%d&q=%s";
+    public static final String GOOGLE_URL = "https://www.googleapis.com/customsearch/v1?safe=medium&cx=%s&key=%s&num=%d&q=%s";
     private static String GOOGLE_API_KEY = null;
     private static LocalDateTime dayStartTime = null;
     private static int currentGoogleUsage = 0;
