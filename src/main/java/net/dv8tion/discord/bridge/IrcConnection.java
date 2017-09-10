@@ -37,7 +37,7 @@ import org.pircbotx.hooks.events.SocketConnectEvent;
 
 import java.io.IOException;
 
-public class IrcConnection extends ListenerAdapter<PircBotX> implements EventListener
+public class IrcConnection extends ListenerAdapter implements EventListener
 {
     public static final int MESSAGE_DELAY_AMOUNT = 250;
 
@@ -50,7 +50,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     {
         this.info = info;
         identifier = info.getIdentifier();
-        Builder<PircBotX> builder = info.getIrcConfigBuilder();
+        Builder builder = info.getIrcConfigBuilder();
         builder.addListener(this);
         builder.setMessageDelay(MESSAGE_DELAY_AMOUNT);
         builder.setAutoReconnect(true);
@@ -104,7 +104,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     // -- IRC --
 
     @Override
-    public void onConnect(ConnectEvent<PircBotX> event)
+    public void onConnect(ConnectEvent event)
     {
         //If, after connection, we don't have the defined nick AND we have auth info, attempt to ghost
         // account using our desired nick and switch to our desired nick.
@@ -117,7 +117,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     }
 
     @Override
-    public void onMessage(MessageEvent<PircBotX> event)
+    public void onMessage(MessageEvent event)
     {
         //Specific to the the Imaginescape IRC/Discord channel. Dumb minecraft server spits out an empty message that is really annoying.
         if (event.getUser().getNick().equals("IServer") && event.getMessage().equals("[Server]"))
@@ -133,7 +133,7 @@ public class IrcConnection extends ListenerAdapter<PircBotX> implements EventLis
     }
 
     @Override
-    public void onJoin(JoinEvent<PircBotX> event)
+    public void onJoin(JoinEvent event)
     {
         if (event.getBot().getUserBot().equals(event.getUser()))
             EndPointManager.getInstance().createEndPoint(EndPointInfo.createFromIrcChannel(identifier, event.getChannel()));

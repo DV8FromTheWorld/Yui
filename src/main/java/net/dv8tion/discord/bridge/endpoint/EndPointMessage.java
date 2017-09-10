@@ -32,7 +32,7 @@ public class EndPointMessage
     private Message discordMessage;
 
     // -- irc specific --
-    private MessageEvent<? extends PircBotX> ircEvent;
+    private MessageEvent ircEvent;
     private org.pircbotx.User ircUser;
 
     private EndPointMessage() {}
@@ -61,7 +61,7 @@ public class EndPointMessage
         return message;
     }
 
-    public static EndPointMessage createFromIrcEvent(MessageEvent<? extends PircBotX> event)
+    public static EndPointMessage createFromIrcEvent(MessageEvent event)
     {
         EndPointMessage message = new EndPointMessage();
         message.message = event.getMessage();
@@ -122,7 +122,7 @@ public class EndPointMessage
 
     // ------ IRC Specific ------
 
-    public MessageEvent<? extends PircBotX> getIrcEvent()
+    public MessageEvent getIrcEvent()
     {
         if (!messageType.equals(EndPointType.IRC))
             throw new IllegalStateException("Attemped to get IRC event for non-IRC message");

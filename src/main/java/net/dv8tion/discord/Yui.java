@@ -29,6 +29,7 @@ import net.dv8tion.jda.core.JDABuilder;
 import net.dv8tion.jda.core.entities.Guild;
 import net.dv8tion.jda.core.entities.TextChannel;
 import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
 
@@ -36,6 +37,9 @@ import javax.security.auth.login.LoginException;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.net.InetSocketAddress;
+import java.net.Proxy;
+import java.net.Proxy.Type;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
@@ -156,14 +160,13 @@ public class Yui
             if (settings.getProxyHost() != null && !settings.getProxyHost().isEmpty())
             {
                 //Sets JDA's proxy settings
-                jdaBuilder.setProxy(new HttpHost(settings.getProxyHost(), Integer.valueOf(settings.getProxyPort())));
+                jdaBuilder.setHttpClientBuilder(new OkHttpClient.Builder().proxy(new Proxy(Type.HTTP, new InetSocketAddress(settings.getProxyHost(), Integer.valueOf(settings.getProxyPort())))));
 
                 //Sets the JVM level proxy settings.
                 System.setProperty("http.proxyHost", settings.getProxyHost());
                 System.setProperty("http.proxyPort", settings.getProxyPort());
                 System.setProperty("https.proxyHost", settings.getProxyHost());
                 System.setProperty("https.proxyPort", settings.getProxyPort());
-
             }
 
             //Login to Discord now that we are all setup.
