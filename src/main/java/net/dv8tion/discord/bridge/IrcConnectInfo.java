@@ -101,9 +101,9 @@ public class IrcConnectInfo
         this.autojoinChannels = autojoinChannels;
     }
 
-    public Configuration.Builder<PircBotX> getIrcConfigBuilder()
+    public Configuration.Builder getIrcConfigBuilder()
     {
-        Configuration.Builder<PircBotX> builder = new Configuration.Builder<PircBotX>();
+        Configuration.Builder builder = new Configuration.Builder();
         builder.setName(nick);
         builder.setSocketTimeout(1000 * 30);
         if (identNick != null && !identNick.isEmpty())
