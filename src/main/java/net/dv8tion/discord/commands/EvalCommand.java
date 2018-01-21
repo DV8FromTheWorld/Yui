@@ -81,7 +81,7 @@ public class EvalCommand extends Command
             Object out = engine.eval(
                     "(function() {" +
                         "with (imports) {" +
-                            e.getMessage().getContent().substring(args[0].length()) +
+                            e.getMessage().getContentDisplay().substring(args[0].length()) +
                         "}" +
                     "})();");
             sendMessage(e, out == null ? "Executed without error." : out.toString());

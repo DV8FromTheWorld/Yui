@@ -200,11 +200,6 @@ public class Yui
             System.out.println("Our login thread was interrupted!");
             System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
-        catch (RateLimitedException e)
-        {
-            System.out.println("Encountered ratelimit while attempting to login!");
-            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
-        }
     }
 
     private static void relaunchInUTF8() throws InterruptedException, UnsupportedEncodingException
