@@ -1,6 +1,7 @@
 # intellij #
 /.idea/
 *.iml
+/out/
 
 ## eclipse ## 
 /bin/

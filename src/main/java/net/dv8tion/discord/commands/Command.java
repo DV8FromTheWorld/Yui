@@ -47,7 +47,7 @@ public abstract class Command extends ListenerAdapter
 
     protected String[] commandArgs(Message message)
     {
-        return commandArgs(message.getContent());
+        return commandArgs(message.getContentDisplay());
     }
 
     protected String[] commandArgs(String string)

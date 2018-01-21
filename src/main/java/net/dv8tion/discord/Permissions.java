@@ -93,6 +93,7 @@ public class Permissions
      *      true - if the user was successfully added.
      *      false - if the user was already an OP.
      * @throws SQLException
+     *      in case of sql update failing
      */
     public Boolean addOp(String userId) throws SQLException
     {
@@ -116,6 +117,8 @@ public class Permissions
      * @return
      *      true - if the user was successfully removed.
      *      false - if the user was not an op.
+     * @throws SQLException
+     *      in case of sql update failing
      */
     public boolean removeOp(String userId) throws SQLException
     {
