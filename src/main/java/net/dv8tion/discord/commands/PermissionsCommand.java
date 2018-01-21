@@ -64,7 +64,7 @@ public class PermissionsCommand extends Command
                         .append("**Improper syntax, unrecognized permission group:** ")
                         .append(args[0])
                         .append("\n**Provided Command:** ")
-                        .append(e.getMessage().getContent())
+                        .append(e.getMessage().getContentDisplay())
                         .build());
                 return;
         }
@@ -151,7 +151,7 @@ public class PermissionsCommand extends Command
                     .append("**Improper syntax, unrecognized argument:** ")
                     .append(args[1])
                     .append("\n**Provided Command:** ")
-                    .append(e.getMessage().getContent())
+                    .append(e.getMessage().getContentDisplay())
                     .build());
         }
     }
