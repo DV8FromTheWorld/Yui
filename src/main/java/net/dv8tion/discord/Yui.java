@@ -174,7 +174,6 @@ public class Yui
             Permissions.getPermissions().setBotAsOp(api.getSelfUser());
 
             api.addEventListener(help.registerCommand(new TodoCommand(api)));
-            api.addEventListener(help.registerCommand(new KanzeTodoCommand(api)));
 
             //Creates and Stores all Discord endpoints in our Manager.
             for (Guild guild : api.getGuilds())
