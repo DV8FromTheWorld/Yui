@@ -45,7 +45,7 @@ public class SearchResult
 
     public String getTitle()
     {
-        return content;
+        return title;
     }
 
     public String getContent()
