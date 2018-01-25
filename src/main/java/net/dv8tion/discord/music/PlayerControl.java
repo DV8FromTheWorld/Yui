@@ -92,7 +92,7 @@ public class PlayerControl extends ListenerAdapter
             //In that case, we treat the music system as not having admin restrictions.
         }
 
-        String[] command = event.getMessage().getContent().split(" ", 2);
+        String[] command = event.getMessage().getContentDisplay().split(" ", 2);
         if (!command[0].startsWith("."))    //message doesn't start with prefix.
             return;
 

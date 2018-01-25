@@ -174,7 +174,6 @@ public class Yui
             Permissions.getPermissions().setBotAsOp(api.getSelfUser());
 
             api.addEventListener(help.registerCommand(new TodoCommand(api)));
-            api.addEventListener(help.registerCommand(new KanzeTodoCommand(api)));
 
             //Creates and Stores all Discord endpoints in our Manager.
             for (Guild guild : api.getGuilds())
@@ -199,11 +198,6 @@ public class Yui
         catch (InterruptedException e)
         {
             System.out.println("Our login thread was interrupted!");
-            System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
-        }
-        catch (RateLimitedException e)
-        {
-            System.out.println("Encountered ratelimit while attempting to login!");
             System.exit(UNABLE_TO_CONNECT_TO_DISCORD);
         }
     }

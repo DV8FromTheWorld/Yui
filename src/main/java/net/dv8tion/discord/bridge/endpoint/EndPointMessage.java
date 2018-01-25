@@ -110,7 +110,7 @@ public class EndPointMessage
 
     public void setDiscordMessage(Message discordMessage)
     {
-        String parsedMessage = discordMessage.getContent();
+        String parsedMessage = discordMessage.getContentDisplay();
         for (Message.Attachment attach : discordMessage.getAttachments())
         {
             parsedMessage += "\n" + attach.getUrl();
