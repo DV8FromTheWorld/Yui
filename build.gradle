@@ -32,7 +32,7 @@ jdaction {
     sourceSets = [sourceSets.main]
 }
 
-// copy the main sources and filter any '@buildVersion@' occurences. 
+// copy the main sources and filter any '@buildVersion@' occurences.
 task processVersion (type: Copy) {
     from sourceSets.main.java
     into filteredSourceDir
@@ -81,7 +81,7 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.5.0_329'
+    compile 'net.dv8tion:JDA:3.5.1_339'
     compile 'com.sedmelluq:lavaplayer:1.2.43'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
     compile 'com.google.code.gson:gson:2.8.1'
@@ -114,7 +114,7 @@ class Version {
     }
 }
 
-// tell the compileJava task to compile the filtered source 
+// tell the compileJava task to compile the filtered source
 compileJava.source = sourceSets.filtered.java
 compileJava.dependsOn processVersion
 
