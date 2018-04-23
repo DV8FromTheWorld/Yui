@@ -86,7 +86,7 @@ public class EvalCommand extends Command
                     "})();");
             sendMessage(e, out == null ? "Executed without error." : out.toString());
         }
-        catch (ScriptException e1)
+        catch (Exception e1)
         {
             sendMessage(e, e1.getMessage());
         }
