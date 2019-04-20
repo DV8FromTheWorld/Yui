@@ -124,7 +124,7 @@ public class HelpCommand extends Command
                     channel.sendMessage(new MessageBuilder()
                             .append("**Name:** " + name + "\n")
                             .append("**Description:** " + description + "\n")
-                            .append("**Alliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
+                            .append("**Aliases:** " + StringUtils.join(c.getAliases(), ", ") + "\n")
                             .append("**Usage:** ")
                             .append(usageInstructions.get(0))
                             .build()).queue();
