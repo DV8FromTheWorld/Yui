@@ -23,12 +23,12 @@ import net.dv8tion.discord.commands.*;
 import net.dv8tion.discord.music.PlayerControl;
 import net.dv8tion.discord.util.Database;
 import net.dv8tion.discord.util.GoogleSearch;
-import net.dv8tion.jda.core.AccountType;
-import net.dv8tion.jda.core.JDA;
-import net.dv8tion.jda.core.JDABuilder;
-import net.dv8tion.jda.core.entities.Guild;
-import net.dv8tion.jda.core.entities.TextChannel;
-import net.dv8tion.jda.core.exceptions.RateLimitedException;
+import net.dv8tion.jda.api.AccountType;
+import net.dv8tion.jda.api.JDA;
+import net.dv8tion.jda.api.JDABuilder;
+import net.dv8tion.jda.api.entities.Guild;
+import net.dv8tion.jda.api.entities.TextChannel;
+import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.http.HttpHost;
@@ -116,29 +116,33 @@ public class Yui
             ircConnections = new ArrayList<IrcConnection>();
 
             HelpCommand help = new HelpCommand();
-            jdaBuilder.addEventListener(help.registerCommand(help));
+            jdaBuilder.addEventListeners(help.registerCommand(help));
             if (settings.getGoogleApiKey() != null && !settings.getGoogleApiKey().isEmpty())
             {
                 GoogleSearch.setup(settings.getGoogleApiKey());
-                jdaBuilder.addEventListener(help.registerCommand(new SearchCommand()));
-                jdaBuilder.addEventListener(help.registerCommand(new NyaaCommand()));
-                jdaBuilder.addEventListener(help.registerCommand(new MyAnimeListCommand()));
-                jdaBuilder.addEventListener(help.registerCommand(new AnimeNewsNetworkCommand()));
+                jdaBuilder.addEventListeners(
+                    help.registerCommand(new SearchCommand()),
+                    help.registerCommand(new NyaaCommand()),
+                    help.registerCommand(new MyAnimeListCommand()),
+                    help.registerCommand(new AnimeNewsNetworkCommand())
+                );
             }
             else
             {
                 System.out.println("No Google API Key provided, all search commands disabled");
             }
-            jdaBuilder.addEventListener(help.registerCommand(new ReloadCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new UpdateCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new PermissionsCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new EvalCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new RollCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new InfoCommand()));
-            jdaBuilder.addEventListener(help.registerCommand(new UptimeCommand()));
+            jdaBuilder.addEventListeners(
+                help.registerCommand(new ReloadCommand()),
+                help.registerCommand(new UpdateCommand()),
+                help.registerCommand(new PermissionsCommand()),
+                help.registerCommand(new EvalCommand()),
+                help.registerCommand(new RollCommand()),
+                help.registerCommand(new InfoCommand()),
+                help.registerCommand(new UptimeCommand())
+            );
 
             //Audio stuff
-            jdaBuilder.addEventListener(new PlayerControl());
+            jdaBuilder.addEventListeners(new PlayerControl());
 
             for (IrcConnectInfo info  : settings.getIrcConnectInfos())
             {
@@ -154,7 +158,7 @@ public class Yui
                 }
                 IrcConnection irc = new IrcConnection(info);
                 ircConnections.add(irc);
-                jdaBuilder.addEventListener(irc);
+                jdaBuilder.addEventListeners(irc);
             }
 
             if (settings.getProxyHost() != null && !settings.getProxyHost().isEmpty())
@@ -170,7 +174,8 @@ public class Yui
             }
 
             //Login to Discord now that we are all setup.
-            api = jdaBuilder.buildBlocking();
+            api = jdaBuilder.build();
+            api.awaitReady();
             Permissions.getPermissions().setBotAsOp(api.getSelfUser());
 
             api.addEventListener(help.registerCommand(new TodoCommand(api)));

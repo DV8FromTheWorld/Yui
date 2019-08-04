@@ -16,8 +16,8 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
-import net.dv8tion.jda.core.entities.ChannelType;
-import net.dv8tion.jda.core.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.entities.ChannelType;
+import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
@@ -38,12 +38,12 @@ public class EvalCommand extends Command
                     "java.io," +
                     "java.lang," +
                     "java.util," +
-                    "Packages.net.dv8tion.jda.core," +
-                    "Packages.net.dv8tion.jda.core.entities," +
-                    "Packages.net.dv8tion.jda.core.entities.impl," +
-                    "Packages.net.dv8tion.jda.core.managers," +
-                    "Packages.net.dv8tion.jda.core.managers.impl," +
-                    "Packages.net.dv8tion.jda.core.utils);");
+                    "Packages.net.dv8tion.jda.api," +
+                    "Packages.net.dv8tion.jda.api.entities," +
+                    "Packages.net.dv8tion.jda.api.entities.impl," +
+                    "Packages.net.dv8tion.jda.api.managers," +
+                    "Packages.net.dv8tion.jda.api.managers.impl," +
+                    "Packages.net.dv8tion.jda.api.utils);");
         }
         catch (ScriptException e)
         {

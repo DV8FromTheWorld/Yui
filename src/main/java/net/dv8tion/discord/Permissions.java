@@ -16,8 +16,8 @@
 package net.dv8tion.discord;
 
 import net.dv8tion.discord.util.Database;
-import net.dv8tion.jda.core.entities.SelfUser;
-import net.dv8tion.jda.core.entities.User;
+import net.dv8tion.jda.api.entities.SelfUser;
+import net.dv8tion.jda.api.entities.User;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

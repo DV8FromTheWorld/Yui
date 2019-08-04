@@ -20,11 +20,12 @@ import net.dv8tion.discord.bridge.endpoint.EndPoint;
 import net.dv8tion.discord.bridge.endpoint.EndPointInfo;
 import net.dv8tion.discord.bridge.endpoint.EndPointManager;
 import net.dv8tion.discord.bridge.endpoint.EndPointMessage;
-import net.dv8tion.jda.core.entities.Message;
-import net.dv8tion.jda.core.entities.User;
-import net.dv8tion.jda.core.events.Event;
-import net.dv8tion.jda.core.events.message.guild.*;
-import net.dv8tion.jda.core.hooks.EventListener;
+import net.dv8tion.jda.api.entities.Message;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.Event;
+import net.dv8tion.jda.api.events.GenericEvent;
+import net.dv8tion.jda.api.events.message.guild.*;
+import net.dv8tion.jda.api.hooks.EventListener;
 import org.apache.http.util.Args;
 import org.pircbotx.Configuration.Builder;
 import org.pircbotx.PircBotX;
@@ -142,7 +143,7 @@ public class IrcConnection extends ListenerAdapter implements EventListener
     // -- Discord --
 
     @Override
-    public void onEvent(Event event)
+    public void onEvent(GenericEvent event)
     {
         Message msg;
         if (event instanceof GuildMessageReceivedEvent)

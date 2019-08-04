@@ -73,6 +73,16 @@ task fatJar(type: Jar) {
     with jar
 }
 
+task instrument(type: JavaExec) {
+    main = 'com.ea.async.instrumentation.Main'
+    classpath = sourceSets.main.compileClasspath
+    args "$buildDir"
+}
+
+compileJava.doLast {
+    tasks.instrument.execute()
+}
+
 artifacts {
     archives javadocJar, sourcesJar
 }
@@ -81,13 +91,15 @@ repositories {
 }
 
 dependencies {
-    compile 'net.dv8tion:JDA:3.5.1_339'
-    compile 'com.sedmelluq:lavaplayer:1.2.55'
+    compile 'net.dv8tion:JDA:4.BETA.0_32'
+    compile 'com.sedmelluq:lavaplayer:1.3.19'
     compile 'net.lingala.zip4j:zip4j:1.3.2'
     compile 'com.google.code.gson:gson:2.8.1'
     compile 'org.xerial:sqlite-jdbc:3.20.0'
     compile 'org.pircbotx:pircbotx:2.1'
     compile 'commons-io:commons-io:2.5'
+    compile 'org.json:json:20180813'
+    compileOnly 'com.ea.async:ea-async:1.2.3'
 }
 
 class Version {

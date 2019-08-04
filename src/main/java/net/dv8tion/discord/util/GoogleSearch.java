@@ -15,6 +15,7 @@
  */
 package net.dv8tion.discord.util;
 
+
 import org.json.JSONArray;
 import org.json.JSONObject;
 

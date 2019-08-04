@@ -15,7 +15,7 @@
  */
 package net.dv8tion.discord.bridge.endpoint;
 
-import net.dv8tion.jda.core.entities.TextChannel;
+import net.dv8tion.jda.api.entities.TextChannel;
 import org.pircbotx.Channel;
 
 public class EndPointInfo
