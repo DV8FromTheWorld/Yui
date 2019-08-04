@@ -16,7 +16,6 @@
 package net.dv8tion.discord.commands;
 
 import net.dv8tion.discord.Permissions;
-import net.dv8tion.discord.SettingsManager;
 import net.dv8tion.discord.Yui;
 import net.dv8tion.discord.YuiInfo;
 import net.dv8tion.jda.api.MessageBuilder;
@@ -37,32 +36,20 @@ public class UpdateCommand extends Command
             return;
         }
 
-        if(SettingsManager.getInstance().getSettings().getUseBetaBuilds() && YuiInfo.hasNewBetaVersion())
+        if (YuiInfo.hasNewBuild())
         {
             sendMessage(e, new MessageBuilder()
-                .append("Updating to the latest **beta** version.\n")
-                .append(YuiInfo.VERSION.toString())
-                .append(" -> ")
-                .append(YuiInfo.getLatestBetaVersion().toString())
-                .build());
-            System.exit(Yui.UPDATE_LATEST_EXITCODE);
-        }
-        else if (YuiInfo.hasNewRecommendedVersion())
-        {
-            sendMessage(e, new MessageBuilder()
-                    .append("Updating to the latest **recommended** version.\n")
+                    .append("Updating to the latest version.\n")
                     .append(YuiInfo.VERSION.toString())
                     .append(" -> ")
-                    .append(YuiInfo.getLatestRecommendedVersion().toString())
+                    .append(YuiInfo.getLatestBuildVersion().toString())
                     .build());
-            System.exit(Yui.UPDATE_RECOMMENDED_EXITCODE);
+            System.exit(Yui.UPDATE_TO_LATEST_BUILD_EXITCODE);
         }
         else
         {
             sendMessage(e, new MessageBuilder()
-                .append("Yui is currently up-to-date compared to the latest ")
-                .append(SettingsManager.getInstance().getSettings().getUseBetaBuilds() ? "beta" : "recommended")
-                .append("build.\n")
+                .append("Yui is currently up-to-date compared to the latest build.\n")
                 .append("Current version: ", MessageBuilder.Formatting.BOLD)
                 .append(YuiInfo.VERSION.toString())
                 .build());

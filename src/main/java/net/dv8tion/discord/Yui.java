@@ -28,10 +28,8 @@ import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.entities.TextChannel;
-import net.dv8tion.jda.api.exceptions.RateLimitedException;
 import okhttp3.OkHttpClient;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.HttpHost;
 
 import javax.security.auth.login.LoginException;
 import java.io.File;
@@ -52,8 +50,7 @@ public class Yui
     public static final int NEWLY_CREATED_CONFIG = 12;
 
     //Non error, action required exit codes.
-    public static final int UPDATE_LATEST_EXITCODE = 20;
-    public static final int UPDATE_RECOMMENDED_EXITCODE = 21;
+    public static final int UPDATE_TO_LATEST_BUILD_EXITCODE = 20;
 
     //error exit codes.
     public static final int UNABLE_TO_CONNECT_TO_DISCORD = 30;
@@ -117,6 +114,7 @@ public class Yui
 
             HelpCommand help = new HelpCommand();
             jdaBuilder.addEventListeners(help.registerCommand(help));
+            jdaBuilder.setEnableShutdownHook(true);
             if (settings.getGoogleApiKey() != null && !settings.getGoogleApiKey().isEmpty())
             {
                 GoogleSearch.setup(settings.getGoogleApiKey());

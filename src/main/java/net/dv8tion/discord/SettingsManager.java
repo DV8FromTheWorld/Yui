@@ -94,7 +94,6 @@ public class SettingsManager {
         newSettings.setGoogleApiKey("");
         newSettings.setProxyHost("");
         newSettings.setProxyPort("8080");
-        newSettings.setUseBetaBuilds(new Boolean(false));
 
         IrcConnectInfo connectDefault = new IrcConnectInfo();
         connectDefault.setIdentifier("IrcConnection1");
@@ -123,11 +122,6 @@ public class SettingsManager {
         if (settings.getGoogleApiKey() == null)
         {
             settings.setGoogleApiKey(defaults.getGoogleApiKey());
-            modified = true;
-        }
-        if (settings.getUseBetaBuilds() == null)
-        {
-            settings.setUseBetaBuilds(defaults.getUseBetaBuilds());
             modified = true;
         }
         if (settings.getIrcConnectInfos() == null)

@@ -29,7 +29,6 @@ public class Settings {
     private String googleApiKey;
     private String proxyHost;
     private String proxyPort;
-    private Boolean useBetaBuilds;
     private List<IrcConnectInfo> ircConnectInfos;
     private List<BridgeInfo> bridges;
 
@@ -91,15 +90,5 @@ public class Settings {
     public void setBridges(List<BridgeInfo> bridges)
     {
         this.bridges = bridges;
-    }
-
-    public Boolean getUseBetaBuilds()
-    {
-        return useBetaBuilds;
-    }
-
-    public void setUseBetaBuilds(boolean useBetaBuilds)
-    {
-        this.useBetaBuilds = useBetaBuilds;
     }
 }
