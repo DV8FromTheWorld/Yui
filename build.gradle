@@ -2,11 +2,12 @@ import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
     id 'com.sedmelluq.jdaction' version '1.0.1'
+    id 'com.github.johnrengelman.shadow' version '2.0.4'
 }
 
 apply plugin: 'java'
 
-def versionObj = new Version(major: 1, minor: 3, revision: 1)
+def versionObj = new Version(major: 1, minor: 4, revision: 0)
 group = 'net.dv8tion'
 archivesBaseName = 'Yui'
 version = "${versionObj.toString()}"
@@ -32,7 +33,7 @@ jdaction {
     sourceSets = [sourceSets.main]
 }
 
-// copy the main sources and filter any '@buildVersion@' occurences.
+// copy the main sources and filter any '@buildVersion@' occurrences.
 task processVersion (type: Copy) {
     from sourceSets.main.java
     into filteredSourceDir
@@ -63,6 +64,10 @@ task sourcesJar(type: Jar) {
 }
 
 //create a single Jar with all dependencies
+shadowJar {
+    classifier = 'withDependencies'
+}
+
 task fatJar(type: Jar) {
     manifest {
         attributes 'Implementation-Version': version
@@ -131,4 +136,4 @@ compileJava.source = sourceSets.filtered.java
 compileJava.dependsOn processVersion
 
 //Creates the w/ dependencies jar.
-assemble.dependsOn fatJar
+assemble.dependsOn shadowJar
