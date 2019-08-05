@@ -30,8 +30,8 @@ public class YuiInfo
             "@versionRevision@",
             "@versionBuild@"
     );
-    private static final String URL_REGEX = "\\<a href=\"Yui-withDependencies-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*\\.jar\">(Yui-withDependencies-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*\\.jar)\\<\\/a\\>";
-    private static final String VERSION_REGEX = "Yui-withDependencies-([0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*)\\.jar";
+    public static final String URL_REGEX = "\\<a href=\"Yui-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*-withDependencies\\.jar\">(Yui-[0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*-withDependencies\\.jar)\\<\\/a\\>";
+    private static final String VERSION_REGEX = "Yui-([0-9]*\\.[0-9]*\\.[0-9]*_[0-9]*)-withDependencies\\.jar";
 
     public static String getLatestBuildUrl()
     {
