@@ -107,7 +107,7 @@ public class Yui
         {
             Settings settings = SettingsManager.getInstance().getSettings();
 
-            JDABuilder jdaBuilder = new JDABuilder(AccountType.BOT).setToken(settings.getBotToken());
+            JDABuilder jdaBuilder = JDABuilder.createDefault(settings.getBotToken());
             Database.getInstance();
             Permissions.setupPermissions();
             ircConnections = new ArrayList<IrcConnection>();
