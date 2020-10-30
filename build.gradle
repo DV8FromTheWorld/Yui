@@ -6,7 +6,7 @@ plugins {
     id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
-def versionObj = new Version(major: 1, minor: 4, revision: 0)
+def versionObj = new Version(major: 1, minor: 5, revision: 0)
 group = 'net.dv8tion'
 archivesBaseName = 'Yui'
 mainClassName = 'net.dv8tion.discord.Yui'
