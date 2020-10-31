@@ -29,6 +29,10 @@ public class SearchCommand extends Command
 	@Override
 	public void onCommand(MessageReceivedEvent e, String[] args)
 	{
+		if(args.length <= 1){
+			sendMessage(e, "Pls provide a search term");
+			return;
+		}
 		String filter = null;
 		switch (args[0]) {
 			case ".google":

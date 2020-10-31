@@ -1,16 +1,17 @@
 import org.apache.tools.ant.filters.ReplaceTokens
 
 plugins {
-    id 'com.sedmelluq.jdaction' version '1.0.1'
-    id 'com.github.johnrengelman.shadow' version '2.0.4'
+    id 'java'
+    id 'application'
+    id 'com.github.johnrengelman.shadow' version '6.1.0'
 }
 
-apply plugin: 'java'
-
-def versionObj = new Version(major: 1, minor: 4, revision: 0)
+def versionObj = new Version(major: 1, minor: 5, revision: 0)
 group = 'net.dv8tion'
 archivesBaseName = 'Yui'
+mainClassName = 'net.dv8tion.discord.Yui'
 version = "${versionObj.toString()}"
+compileJava.options.encoding = 'UTF-8'
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
@@ -27,10 +28,6 @@ sourceSets {
             ]
         }
     }
-}
-
-jdaction {
-    sourceSets = [sourceSets.main]
 }
 
 // copy the main sources and filter any '@buildVersion@' occurrences.
@@ -63,29 +60,10 @@ task sourcesJar(type: Jar) {
     from sourceSets.filtered.java
 }
 
-//create a single Jar with all dependencies
-shadowJar {
-    classifier = 'withDependencies'
-}
-
-task fatJar(type: Jar) {
-    manifest {
-        attributes 'Implementation-Version': version
-        attributes 'Main-Class': 'net.dv8tion.discord.Yui'
-    }
-    baseName = project.name + '-withDependencies'
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
-    with jar
-}
-
 task instrument(type: JavaExec) {
     main = 'com.ea.async.instrumentation.Main'
     classpath = sourceSets.main.compileClasspath
     args "$buildDir"
-}
-
-compileJava.doLast {
-    tasks.instrument.execute()
 }
 
 artifacts {
@@ -93,18 +71,22 @@ artifacts {
 }
 repositories {
     jcenter()
+    maven { url 'https://jitpack.io' }
 }
 
+shadowJar {
+    archiveFileName = "Yui-${version}-withDependencies.jar"
+}
 dependencies {
-    compile 'net.dv8tion:JDA:4.BETA.0_32'
-    compile 'com.sedmelluq:lavaplayer:1.3.19'
-    compile 'net.lingala.zip4j:zip4j:1.3.2'
-    compile 'com.google.code.gson:gson:2.8.1'
-    compile 'org.xerial:sqlite-jdbc:3.20.0'
-    compile 'org.pircbotx:pircbotx:2.1'
-    compile 'commons-io:commons-io:2.5'
-    compile 'org.json:json:20180813'
-    compileOnly 'com.ea.async:ea-async:1.2.3'
+    implementation 'net.dv8tion:JDA:4.2.0_214'
+    implementation 'com.github.devoxin:lavaplayer:1.3.60'
+    implementation 'net.lingala.zip4j:zip4j:1.3.2'
+    implementation 'com.google.code.gson:gson:2.8.1'
+    implementation 'org.xerial:sqlite-jdbc:3.20.0'
+    implementation 'org.pircbotx:pircbotx:2.1'
+    implementation 'commons-io:commons-io:2.5'
+    implementation 'org.json:json:20180813'
+    implementation 'com.ea.async:ea-async:1.2.3'
 }
 
 class Version {

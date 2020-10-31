@@ -52,7 +52,7 @@ public abstract class Command extends ListenerAdapter
 
     protected String[] commandArgs(String string)
     {
-        return string.split(" ");
+        return string.split("\\s+");
     }
 
     protected Message sendMessage(MessageReceivedEvent e, Message message)
