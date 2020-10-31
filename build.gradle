@@ -74,6 +74,9 @@ repositories {
     maven { url 'https://jitpack.io' }
 }
 
+shadowJar {
+    archiveFileName = "Yui-${version}-withDependencies.jar"
+}
 dependencies {
     implementation 'net.dv8tion:JDA:4.2.0_214'
     implementation 'com.github.devoxin:lavaplayer:1.3.60'
